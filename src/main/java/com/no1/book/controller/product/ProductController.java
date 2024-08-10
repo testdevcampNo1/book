@@ -40,7 +40,7 @@ public class ProductController {
         if (pageSize==null) pageSize=10;
         if (sortKey == null) sortKey = "date";
         if (sortOrder == null) sortOrder = "desc";
-        if (cateKey == null) cateKey = "010101";
+        if (cateKey == null) cateKey = "";
 
 
         try {
