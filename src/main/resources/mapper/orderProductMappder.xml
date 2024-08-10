@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.no1.book.dao.order.OrderProductDao">
+
+    <!--    주문상품 추가-->
+    <insert id="insertOrderProduct" parameterType="OrderProductDto">
+        INSERT INTO no1.orderProduct ( ord_prod_id, ord_id, prod_id, ord_prod_stus_code, code_type, ebook_chk, name, ord_qty, img, prod_page_link, total_prod_price, total_disc_price, total_pay_price, cancelable_date, reg_date, reg_id, up_date, up_id )
+        VALUES ( #{ordProdId}, #{ordId}, #{prodId}, #{ordProdStusCode}, #{codeType}, #{ebookChk}, #{name}, #{ordQty}, #{img}, #{prodPageLink}, #{totalProdPrice}, #{totalDiscPrice}, #{totalPayPrice}, DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 7 DAY), '%Y-%m-%d %H:%i:%s'), DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), #{regId}, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), #{upId} )
+    </insert>
+
+    <!--    주문상품ID로 조회-->
+    <select id="getOrderProduct" parameterType="int" resultType="OrderProductDto">
+        SELECT * FROM no1.orderProduct
+        WHERE ord_prod_id = #{ordProdId}
+    </select>
+
+    <!--    회원의 주문상품 전체 조회-->
+    <select id="getCustomerOrderProducts" parameterType="int" resultType="OrderProductDto">
+        SELECT * FROM no1.orderProduct
+        JOIN no1.order ON no1.orderProduct.ord_id = no1.order.ord_id
+        WHERE no1.order.cust_id = #{custId}
+    </select>
+
+    <!--    한 주문의 주문상품 전체 조회-->
+    <select id="getOrderProductsByOrderId" parameterType="int" resultType="OrderProductDto">
+        SELECT * FROM no1.orderProduct
+        WHERE ord_id = #{ordId}
+    </select>
+
+    <!--    주문상품 전체 조회-->
+    <select id="getAllOrderProduct" resultType="OrderProductDto">
+        SELECT * FROM no1.orderProduct
+    </select>
+
+    <!--    주문상품 상태 업데이트-->
+    <update id="updateOrderProductStatus" parameterType="map">
+        UPDATE no1.orderProduct
+        SET ord_prod_stus_code = #{ordProdStusCode}, up_date = DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), up_id = #{upId}
+        WHERE ord_prod_id = #{ordProdId}
+    </update>
+
+    <!--    한 주문의 주문상품 전체 삭제-->
+    <delete id="deleteOrderProducts" parameterType="int">
+        DELETE FROM no1.orderProduct
+        WHERE ord_id = #{ordID}
+    </delete>
+
+    <!--    회원의 주문상품 전체 삭제-->
+    <delete id="deleteCustomerOrderProducts" parameterType="int">
+        DELETE no1.orderProduct FROM no1.orderProduct
+        JOIN no1.order ON no1.orderProduct.ord_id = no1.order.ord_id
+        WHERE no1.order.cust_id = #{custID}
+    </delete>
+
+    <!--    주문상품 전체 삭제-->
+    <delete id="deleteAllOrderProduct">
+        DELETE FROM no1.orderProduct
+    </delete>
+
+</mapper>
+

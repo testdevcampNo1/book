@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.no1.book.dao.order.OrderDao">
+
+    <!--    주문 생성-->
+    <insert id="createOrder" parameterType="OrderDto">
+        INSERT INTO no1.order ( ord_id, cust_id, ord_stus_code, code_type, cust_chk, ord_date, ord_req_msg, total_prod_price, total_disc_price, dlv_price, total_pay_price, pwd, reg_date, reg_id, up_date, up_id )
+        VALUES ( #{ordId}, #{custId}, #{ordStusCode}, #{codeType}, #{custChk}, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), #{ordReqMsg}, #{totalProdPrice}, #{totalDiscPrice}, #{dlvPrice}, #{totalPayPrice}, #{pwd}, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), #{regId}, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), #{upId} )
+    </insert>
+
+    <!--    주문상태코드 업데이트-->
+    <update id="updateOrderStatus" parameterType="map">
+        UPDATE no1.order
+        SET ord_id = #{ordId}, ord_stus_code = #{ordStusCode}, code_type = #{codeType}, up_date = DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), up_id = #{custID}
+    </update>
+
+    <!--    주문ID로 조회-->
+    <select id="getOrder" parameterType="OrderDto">
+        SELECT * FROM no1.order
+        WHERE ord_id = #{ordId}
+    </select>
+
+    <!--    회원의 주문 전체 조회-->
+    <!--    최근 주문 순서로 정렬-->
+    <select id="getCustomerOrders" parameterType="int" resultType="OrderDto">
+        SELECT * FROM no1.order
+        WHERE cust_id = #{custID}
+        ORDER BY reg_date DESC
+    </select>
+
+    <!--    주문 전체 조회-->
+    <select id="getAllOrder" resultType="OrderDto">
+        SELECT * FROM no1.order
+    </select>
+
+    <!--    회원의 주문 전체 삭제-->
+    <delete id="deleteCustomerOrders" parameterType="int">
+        DELETE FROM no1.order
+        WHERE cust_id = #{custId}
+    </delete>
+
+    <!--    주문 전체 삭제-->
+    <delete id="deleteAllOrder">
+        DELETE FROM no1.order
+    </delete>
+
+</mapper>
+
