@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 /*
-1. 리스트부터 띄워 보자
-2.
+1. 리스트부터 띄워 보자 v
+2. 띄운 리스트를 선택한 기준에 따라 정렬하도록 해보자
 
  */
 
@@ -28,10 +28,13 @@ public class ProductController {
     ProductService productService;
 
     @GetMapping("/list")
-    public String list(Integer page, Integer pageSize, Model m) {
+    public String list(Integer page, Integer pageSize, String sortKey, String sortOrder ,Model m) {
 
         if (page==null) page=1;
         if (pageSize==null) pageSize=10;
+        if (sortKey == null) sortKey = "date";
+        if (sortOrder == null) sortOrder = "desc";
+
 
         try {
             int totalCnt = productService.getProductCount();
@@ -40,12 +43,16 @@ public class ProductController {
             Map map = new HashMap();
             map.put("offset", (page - 1) * pageSize);
             map.put("pageSize", pageSize);
+            map.put("sortKey", sortKey);
+            map.put("sortOrder", sortOrder);
 
-            List<ProductDto> list = productService.getPage(map);
+            List<ProductDto> list = productService.getSortedPage(map);
             m.addAttribute("list", list);
             m.addAttribute("ph", pageHandler);
-            m.addAttribute("page", pageHandler);
             m.addAttribute("pageSize", pageSize);
+            m.addAttribute("sortKey", sortKey);
+            m.addAttribute("sortOrder", sortOrder);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

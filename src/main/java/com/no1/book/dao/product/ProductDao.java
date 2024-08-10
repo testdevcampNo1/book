@@ -16,17 +16,17 @@ public interface ProductDao {
 
     int insert(ProductDto dto) throws Exception;
 
-    List<ProductDto> sortByRegDateAsc() throws Exception;
+    List<ProductDto> sortByRegDateAsc(Map map) throws Exception;
 
-    List<ProductDto> sortByRegDateDesc() throws Exception;
+    List<ProductDto> sortByRegDateDesc(Map map) throws Exception;
 
-    List<ProductDto> sortByPriceAsc() throws Exception;
+    List<ProductDto> sortByPriceAsc(Map map) throws Exception;
 
-    List<ProductDto> sortByPriceDesc() throws Exception;
+    List<ProductDto> sortByPriceDesc(Map map) throws Exception;
 
-    List<ProductDto> sortByTotalSalesAsc() throws Exception;
+    List<ProductDto> sortByTotalSalesAsc(Map map) throws Exception;
 
-    List<ProductDto> sortByTotalSalesDesc() throws Exception;
+    List<ProductDto> sortByTotalSalesDesc(Map map) throws Exception;
 
     List<ProductDto> filterByCategory(String cateKey) throws Exception;
 

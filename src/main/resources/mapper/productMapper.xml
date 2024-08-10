@@ -29,34 +29,40 @@
                  )
     </insert>
 
-    <select id="sortByRegDateAsc" resultType="com.no1.book.domain.product.ProductDto">
+    <select id="sortByRegDateAsc" parameterType="map" resultType="com.no1.book.domain.product.ProductDto">
         select * from product
         order by reg_date
+        LIMIT #{offset}, #{pageSize}
     </select>
 
-    <select id="sortByRegDateDesc" resultType="com.no1.book.domain.product.ProductDto">
+    <select id="sortByRegDateDesc" parameterType="map" resultType="com.no1.book.domain.product.ProductDto">
         select * from product
         order by reg_date desc
+        LIMIT #{offset}, #{pageSize}
     </select>
 
-    <select id="sortByPriceAsc" resultType="com.no1.book.domain.product.ProductDto">
+    <select id="sortByPriceAsc" parameterType="map" resultType="com.no1.book.domain.product.ProductDto">
         select * from product
         order by prod_base_price
+        LIMIT #{offset}, #{pageSize}
     </select>
 
-    <select id="sortByPriceDesc" resultType="com.no1.book.domain.product.ProductDto">
+    <select id="sortByPriceDesc" parameterType="map" resultType="com.no1.book.domain.product.ProductDto">
         select * from product
         order by prod_base_price desc
+        LIMIT #{offset}, #{pageSize}
     </select>
 
-    <select id="sortByTotalSalesAsc" resultType="com.no1.book.domain.product.ProductDto">
+    <select id="sortByTotalSalesAsc" parameterType="map" resultType="com.no1.book.domain.product.ProductDto">
         select * from product
         order by total_sales
+        LIMIT #{offset}, #{pageSize}
     </select>
 
-    <select id="sortByTotalSalesDesc" resultType="com.no1.book.domain.product.ProductDto">
+    <select id="sortByTotalSalesDesc" parameterType="map" resultType="com.no1.book.domain.product.ProductDto">
         select * from product
         order by total_sales desc
+        LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="filterByCategory" resultType="com.no1.book.domain.product.ProductDto">

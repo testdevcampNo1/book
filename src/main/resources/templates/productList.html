@@ -5,6 +5,20 @@
     <title>Product List</title>
 </head>
 <body>
+<form th:action="@{/product/list}" method="get">
+    <select name="sortKey" th:field="*{sortKey}">
+        <option value="sales" th:selected="${sortKey == 'sales'}">판매량</option>
+        <option value="date" th:selected="${sortKey == 'date'}">등록 날짜</option>
+        <option value="price" th:selected="${sortKey == 'price'}">가격</option>
+    </select>
+    <select name="sortOrder" th:field="*{sortOrder}">
+        <option value="asc" th:selected="${sortOrder == 'asc'}">오름차순</option>
+        <option value="desc" th:selected="${sortOrder == 'desc'}">내림차순</option>
+    </select>
+    <button type="submit">정렬</button>
+</form>
+<br>
+
 <table border="1">
     <tr>
         <th>Title</th>

@@ -54,34 +54,34 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getProductListSortedByPriceAsc() throws Exception {
-        return productDao.sortByPriceAsc();
+    public List<ProductDto> getProductListSortedByPriceAsc(Map map) throws Exception {
+        return productDao.sortByPriceAsc(map);
     }
 
 
     @Override
-    public List<ProductDto> getProductListSortedByPriceDesc() throws Exception {
-        return productDao.sortByPriceDesc();
+    public List<ProductDto> getProductListSortedByPriceDesc(Map map) throws Exception {
+        return productDao.sortByPriceDesc(map);
     }
 
     @Override
-    public List<ProductDto> getProductListSortedByTotalSalesAsc() throws Exception {
-        return productDao.sortByTotalSalesAsc();
+    public List<ProductDto> getProductListSortedByTotalSalesAsc(Map map) throws Exception {
+        return productDao.sortByTotalSalesAsc(map);
     }
 
     @Override
-    public List<ProductDto> getProductListSortedByTotalSalesDesc() throws Exception {
-        return productDao.sortByTotalSalesDesc();
+    public List<ProductDto> getProductListSortedByTotalSalesDesc(Map map) throws Exception {
+        return productDao.sortByTotalSalesDesc(map);
     }
 
     @Override
-    public List<ProductDto> getProductListSortedByRegDateAsc() throws Exception {
-        return productDao.sortByRegDateAsc();
+    public List<ProductDto> getProductListSortedByRegDateAsc(Map map) throws Exception {
+        return productDao.sortByRegDateAsc(map);
     }
 
     @Override
-    public List<ProductDto> getProductListSortedByRegDateDesc() throws Exception {
-        return productDao.sortByRegDateDesc();
+    public List<ProductDto> getProductListSortedByRegDateDesc(Map map) throws Exception {
+        return productDao.sortByRegDateDesc(map);
     }
 
     @Override
@@ -100,26 +100,42 @@ public class ProductServiceImpl implements ProductService {
         return productDto;
     }
 
+    @Override
+    public List<ProductDto> getSortedPage(Map map) throws Exception {
+        String sortKey = (String) map.get("sortKey");
+        String sortOrder = (String) map.get("sortOrder");
 
+        switch (sortKey) {
+            case "sales":
+                if (sortOrder.equals("asc")) {
+                    return productDao.sortByTotalSalesAsc(map);
+                }
+                else if (sortOrder.equals("desc")) {
+                    return productDao.sortByTotalSalesDesc(map);
+                }
+                break;
+            case "date":
+                if (sortOrder.equals("asc")) {
+                    return productDao.sortByRegDateAsc(map);
+                }
+                else if (sortOrder.equals("desc")) {
+                    return productDao.sortByRegDateDesc(map);
+                }
+                break;
+            case "price":
+                if (sortOrder.equals("asc")) {
+                    return productDao.sortByPriceAsc(map);
+                }
+                else if (sortOrder.equals("desc")) {
+                    return productDao.sortByPriceDesc(map);
+                }
+                break;
+            default:
+                return productDao.selectPage(map);
+        }
+        return productDao.selectPage(map);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    }
 
 
     // ------------ 휴지통 -------------  (제출 전에 꼭 비워야 함)
