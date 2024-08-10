@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.no1.book.dao.product.CategoryDao">
+
+<resultMap id="categoryResultMap" type="com.no1.book.domain.product.CategoryDto">
+    <result property="cateCode" column="code"/>
+    <result property="cateName" column="code_name"/>
+</resultMap>
+
+<select id="getAllCategories" resultMap="categoryResultMap">
+    select code, code_name from code
+    where code_type = '203';
+</select>
+
+</mapper>

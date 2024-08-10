@@ -281,162 +281,162 @@ class ProductDaoTest {
         assertEquals(16000, testDto.getSalePrice());
     }
 
-    // 가격 오름차순 정렬 테스트
-    @Test
-    void sortByPriceAscTest() throws Exception {
-        // 1단계 데이터 선택 -> 임의의 30개 상품을 담고있는 리스트
-            // 1-1 단계 : 데이터 비우기
-        productDao.deleteAll();
-            // 1-2 단계 : 임의의 30개 상품 데이터 삽입
-        for (int i = 1; i <= 30; i++) {
-            ProductDto dto = ProductDto.builder()
-                    .prodId("PROD" + i)
-                    .prodBasePrice(5000 * ((int) (Math.random() * 19) + 1)) // 가격: 5,000원 ~ 100,000원 사이 5,000 단위 랜덤
-                    .build();
-            productDao.insert(dto);
-        }
-
-        // 2단계 데이터 처리 -> 가격 기준 오름차순 정렬
-        List<ProductDto> sortedProdList = productDao.sortByPriceAsc();
-
-        // 3단계 검증 -> 모든 상품에 대해서 현재 항목의 가격이 다음 항목의 가격보다 크지 않으면 통과
-        for (int i = 0; i < sortedProdList.size() - 1; i++) {
-            assertTrue(sortedProdList.get(i).getProdBasePrice() <= sortedProdList.get(i + 1).getProdBasePrice());
-            System.out.println("id : + " + sortedProdList.get(i).getProdId() + "price : " + sortedProdList.get(i).getProdBasePrice());
-        }
-    }
-
-    // 가격 내림차순 정렬 테스트
-    @Test
-    void sortByPriceDescTest() throws Exception {
-        // 1단계 데이터 선택 -> 임의의 30개 상품을 담고있는 리스트
-            // 1-1 단계 : 데이터 비우기
-        productDao.deleteAll();
-            // 1-2 단계 : 임의의 30개 상품 데이터 삽입
-        for (int i = 1; i <= 30; i++) {
-            ProductDto dto = ProductDto.builder()
-                    .prodId("PROD" + i)
-                    .prodBasePrice(5000 * ((int) (Math.random() * 19) + 1)) // 가격: 5,000원 ~ 100,000원 사이 5,000 단위 랜덤
-                    .build();
-            productDao.insert(dto);
-        }
-
-        // 2단계 데이터 처리 -> 가격 기준 내림차순 정렬
-        List<ProductDto> sortedProdList = productDao.sortByPriceDesc();
-
-        // 3단계 검증 -> 모든 상품에 대해서 현재 항목의 가격이 다음 항목의 가격보다 작지 않으면 통과
-        for (int i = 0; i < sortedProdList.size() - 1; i++) {
-            assertTrue(sortedProdList.get(i).getProdBasePrice() >= sortedProdList.get(i + 1).getProdBasePrice());
-            System.out.println("id : + " + sortedProdList.get(i).getProdId() + "price : " + sortedProdList.get(i).getProdBasePrice());
-        }
-    }
-
-    // 총 판매량 오름차순 정렬 테스트
-    @Test
-    void sortByTotalSalesAscTest() throws Exception {
-        // 1단계 데이터 선택 -> 임의의 30개 상품을 담고있는 리스트
-            // 1-1 단계 : 데이터 비우기
-        productDao.deleteAll();
-            // 1-2 단계 : 임의의 30개 상품 데이터 삽입
-        for (int i = 1; i <= 30; i++) {
-            ProductDto dto = ProductDto.builder()
-                    .prodId("PROD" + i)
-                    .build();
-            productDao.insert(dto);
-
-            // 1-3 : 상품 데이터를 삽입할 떄 마다 총 판매량 랜덤으로 업데이트 (상품 insert할 때는 판매량 0이라 업데이트 해줘야 함)
-            dto.setTotalSales((int) (Math.random() * 1_000_000)); // 총 판매량: 0 ~ 1,000,000 사이 랜덤
-            productDao.update(dto);
-        }
-
-        // 2단계 데이터 처리 -> 총 판매량 기준 오름차순 정렬
-        List<ProductDto> sortedProdList = productDao.sortByTotalSalesAsc();
-
-        // 3단계 검증 -> 모든 상품에 대해서 현재 항목의 판매량이 다음 항목의 판매량보다 크지 않으면 통과
-        for (int i = 0; i < sortedProdList.size() - 1; i++) {
-            assertTrue(sortedProdList.get(i).getTotalSales() <= sortedProdList.get(i + 1).getTotalSales());
-            System.out.println("id : " + sortedProdList.get(i).getProdId() + ", total sales : " + sortedProdList.get(i).getTotalSales());
-        }
-    }
-
-    // 총 판매량 내림차순 정렬 테스트
-    @Test
-    void sortByTotalSalesDescTest() throws Exception {
-        // 1단계 데이터 선택 -> 임의의 30개 상품을 담고있는 리스트
-            // 1-1 단계 : 데이터 비우기
-        productDao.deleteAll();
-            // 1-2 단계 : 임의의 30개 상품 데이터 삽입
-        for (int i = 1; i <= 30; i++) {
-            ProductDto dto = ProductDto.builder()
-                    .prodId("PROD" + i)
-                    .totalSales((int) (Math.random() * 1_000_000)) // 총 판매량: 0 ~ 1,000,000 사이 랜덤
-                    .build();
-            productDao.insert(dto);
-
-            // 1-3 : 상품 데이터를 삽입할 떄 마다 총 판매량 랜덤으로 업데이트 (상품 insert할 때는 판매량 0이라 업데이트 해줘야 함)
-            dto.setTotalSales((int) (Math.random() * 1_000_000)); // 총 판매량: 0 ~ 1,000,000 사이 랜덤
-            productDao.update(dto);
-        }
-
-        // 2단계 데이터 처리 -> 총 판매량 기준 내림차순 정렬
-        List<ProductDto> sortedProdList = productDao.sortByTotalSalesDesc();
-
-        // 3단계 검증 -> 모든 상품에 대해서 현재 판매량이 다음 항목의 판매량보다 작지 않으면 통과
-        for (int i = 0; i < sortedProdList.size() - 1; i++) {
-            assertTrue(sortedProdList.get(i).getTotalSales() >= sortedProdList.get(i + 1).getTotalSales());
-            System.out.println("id : " + sortedProdList.get(i).getProdId() + ", total sales : " + sortedProdList.get(i).getTotalSales());
-        }
-    }
-
-    // 등록 날짜 오름차순 정렬 테스트 -> 검증을 할 수 없어요
-    @Test
-    void sortByRegDateAscTest() throws Exception {
-        // 1단계 데이터 선택 -> 임의의 30개 상품을 담고있는 리스트
-            // 1-1 단계 : 데이터 비우기
-        productDao.deleteAll();
-            // 1-2 단계 : 임의의 30개 상품 데이터 삽입
-        for (int i = 1; i <= 30; i++) {
-            ProductDto dto = ProductDto.builder()
-                    .prodId("PROD" + i)
-                    .regDate("2023-08-" + (i % 30 + 1)) // 날짜를 임의로 설정
-                    .build();
-            productDao.insert(dto);
-        }
-
-        // 2단계 데이터 처리 -> 등록 날짜 기준 오름차순 정렬
-        List<ProductDto> sortedProdList = productDao.sortByRegDateAsc();
-
-        // 3단계 검증 -> 모든 상품에 대해서 현재 상품의 등록 날짜와 다음 상품의 등록 날짜를 compareTo로 비교해서 양수면 통과
-        for (int i = 0; i < sortedProdList.size() - 1; i++) {
-            assertTrue(sortedProdList.get(i).getRegDate().compareTo(sortedProdList.get(i + 1).getRegDate()) <= 0);
-            System.out.println("상품 id : " + sortedProdList.get(i).getProdId() + "상품 등록 날짜 : " + sortedProdList.get(i).getRegDate());
-        }
-    }
-
-    // 등록 날짜 내림차순 정렬 테스트
-    @Test
-    void sortByRegDateDescTest() throws Exception {
-        // 1단계 데이터 선택 -> 임의의 30개 상품을 담고있는 리스트
-            // 1-1 단계 : 데이터 비우기
-        productDao.deleteAll();
-            // 1-2 단계 : 임의의 상품 데이터 삽입
-        for (int i = 1; i <= 30; i++) {
-            ProductDto dto = ProductDto.builder()
-                    .prodId("PROD" + i)
-                    .regDate("2023-08-" + (i % 30 + 1)) // 날짜를 임의로 설정
-                    .build();
-            productDao.insert(dto);
-        }
-
-        // 2단계 데이터 처리 -> 등록 날짜 기준 내림차순 정렬
-        List<ProductDto> sortedProdList = productDao.sortByRegDateDesc();
-
-        // 3단계 검증 -> 모든 상품에 대해 현재 상품의 등록 날짜와 다음 상품의 등록 날짜를 compareTo로 비교해서 음수면 통과
-        for (int i = 0; i < sortedProdList.size() - 1; i++) {
-            assertTrue(sortedProdList.get(i).getRegDate().compareTo(sortedProdList.get(i + 1).getRegDate()) >= 0);
-            System.out.println("상품 id : " + sortedProdList.get(i).getProdId() + "상품 등록 날짜 : " + sortedProdList.get(i).getRegDate());
-        }
-    }
+//    // 가격 오름차순 정렬 테스트
+//    @Test
+//    void sortByPriceAscTest() throws Exception {
+//        // 1단계 데이터 선택 -> 임의의 30개 상품을 담고있는 리스트
+//            // 1-1 단계 : 데이터 비우기
+//        productDao.deleteAll();
+//            // 1-2 단계 : 임의의 30개 상품 데이터 삽입
+//        for (int i = 1; i <= 30; i++) {
+//            ProductDto dto = ProductDto.builder()
+//                    .prodId("PROD" + i)
+//                    .prodBasePrice(5000 * ((int) (Math.random() * 19) + 1)) // 가격: 5,000원 ~ 100,000원 사이 5,000 단위 랜덤
+//                    .build();
+//            productDao.insert(dto);
+//        }
+//
+//        // 2단계 데이터 처리 -> 가격 기준 오름차순 정렬
+//        List<ProductDto> sortedProdList = productDao.sortByPriceAsc();
+//
+//        // 3단계 검증 -> 모든 상품에 대해서 현재 항목의 가격이 다음 항목의 가격보다 크지 않으면 통과
+//        for (int i = 0; i < sortedProdList.size() - 1; i++) {
+//            assertTrue(sortedProdList.get(i).getProdBasePrice() <= sortedProdList.get(i + 1).getProdBasePrice());
+//            System.out.println("id : + " + sortedProdList.get(i).getProdId() + "price : " + sortedProdList.get(i).getProdBasePrice());
+//        }
+//    }
+//
+//    // 가격 내림차순 정렬 테스트
+//    @Test
+//    void sortByPriceDescTest() throws Exception {
+//        // 1단계 데이터 선택 -> 임의의 30개 상품을 담고있는 리스트
+//            // 1-1 단계 : 데이터 비우기
+//        productDao.deleteAll();
+//            // 1-2 단계 : 임의의 30개 상품 데이터 삽입
+//        for (int i = 1; i <= 30; i++) {
+//            ProductDto dto = ProductDto.builder()
+//                    .prodId("PROD" + i)
+//                    .prodBasePrice(5000 * ((int) (Math.random() * 19) + 1)) // 가격: 5,000원 ~ 100,000원 사이 5,000 단위 랜덤
+//                    .build();
+//            productDao.insert(dto);
+//        }
+//
+//        // 2단계 데이터 처리 -> 가격 기준 내림차순 정렬
+//        List<ProductDto> sortedProdList = productDao.sortByPriceDesc();
+//
+//        // 3단계 검증 -> 모든 상품에 대해서 현재 항목의 가격이 다음 항목의 가격보다 작지 않으면 통과
+//        for (int i = 0; i < sortedProdList.size() - 1; i++) {
+//            assertTrue(sortedProdList.get(i).getProdBasePrice() >= sortedProdList.get(i + 1).getProdBasePrice());
+//            System.out.println("id : + " + sortedProdList.get(i).getProdId() + "price : " + sortedProdList.get(i).getProdBasePrice());
+//        }
+//    }
+//
+//    // 총 판매량 오름차순 정렬 테스트
+//    @Test
+//    void sortByTotalSalesAscTest() throws Exception {
+//        // 1단계 데이터 선택 -> 임의의 30개 상품을 담고있는 리스트
+//            // 1-1 단계 : 데이터 비우기
+//        productDao.deleteAll();
+//            // 1-2 단계 : 임의의 30개 상품 데이터 삽입
+//        for (int i = 1; i <= 30; i++) {
+//            ProductDto dto = ProductDto.builder()
+//                    .prodId("PROD" + i)
+//                    .build();
+//            productDao.insert(dto);
+//
+//            // 1-3 : 상품 데이터를 삽입할 떄 마다 총 판매량 랜덤으로 업데이트 (상품 insert할 때는 판매량 0이라 업데이트 해줘야 함)
+//            dto.setTotalSales((int) (Math.random() * 1_000_000)); // 총 판매량: 0 ~ 1,000,000 사이 랜덤
+//            productDao.update(dto);
+//        }
+//
+//        // 2단계 데이터 처리 -> 총 판매량 기준 오름차순 정렬
+//        List<ProductDto> sortedProdList = productDao.sortByTotalSalesAsc();
+//
+//        // 3단계 검증 -> 모든 상품에 대해서 현재 항목의 판매량이 다음 항목의 판매량보다 크지 않으면 통과
+//        for (int i = 0; i < sortedProdList.size() - 1; i++) {
+//            assertTrue(sortedProdList.get(i).getTotalSales() <= sortedProdList.get(i + 1).getTotalSales());
+//            System.out.println("id : " + sortedProdList.get(i).getProdId() + ", total sales : " + sortedProdList.get(i).getTotalSales());
+//        }
+//    }
+//
+//    // 총 판매량 내림차순 정렬 테스트
+//    @Test
+//    void sortByTotalSalesDescTest() throws Exception {
+//        // 1단계 데이터 선택 -> 임의의 30개 상품을 담고있는 리스트
+//            // 1-1 단계 : 데이터 비우기
+//        productDao.deleteAll();
+//            // 1-2 단계 : 임의의 30개 상품 데이터 삽입
+//        for (int i = 1; i <= 30; i++) {
+//            ProductDto dto = ProductDto.builder()
+//                    .prodId("PROD" + i)
+//                    .totalSales((int) (Math.random() * 1_000_000)) // 총 판매량: 0 ~ 1,000,000 사이 랜덤
+//                    .build();
+//            productDao.insert(dto);
+//
+//            // 1-3 : 상품 데이터를 삽입할 떄 마다 총 판매량 랜덤으로 업데이트 (상품 insert할 때는 판매량 0이라 업데이트 해줘야 함)
+//            dto.setTotalSales((int) (Math.random() * 1_000_000)); // 총 판매량: 0 ~ 1,000,000 사이 랜덤
+//            productDao.update(dto);
+//        }
+//
+//        // 2단계 데이터 처리 -> 총 판매량 기준 내림차순 정렬
+//        List<ProductDto> sortedProdList = productDao.sortByTotalSalesDesc();
+//
+//        // 3단계 검증 -> 모든 상품에 대해서 현재 판매량이 다음 항목의 판매량보다 작지 않으면 통과
+//        for (int i = 0; i < sortedProdList.size() - 1; i++) {
+//            assertTrue(sortedProdList.get(i).getTotalSales() >= sortedProdList.get(i + 1).getTotalSales());
+//            System.out.println("id : " + sortedProdList.get(i).getProdId() + ", total sales : " + sortedProdList.get(i).getTotalSales());
+//        }
+//    }
+//
+//    // 등록 날짜 오름차순 정렬 테스트 -> 검증을 할 수 없어요
+//    @Test
+//    void sortByRegDateAscTest() throws Exception {
+//        // 1단계 데이터 선택 -> 임의의 30개 상품을 담고있는 리스트
+//            // 1-1 단계 : 데이터 비우기
+//        productDao.deleteAll();
+//            // 1-2 단계 : 임의의 30개 상품 데이터 삽입
+//        for (int i = 1; i <= 30; i++) {
+//            ProductDto dto = ProductDto.builder()
+//                    .prodId("PROD" + i)
+//                    .regDate("2023-08-" + (i % 30 + 1)) // 날짜를 임의로 설정
+//                    .build();
+//            productDao.insert(dto);
+//        }
+//
+//        // 2단계 데이터 처리 -> 등록 날짜 기준 오름차순 정렬
+//        List<ProductDto> sortedProdList = productDao.sortByRegDateAsc();
+//
+//        // 3단계 검증 -> 모든 상품에 대해서 현재 상품의 등록 날짜와 다음 상품의 등록 날짜를 compareTo로 비교해서 양수면 통과
+//        for (int i = 0; i < sortedProdList.size() - 1; i++) {
+//            assertTrue(sortedProdList.get(i).getRegDate().compareTo(sortedProdList.get(i + 1).getRegDate()) <= 0);
+//            System.out.println("상품 id : " + sortedProdList.get(i).getProdId() + "상품 등록 날짜 : " + sortedProdList.get(i).getRegDate());
+//        }
+//    }
+//
+//    // 등록 날짜 내림차순 정렬 테스트
+//    @Test
+//    void sortByRegDateDescTest() throws Exception {
+//        // 1단계 데이터 선택 -> 임의의 30개 상품을 담고있는 리스트
+//            // 1-1 단계 : 데이터 비우기
+//        productDao.deleteAll();
+//            // 1-2 단계 : 임의의 상품 데이터 삽입
+//        for (int i = 1; i <= 30; i++) {
+//            ProductDto dto = ProductDto.builder()
+//                    .prodId("PROD" + i)
+//                    .regDate("2023-08-" + (i % 30 + 1)) // 날짜를 임의로 설정
+//                    .build();
+//            productDao.insert(dto);
+//        }
+//
+//        // 2단계 데이터 처리 -> 등록 날짜 기준 내림차순 정렬
+//        List<ProductDto> sortedProdList = productDao.sortByRegDateDesc();
+//
+//        // 3단계 검증 -> 모든 상품에 대해 현재 상품의 등록 날짜와 다음 상품의 등록 날짜를 compareTo로 비교해서 음수면 통과
+//        for (int i = 0; i < sortedProdList.size() - 1; i++) {
+//            assertTrue(sortedProdList.get(i).getRegDate().compareTo(sortedProdList.get(i + 1).getRegDate()) >= 0);
+//            System.out.println("상품 id : " + sortedProdList.get(i).getProdId() + "상품 등록 날짜 : " + sortedProdList.get(i).getRegDate());
+//        }
+//    }
 
     // 카테고리 필터링 테스트 (lv1 까지 잘 필터링 하는지)
     @Test

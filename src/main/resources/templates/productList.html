@@ -5,6 +5,23 @@
     <title>Product List</title>
 </head>
 <body>
+
+<ul>
+    <li th:each="category : ${cateList}" th:if="${category.cateCode.length() == 2}">
+        <a th:href="@{/product/list(cateKey=${category.cateCode})}" th:text="${category.cateName}">카테고리1</a>
+        <ul>
+            <li th:each="subCategory : ${cateList}" th:if="${subCategory.cateCode.startsWith(category.cateCode) and subCategory.cateCode.length() == 4}">
+                <a th:href="@{/product/list(cateKey=${subCategory.cateCode})}" th:text="${subCategory.cateName}">카테고리2</a>
+                <ul>
+                    <li th:each="subSubCategory : ${cateList}" th:if="${subSubCategory.cateCode.startsWith(subCategory.cateCode) and subSubCategory.cateCode.length() == 6}">
+                        <a th:href="@{/product/list(cateKey=${subSubCategory.cateCode})}" th:text="${subSubCategory.cateName}">카테고리3</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>
+
 <form th:action="@{/product/list}" method="get">
     <select name="sortKey" th:value="*{sortKey}">
         <option value="sales" th:selected="${sortKey == 'sales'}">판매량</option>
@@ -35,15 +52,15 @@
         <th>별점</th>
         <th>상품 등록일</th>
     </tr>
-    <tr th:each="product : ${list}">
-        <td th:text="${product.prodName}">Name</td>
-        <td th:text="${product.prodBasePrice}">Price</td>
-        <td th:text="${product.discRate}">Discount Rate</td>
-        <td th:text="${product.discPrice}">Sale Price</td>
-        <td th:text="${product.salePrice}">Sale Price</td>
-        <td th:text="${product.totalSales}">Total Sales</td>
-        <td th:text="${product.starAvg}">Star Rating Average</td>
-        <td th:text="${product.regDate}">Registration Date</td>
+    <tr th:each="product : ${prodList}">
+        <td th:text="${product.prodName}">책 제목</td>
+        <td th:text="${product.prodBasePrice}">상품 가격</td>
+        <td th:text="${product.discRate}">할인율</td>
+        <td th:text="${product.discPrice}">할인 금액</td>
+        <td th:text="${product.salePrice}">주문 금액</td>
+        <td th:text="${product.totalSales}">판매량</td>
+        <td th:text="${product.starAvg}">별점</td>
+        <td th:text="${product.regDate}">상품 등록일</td>
     </tr>
 </table>
 <br>
