@@ -1,4 +1,4 @@
-package com.no1.book.mapper;
+package com.no1.book.dao;
 
 import com.no1.book.domain.TestDto;
 import org.apache.ibatis.annotations.Mapper;

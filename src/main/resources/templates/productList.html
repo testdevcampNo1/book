@@ -1,0 +1,41 @@
+<!-- src/main/resources/templates/product/list.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Product List</title>
+</head>
+<body>
+<table border="1">
+    <tr>
+        <th>Title</th>
+        <th>Base Price</th>
+        <th>DC Rate</th>
+        <th>Sale Price</th>
+        <th>Total Sales</th>
+        <th>Star Rating</th>
+        <th>Registration Date</th>
+    </tr>
+    <tr th:each="product : ${list}">
+        <td th:text="${product.prodName}">Name</td>
+        <td th:text="${product.prodBasePrice}">Price</td>
+        <td th:text="${product.discRate}">Discount Rate</td>
+        <td th:text="${product.totalSales}">Total Sales</td>
+        <td th:text="${product.salePrice}">Sale Price</td>
+        <td th:text="${product.starAvg}">Star Rating Average</td>
+        <td th:text="${product.regDate}">Registration Date</td>
+    </tr>
+</table>
+<br>
+<nav style="text-align: center;">
+    <span th:if="${ph.showPrev}" style="display: inline-block; margin-right: 5px;">
+        <a href="/product/list?page=${ph.beginPage-1}&pageSize=${ph.pageSize}"><span th:text="'<'"></span></a>
+    </span>
+    <span th:each="i : ${#numbers.sequence(ph.beginPage, ph.endPage)}" style="display: inline-block; margin-right: 5px;">
+        <a th:href="@{/product/list(page=${i}, pageSize=${ph.pageSize})}" th:text="${i}"></a>
+    </span>
+    <span th:if="${ph.showNext}" style="display: inline-block; margin-left: 5px;">
+        <a href="/product/list?page=${ph.endPage+1}&pageSize=${ph.pageSize}"><span th:text="'>'"></span></a>
+    </span>
+</nav>
+</body>
+</html>

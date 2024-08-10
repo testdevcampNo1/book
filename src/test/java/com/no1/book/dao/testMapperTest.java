@@ -1,4 +1,4 @@
-package com.no1.book.mapper;
+package com.no1.book.dao;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ class testMapperTest {
     @Test
     void test(){
         System.out.println("현재 시간 : " + testMapper.now());
-        System.out.println(testMapper.select());
+//        System.out.println(testMapper.select());
 
     }
 }

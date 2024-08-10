@@ -14,6 +14,6 @@ public class TestController {
     @RequestMapping("test")
     public String test(Model m){
         m.addAttribute("select", testService.select());
-        return "test";
+        return "productList";
     }
 }
