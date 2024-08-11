@@ -1,5 +1,7 @@
 package com.no1.book.domain.order;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +14,7 @@ public class OrderProductDto {
     private String ordProdStusCode;
     private String codeType;
     private String ebookChk;
+    private String isDawnDelivery;
     private String name;
     private int ordQty;
     private String img;
@@ -27,7 +30,8 @@ public class OrderProductDto {
 
     // regDate, upDate - 현재시간으로 추가
     // cancelableDate - regDate + 7일
-    public OrderProductDto(int ordProdId, int ordId, String prodId, String ordProdStusCode, String codeType, String ebookChk, String name, int ordQty, String img, String prodPageLink, int totalProdPrice, int totalDiscPrice, int totalPayPrice, String regId, String upId) {
+    @Builder
+    public OrderProductDto(int ordProdId, int ordId, String prodId, String ordProdStusCode, String codeType, String ebookChk, String name, int ordQty, String img, String prodPageLink, String isDawnDelivery, int totalProdPrice, int totalDiscPrice, int totalPayPrice, String regId, String upId) {
         this.ordProdId = ordProdId;
         this.ordId = ordId;
         this.prodId = prodId;
@@ -38,10 +42,33 @@ public class OrderProductDto {
         this.ordQty = ordQty;
         this.img = img;
         this.prodPageLink = prodPageLink;
+        this.isDawnDelivery = isDawnDelivery;
         this.totalProdPrice = totalProdPrice;
         this.totalDiscPrice = totalDiscPrice;
         this.totalPayPrice = totalPayPrice;
         this.regId = regId;
+        this.upId = upId;
+    }
+
+    public OrderProductDto(int ordProdId, int ordId, String prodId, String ordProdStusCode, String codeType, String ebookChk, String isDawnDelivery, String name, int ordQty, String img, String prodPageLink, int totalProdPrice, int totalDiscPrice, int totalPayPrice, String cancelableDate, String regDate, String regId, String upDate, String upId) {
+        this.ordProdId = ordProdId;
+        this.ordId = ordId;
+        this.prodId = prodId;
+        this.ordProdStusCode = ordProdStusCode;
+        this.codeType = codeType;
+        this.ebookChk = ebookChk;
+        this.isDawnDelivery = isDawnDelivery;
+        this.name = name;
+        this.ordQty = ordQty;
+        this.img = img;
+        this.prodPageLink = prodPageLink;
+        this.totalProdPrice = totalProdPrice;
+        this.totalDiscPrice = totalDiscPrice;
+        this.totalPayPrice = totalPayPrice;
+        this.cancelableDate = cancelableDate;
+        this.regDate = regDate;
+        this.regId = regId;
+        this.upDate = upDate;
         this.upId = upId;
     }
 
@@ -116,4 +143,6 @@ public class OrderProductDto {
     public String getUpId() {
         return upId;
     }
+
+    public String getIsDawnDelivery() { return isDawnDelivery; }
 }

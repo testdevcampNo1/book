@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <style>
+        .inline {
+            display: inline;
+            margin-right: 10px; /* 간격 조정 */
+        }
+    </style>
+</head>
+<body>
+<h1>주문/결제</h1>
+
+</span><h3>배송지 정보</h3>
+<span th:text="'배송지 이름 : ' + ${OrderFormDto.getAddressName()}"></span>
+<span th:if="${OrderFormDto.getDefaultChk() == 'Y'}"> - 기본배송지</span>
+<br>
+<span th:text="${OrderFormDto.getName()} + ' / ' + ${OrderFormDto.getTelNum()}"></span>
+<br>
+<span th:text=" '[' + ${OrderFormDto.getZipCode()} + '] ' + ${OrderFormDto.getMainAddress()} + ' ' + ${OrderFormDto.getDetailAddress()}"></span>
+<br>
+<span>요청사항 : </span>
+<span th:text="${OrderFormDto.getOrderRequestMessage() == null || OrderFormDto.getOrderRequestMessage().isEmpty() ? '없음' : OrderFormDto.getOrderRequestMessage()}"></span>
+<br>
+<span th:text="${OrderFormDto.getCommonEntrancePassword() == null || OrderFormDto.getCommonEntrancePassword().isEmpty() ? '자유출입가능' : OrderFormDto.getCommonEntrancePassword()}"></span>
+<br>
+<br>
+<br>
+<h3 class="inline">주문상품</h3>
+<span class="inline">총 3개</span>
+<br>
+<div th:each="product : ${productList}">
+    <img th:src="@{${product.getImg()}}" alt="Product Image" style="width:100px;height:auto;">
+    <span th:text="${product.getName()}"></span>
+    <span th:text="' ' + ${product.getOrdQty()} + '개 '"></span>
+    <span th:text="${product.getTotalPayPrice()} + '원'"></span>
+</div>
+
+<br>
+<!--TODO : 도착예정일 계산 필요-->
+도착예정일   n월/n일(n요일) 도착<br>
+<br>
+<h3>결제수단</h3>
+<form>
+    <label>
+        <input type="radio" name="paymentMethod" value="creditCard" />
+        신용카드
+    </label><br>
+
+    <label>
+        <input type="radio" name="paymentMethod" value="kbPay" />
+        KBPay
+    </label><br>
+
+    <label>
+        <input type="radio" name="paymentMethod" value="nPay" />
+        NPay
+    </label><br>
+
+    <label>
+        <input type="radio" name="paymentMethod" value="kakaoPay" />
+        KakaoPay
+    </label><br>
+
+    <br>
+</form>
+<h3>금액정보</h3>
+    <div th:text="'상품금액 ' + ${OrderFormDto.getTotalProdBasePrice()}"></div>
+    <div th:text="'배송비 ' + ${OrderFormDto.getDlvPrice()}"></div>
+    <div th:text="'상품할인 ' + ${OrderFormDto.getTotalDiscPrice()}"></div>
+    <div th:text="'최종결제금액 ' + ${OrderFormDto.getTotalSalePrice()}"></div>
+<br>
+<button>결제하기</button>
+
+</body>
+</html>

@@ -47,8 +47,7 @@ class OrderProductDaoTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 2, 3, 4, 5})
     void insertOrderProduct(int ordProdId) {
-        OrderProductDto orderProductDto = new OrderProductDto(ordProdId, 1, "1", "주문완료", "301", "N", "자바의 정석", 3, "", "google.com", 75000, 0, 75000, "1", "1");
-        orderProductDao.insertOrderProduct(orderProductDto);
+        orderProductDao.insertOrderProduct(getOrderProduct(ordProdId, 1, "1"));
         assertEquals(countAllOrderProduct(), 1);
     }
 
@@ -56,7 +55,7 @@ class OrderProductDaoTest {
     @Test
     void updateOrderProductStatus() {
         // 주문상품 추가
-        OrderProductDto orderProductDto = new OrderProductDto(1, 1, "1", "주문완료", "301", "N", "자바의 정석", 3, "", "google.com", 75000, 0, 75000, "1", "1");
+        OrderProductDto orderProductDto = getOrderProduct(1, 1, "1");
         orderProductDao.insertOrderProduct(orderProductDto);
         assertEquals(countAllOrderProduct(), 1);
 
@@ -79,7 +78,7 @@ class OrderProductDaoTest {
     void getOrderProduct(int ordProdId) {
         // 추가
         for(int i = 1; i<11; i++) {
-            OrderProductDto orderProductDto = new OrderProductDto(i, 1, "1", "주문완료", "301", "N", "자바의 정석", 3, "", "google.com", 75000, 0, 75000, "1", "1");
+            OrderProductDto orderProductDto = getOrderProduct(i, 1, "1");
             orderProductDao.insertOrderProduct(orderProductDto);
         }
 
@@ -99,7 +98,7 @@ class OrderProductDaoTest {
 
         // 주문2에 주문상품 추가
         for(int i = 1; i<11; i++) {
-            OrderProductDto orderProductDto = new OrderProductDto(i, 2, "1", "주문완료", "301", "N", "자바의 정석", 3, "", "google.com", 75000, 0, 75000, "1", "1");
+            OrderProductDto orderProductDto = getOrderProduct(i, 2, "1");
             orderProductDao.insertOrderProduct(orderProductDto);
         }
 
@@ -113,7 +112,7 @@ class OrderProductDaoTest {
     void getOrderProductsByOrderId() {
         // 주문1에 주문상품 추가
         for(int i = 1; i<11; i++) {
-            OrderProductDto orderProductDto = new OrderProductDto(i, 1, "1", "주문완료", "301", "N", "자바의 정석", 3, "", "google.com", 75000, 0, 75000, "1", "1");
+            OrderProductDto orderProductDto = getOrderProduct(i, 1, "1");
             orderProductDao.insertOrderProduct(orderProductDto);
         }
 
@@ -140,5 +139,11 @@ class OrderProductDaoTest {
     // 주문 전체 개수
     int countAllOrder() {
         return orderDao.getAllOrder().size();
+    }
+
+    // 테스트용 OrderProductDto 반환
+    OrderProductDto getOrderProduct(int ordProdId, int ordId, String prodId) {
+        OrderProductDto orderProductDto = new OrderProductDto(ordProdId, ordId, prodId, "주문가능", "301", "N", "자바의 정석", 3, "img", "google.com", "N", 75000, 0, 75000, "1", "1");
+        return orderProductDto;
     }
 }
