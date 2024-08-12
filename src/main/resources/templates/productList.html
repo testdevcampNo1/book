@@ -3,29 +3,41 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Product List</title>
+    <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
 </head>
 <body>
 
+<div class="sidebar">
+    <ul>
+        <li>
+            <a th:href="@{/product/list}" th:text="전체"></a>
+            <ul>
+                <li th:each="category : ${cateList}" th:if="${category.cateCode.length() == 2}">
+                    <a th:href="@{/product/list(cateKey=${category.cateCode})}" th:text="${category.cateName}">카테고리1</a>
+                    <ul>
+                        <li th:each="subCategory : ${cateList}"
+                            th:if="${subCategory.cateCode.startsWith(category.cateCode) and subCategory.cateCode.length() == 4}">
+                            <a th:href="@{/product/list(cateKey=${subCategory.cateCode})}"
+                               th:text="${subCategory.cateName}">카테고리2</a>
+                            <ul>
+                                <li th:each="subSubCategory : ${cateList}"
+                                    th:if="${subSubCategory.cateCode.startsWith(subCategory.cateCode) and subSubCategory.cateCode.length() == 6}">
+                                    <a th:href="@{/product/list(cateKey=${subSubCategory.cateCode})}"
+                                       th:text="${subSubCategory.cateName}">카테고리3</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
 
-<ul>
-    <li th:each="category : ${cateList}" th:if="${category.cateCode.length() == 2}">
-        <a th:href="@{/product/list(cateKey=${category.cateCode})}" th:text="${category.cateName}">카테고리1</a>
-        <ul>
-            <li th:each="subCategory : ${cateList}" th:if="${subCategory.cateCode.startsWith(category.cateCode) and subCategory.cateCode.length() == 4}">
-                <a th:href="@{/product/list(cateKey=${subCategory.cateCode})}" th:text="${subCategory.cateName}">카테고리2</a>
-                <ul>
-                    <li th:each="subSubCategory : ${cateList}" th:if="${subSubCategory.cateCode.startsWith(subCategory.cateCode) and subSubCategory.cateCode.length() == 6}">
-                        <a th:href="@{/product/list(cateKey=${subSubCategory.cateCode})}" th:text="${subSubCategory.cateName}">카테고리3</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </li>
-</ul>
-
+<div class="content">
 <form th:action="@{/product/list}" method="get">
-<!--    <input type="hidden" name="cateKey" th:value="${param.cateKey}" />-->
-    <input type="hidden" name="cateKey" th:value=${cateKey} />
+    <!--    <input type="hidden" name="cateKey" th:value="${param.cateKey}" />-->
+    <input type="hidden" name="cateKey" th:value=${cateKey}/>
 
     <select name="sortKey" th:value="*{sortKey}">
         <option value="sales" th:selected="${sortKey == 'sales'}">판매량</option>
@@ -67,15 +79,17 @@
         <td th:text="${product.regDate}">상품 등록일</td>
     </tr>
 </table>
+</div>
 <br>
 <nav style="text-align: center;">
-    <span th:if="${ph.showPrev}" >
+    <span th:if="${ph.showPrev}">
         <a th:href="@{/product/list(cateKey=${cateKey}, sortKey=${sortKey}, sortOrder=${sortOrder}, page=${ph.beginPage-1}, pageSize=${ph.pageSize})}">
             <span th:text="'<'"></span>
         </a>
     </span>
-    <span th:each="i : ${#numbers.sequence(ph.beginPage, ph.endPage)}" >
-        <a th:href="@{/product/list( cateKey=${cateKey},  sortKey=${sortKey}, sortOrder=${sortOrder}, page=${i}, pageSize=${ph.pageSize})}" th:text="${i}"></a>
+    <span th:each="i : ${#numbers.sequence(ph.beginPage, ph.endPage)}">
+        <a th:href="@{/product/list( cateKey=${cateKey},  sortKey=${sortKey}, sortOrder=${sortOrder}, page=${i}, pageSize=${ph.pageSize})}"
+           th:text="${i}"></a>
     </span>
     <span th:if="${ph.showNext}">
         <a th:href="@{/product/list(cateKey=${cateKey}, sortKey=${sortKey}, sortOrder=${sortOrder}, page=${ph.endPage+1}, pageSize=${ph.pageSize})}">

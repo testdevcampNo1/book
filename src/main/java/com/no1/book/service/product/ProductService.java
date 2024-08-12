@@ -36,4 +36,6 @@ public interface ProductService {
     ProductDto readProductDetail(String prodId) throws Exception;
 
     List<ProductDto> getSortedPage(Map<String, Object> map) throws Exception;
+
+    int getFilteredAndSortedTotalSize(Map<String, Object> map) throws Exception;
 }

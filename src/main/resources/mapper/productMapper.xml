@@ -105,7 +105,7 @@
         WHERE prod_id = #{prodId}
     </update>
 
-    <select id="getFilteredAndSortedPage" resultType="com.no1.book.domain.product.ProductDto">
+    <select id="getFilteredAndSortedPage" parameterType="map" resultType="com.no1.book.domain.product.ProductDto">
         SELECT *
         FROM product
         WHERE 1=1
@@ -133,6 +133,35 @@
             </otherwise>
         </choose>
             LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="getFilteredAndSortedTotalSize" parameterType="map" resultType="int">
+        SELECT count(*)
+        FROM product
+        WHERE 1=1
+        <if test="cateKey != null and cateKey != ''">
+            AND cate_code LIKE CONCAT(#{cateKey}, '%')
+        </if>
+        ORDER BY
+        <choose>
+            <when test="sortKey == 'price'">
+                prod_base_price
+            </when>
+            <when test="sortKey == 'sales'">
+                total_sales
+            </when>
+            <otherwise>
+                reg_date
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="sortOrder == 'desc'">
+                DESC
+            </when>
+            <otherwise>
+                ASC
+            </otherwise>
+        </choose>
     </select>
 
 </mapper>

@@ -57,8 +57,8 @@ public class ProductController {
             List<ProductDto> prodList = productService.getSortedPage(map);
             List<CategoryDto> cateList = categoryService.getAllCategories();
 
-            int listSize = prodList.size();
-            PageHandler pageHandler = new PageHandler(listSize, page, pageSize);
+            int filteredTotalCnt = productService.getFilteredAndSortedTotalSize(map);
+            PageHandler pageHandler = new PageHandler(filteredTotalCnt, page, pageSize);
 
             m.addAttribute("prodList", prodList);
             m.addAttribute("cateList", cateList);

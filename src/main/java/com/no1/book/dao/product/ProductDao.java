@@ -24,4 +24,7 @@ public interface ProductDao {
     List<ProductDto> getFilteredAndSortedPage(Map<String, Object> map) throws Exception;
 
     List<CategoryDto> getAllCategories();
+
+    int getFilteredAndSortedTotalSize(Map map) throws Exception;
+
 }

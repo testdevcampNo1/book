@@ -285,7 +285,7 @@ class ProductDaoTest {
     }
 
     @Test
-    void getFilteredAndCategoryTest1() throws Exception {
+    void getFilteredAndSortedTotalSizeTest1() throws Exception {
         productDao.deleteAll();
         // 1단계 데이터 선택 -> 임의의 30개 상품을 담고있는 리스트
             // 1-1 단계 : 데이터 비우기
@@ -298,16 +298,18 @@ class ProductDaoTest {
             productDao.insert(dto);
         }
 
+        // 2단계 데이터 처리 -> 사이즈 구하기
+            // 2-1 단계 : 맵에 임의의 key들 담기
         Map map = new HashMap();
-        map.put("offset", 1);
-        map.put("pageSize", 10);
         map.put("sortKey", "price");
         map.put("sortOrder", "asc");
         map.put("cateKey", null);
-        System.out.println("size : " + productDao.getFilteredAndSortedPage(map).size());
-        for (int i = 0; i < 50; i++) {
-            System.out.println(i + " : " + productDao.getFilteredAndSortedPage(map).get(i));
-        }
+            // 2-2 단계 : 변수에 사이즈 담기
+        int size = productDao.getFilteredAndSortedTotalSize(map);
+
+        // 3단계 검증 -> 사이즈가 30이면 통과
+        assertEquals(30, size);
+
     }
 
 //    // 가격 오름차순 정렬 테스트

@@ -1,0 +1,47 @@
+/* 사이드바 스타일 */
+.sidebar {
+    width: 220px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #f4f4f4;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* 사이드바에 스크롤바 추가 */
+
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.sidebar ul li a:hover {
+    color: #007bff;
+}
+
+/* 계층적 들여쓰기 */
+.sidebar ul li ul {
+    margin-left: 20px; /* 첫 번째 서브 카테고리 들여쓰기 */
+}
+
+.sidebar ul li ul ul {
+    margin-left: 20px; /* 두 번째 서브 카테고리 들여쓰기 */
+}
+
+.content {
+    margin-left: 260px; /* 사이드바의 너비 + 여백을 더해서 본문이 가리지 않도록 */
+    padding: 20px;
+}
