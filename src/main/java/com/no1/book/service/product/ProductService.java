@@ -33,23 +33,7 @@ public interface ProductService {
 
     int getProductCount() throws Exception;
 
-    List<ProductDto> getProductListSortedByPriceAsc(Map map) throws Exception;
-
-    List<ProductDto> getProductListSortedByPriceDesc(Map map) throws Exception;
-
-    List<ProductDto> getProductListSortedByTotalSalesAsc(Map map) throws Exception;
-
-    List<ProductDto> getProductListSortedByTotalSalesDesc(Map map) throws Exception;
-
-    List<ProductDto> getProductListSortedByRegDateAsc(Map map) throws Exception;
-
-    List<ProductDto> getProductListSortedByRegDateDesc(Map map) throws Exception;
-
-    List<ProductDto> getProductListByCategoryCode(String key) throws Exception;
-
-    List<ProductDto> getPage(Map map) throws Exception;
-
     ProductDto readProductDetail(String prodId) throws Exception;
 
-    List<ProductDto> getSortedPage(Map map) throws Exception;
+    List<ProductDto> getSortedPage(Map<String, Object> map) throws Exception;
 }

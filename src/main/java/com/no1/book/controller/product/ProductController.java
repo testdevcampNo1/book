@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -44,18 +45,20 @@ public class ProductController {
 
 
         try {
-            int totalCnt = productService.getProductCount();
-            PageHandler pageHandler = new PageHandler(totalCnt, page, pageSize);
+//            int totalCnt = productService.getProductCount();
 
             Map map = new HashMap();
             map.put("offset", (page - 1) * pageSize);
             map.put("pageSize", pageSize);
             map.put("sortKey", sortKey);
             map.put("sortOrder", sortOrder);
-            map.put("cateKey", cateKey + "%");
+            map.put("cateKey", cateKey);
 
             List<ProductDto> prodList = productService.getSortedPage(map);
             List<CategoryDto> cateList = categoryService.getAllCategories();
+
+            int listSize = prodList.size();
+            PageHandler pageHandler = new PageHandler(listSize, page, pageSize);
 
             m.addAttribute("prodList", prodList);
             m.addAttribute("cateList", cateList);
@@ -63,6 +66,7 @@ public class ProductController {
             m.addAttribute("pageSize", pageSize);
             m.addAttribute("sortKey", sortKey);
             m.addAttribute("sortOrder", sortOrder);
+            m.addAttribute("cateKey", cateKey);
 
         } catch (Exception e) {
             e.printStackTrace();

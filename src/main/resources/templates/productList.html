@@ -6,6 +6,7 @@
 </head>
 <body>
 
+
 <ul>
     <li th:each="category : ${cateList}" th:if="${category.cateCode.length() == 2}">
         <a th:href="@{/product/list(cateKey=${category.cateCode})}" th:text="${category.cateName}">카테고리1</a>
@@ -23,6 +24,9 @@
 </ul>
 
 <form th:action="@{/product/list}" method="get">
+<!--    <input type="hidden" name="cateKey" th:value="${param.cateKey}" />-->
+    <input type="hidden" name="cateKey" th:value=${cateKey} />
+
     <select name="sortKey" th:value="*{sortKey}">
         <option value="sales" th:selected="${sortKey == 'sales'}">판매량</option>
         <option value="date" th:selected="${sortKey == 'date'}">등록 날짜</option>
@@ -65,16 +69,16 @@
 </table>
 <br>
 <nav style="text-align: center;">
-    <span th:if="${ph.showPrev}" style="display: inline-block; margin-right: 5px;">
-        <a th:href="@{/product/list(page=${ph.beginPage-1}, pageSize=${ph.pageSize}, sortKey=${sortKey}, sortOrder=${sortOrder})}">
+    <span th:if="${ph.showPrev}" >
+        <a th:href="@{/product/list(cateKey=${cateKey}, sortKey=${sortKey}, sortOrder=${sortOrder}, page=${ph.beginPage-1}, pageSize=${ph.pageSize})}">
             <span th:text="'<'"></span>
         </a>
     </span>
-    <span th:each="i : ${#numbers.sequence(ph.beginPage, ph.endPage)}" style="display: inline-block; margin-right: 5px;">
-        <a th:href="@{/product/list(page=${i}, pageSize=${ph.pageSize}, sortKey=${sortKey}, sortOrder=${sortOrder})}" th:text="${i}"></a>
+    <span th:each="i : ${#numbers.sequence(ph.beginPage, ph.endPage)}" >
+        <a th:href="@{/product/list( cateKey=${cateKey},  sortKey=${sortKey}, sortOrder=${sortOrder}, page=${i}, pageSize=${ph.pageSize})}" th:text="${i}"></a>
     </span>
-    <span th:if="${ph.showNext}" style="display: inline-block; margin-left: 5px;">
-        <a th:href="@{/product/list(page=${ph.endPage+1}, pageSize=${ph.pageSize}, sortKey=${sortKey}, sortOrder=${sortOrder})}">
+    <span th:if="${ph.showNext}">
+        <a th:href="@{/product/list(cateKey=${cateKey}, sortKey=${sortKey}, sortOrder=${sortOrder}, page=${ph.endPage+1}, pageSize=${ph.pageSize})}">
             <span th:text="'>'"></span>
         </a>
     </span>

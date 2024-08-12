@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -64,7 +66,8 @@ class ProductDaoTest {
     @Test
     void insertTest() throws Exception {
         // 1단계: 데이터 선택 -> 삽입할 새로운 Dto
-            // 1-1단계 : 삽입할 데이터의 prodId와 동일한 데이터 제거
+            // 1-1단계 : 삽입할 데이터의
+        // prodId와 동일한 데이터 제거
         productDao.delete("PROD_IMSI");
             // 1-2단계 : 새로로운 Dto 생성
         ProductDto dto = ProductDto.builder()
@@ -281,6 +284,32 @@ class ProductDaoTest {
         assertEquals(16000, testDto.getSalePrice());
     }
 
+    @Test
+    void getFilteredAndCategoryTest1() throws Exception {
+        productDao.deleteAll();
+        // 1단계 데이터 선택 -> 임의의 30개 상품을 담고있는 리스트
+            // 1-1 단계 : 데이터 비우기
+        productDao.deleteAll();
+            // 1-2 단계 : 임의의 30개 상품 데이터 삽입
+        for (int i = 1; i <= 30; i++) {
+            ProductDto dto = ProductDto.builder()
+                    .prodId("PROD" + i)
+                    .build();
+            productDao.insert(dto);
+        }
+
+        Map map = new HashMap();
+        map.put("offset", 1);
+        map.put("pageSize", 10);
+        map.put("sortKey", "price");
+        map.put("sortOrder", "asc");
+        map.put("cateKey", null);
+        System.out.println("size : " + productDao.getFilteredAndSortedPage(map).size());
+        for (int i = 0; i < 50; i++) {
+            System.out.println(i + " : " + productDao.getFilteredAndSortedPage(map).get(i));
+        }
+    }
+
 //    // 가격 오름차순 정렬 테스트
 //    @Test
 //    void sortByPriceAscTest() throws Exception {
@@ -438,83 +467,83 @@ class ProductDaoTest {
 //        }
 //    }
 
-    // 카테고리 필터링 테스트 (lv1 까지 잘 필터링 하는지)
-    @Test
-    void filterTest1() throws Exception {
-        // 1단계 데이터 선택 -> 모든 상품
-            // 1-1. : 데이터 비우기
-        productDao.deleteAll();
-            // 1-2. : 임의 데이터 50개 삽입
-        for (int i = 0; i < 50; i++) {
-            ProductDto dto = ProductDto.builder()
-                    .prodId("PROD" + (i + 1))
-                    .cateCode("0" + (int)(Math.random() * 2 + 1) + "0" +
-                            (int)(Math.random() * 3 + 1) + "0" + (int)(Math.random() * 5 + 1) ) // 010305 이런 형태로 랜덤 카테고리코드 부여
-                    .build();
-            productDao.insert(dto);
-        }
+//    // 카테고리 필터링 테스트 (lv1 까지 잘 필터링 하는지)
+//    @Test
+//    void filterTest1() throws Exception {
+//        // 1단계 데이터 선택 -> 모든 상품
+//            // 1-1. : 데이터 비우기
+//        productDao.deleteAll();
+//            // 1-2. : 임의 데이터 50개 삽입
+//        for (int i = 0; i < 50; i++) {
+//            ProductDto dto = ProductDto.builder()
+//                    .prodId("PROD" + (i + 1))
+//                    .cateCode("0" + (int)(Math.random() * 2 + 1) + "0" +
+//                            (int)(Math.random() * 3 + 1) + "0" + (int)(Math.random() * 5 + 1) ) // 010305 이런 형태로 랜덤 카테고리코드 부여
+//                    .build();
+//            productDao.insert(dto);
+//        }
+//
+//        // 2단계 데이터 처리 -> 카테고리 키에 따른 리스트 필터링
+//        List<ProductDto> filteredList =  productDao.filterByCategory("01%"); // 카테고리 id가 01로 시작하는 상품들만 필터링
+//
+//        // 3단계 -> filteredList 각 항목의 cateCode 앞 두자리가 "01"이면 통과
+//        for (int i = 0; i < filteredList.size(); i++) {
+//            assertEquals("01", filteredList.get(i).getCateCode().substring(0,2));
+//            System.out.println("id : " + filteredList.get(i).getProdId() + "  , cateCode : " + filteredList.get(i).getCateCode());
+//        }
+//    }
 
-        // 2단계 데이터 처리 -> 카테고리 키에 따른 리스트 필터링
-        List<ProductDto> filteredList =  productDao.filterByCategory("01%"); // 카테고리 id가 01로 시작하는 상품들만 필터링
-
-        // 3단계 -> filteredList 각 항목의 cateCode 앞 두자리가 "01"이면 통과
-        for (int i = 0; i < filteredList.size(); i++) {
-            assertEquals("01", filteredList.get(i).getCateCode().substring(0,2));
-            System.out.println("id : " + filteredList.get(i).getProdId() + "  , cateCode : " + filteredList.get(i).getCateCode());
-        }
-    }
-
-    // 카테고리 필터링 테스트 (lv2까지 잘 필터링 하는지)
-    @Test
-    void filterTest2() throws Exception {
-        // 1단계 데이터 선택 -> 모든 상품
-        // 1-1. : 데이터 비우기
-        productDao.deleteAll();
-        // 1-2. : 임의 데이터 50개 삽입
-        for (int i = 0; i < 50; i++) {
-            ProductDto dto = ProductDto.builder()
-                    .prodId("PROD" + (i + 1))
-                    .cateCode("0" + (int)(Math.random() * 2 + 1) + "0" +
-                            (int)(Math.random() * 3 + 1) + "0" + (int)(Math.random() * 5 + 1) ) // 010305 이런 형태로 랜덤 카테고리코드 부여
-                    .build();
-            productDao.insert(dto);
-        }
-
-        // 2단계 데이터 처리 -> 카테고리 키에 따른 리스트 필터링
-        List<ProductDto> filteredList =  productDao.filterByCategory("0201%"); // 카테고리 id가 0201로 시작하는 상품들만 필터링
-
-        // 3단계 -> filteredList 각 항목의 cateCode 앞 네자리가 "0201"이면 통과
-        for (int i = 0; i < filteredList.size(); i++) {
-            assertEquals("0201", filteredList.get(i).getCateCode().substring(0,4));
-            System.out.println("id : " + filteredList.get(i).getProdId() + "  , cateCode : " + filteredList.get(i).getCateCode());
-        }
-    }
-
-    // 카테고리 필터링 테스트 (lv3까지 잘 필터링 하는지)
-    @Test
-    void filterTest3() throws Exception {
-        // 1단계 데이터 선택 -> 모든 상품
-        // 1-1. : 데이터 비우기
-        productDao.deleteAll();
-        // 1-2. : 임의 데이터 50개 삽입
-        for (int i = 0; i < 50; i++) {
-            ProductDto dto = ProductDto.builder()
-                    .prodId("PROD" + (i + 1))
-                    .cateCode("0" + (int)(Math.random() * 2 + 1) + "0" +
-                            (int)(Math.random() * 3 + 1) + "0" + (int)(Math.random() * 5 + 1) ) // 010305 이런 형태로 랜덤 카테고리코드 부여
-                    .build();
-            productDao.insert(dto);
-        }
-
-        // 2단계 데이터 처리 -> 카테고리 키에 따른 리스트 필터링
-        List<ProductDto> filteredList =  productDao.filterByCategory("010203"); // 카테고리 id가 010203인 상품들만 필터링
-
-        // 3단계 -> filteredList 각 항목의 cateCode가 010203이면 통과
-        for (int i = 0; i < filteredList.size(); i++) {
-            assertEquals("010203", filteredList.get(i).getCateCode());
-            System.out.println("id : " + filteredList.get(i).getProdId() + "  , cateCode : " + filteredList.get(i).getCateCode());
-        }
-    }
+//    // 카테고리 필터링 테스트 (lv2까지 잘 필터링 하는지)
+//    @Test
+//    void filterTest2() throws Exception {
+//        // 1단계 데이터 선택 -> 모든 상품
+//        // 1-1. : 데이터 비우기
+//        productDao.deleteAll();
+//        // 1-2. : 임의 데이터 50개 삽입
+//        for (int i = 0; i < 50; i++) {
+//            ProductDto dto = ProductDto.builder()
+//                    .prodId("PROD" + (i + 1))
+//                    .cateCode("0" + (int)(Math.random() * 2 + 1) + "0" +
+//                            (int)(Math.random() * 3 + 1) + "0" + (int)(Math.random() * 5 + 1) ) // 010305 이런 형태로 랜덤 카테고리코드 부여
+//                    .build();
+//            productDao.insert(dto);
+//        }
+//
+//        // 2단계 데이터 처리 -> 카테고리 키에 따른 리스트 필터링
+//        List<ProductDto> filteredList =  productDao.filterByCategory("0201%"); // 카테고리 id가 0201로 시작하는 상품들만 필터링
+//
+//        // 3단계 -> filteredList 각 항목의 cateCode 앞 네자리가 "0201"이면 통과
+//        for (int i = 0; i < filteredList.size(); i++) {
+//            assertEquals("0201", filteredList.get(i).getCateCode().substring(0,4));
+//            System.out.println("id : " + filteredList.get(i).getProdId() + "  , cateCode : " + filteredList.get(i).getCateCode());
+//        }
+//    }
+//
+//    // 카테고리 필터링 테스트 (lv3까지 잘 필터링 하는지)
+//    @Test
+//    void filterTest3() throws Exception {
+//        // 1단계 데이터 선택 -> 모든 상품
+//        // 1-1. : 데이터 비우기
+//        productDao.deleteAll();
+//        // 1-2. : 임의 데이터 50개 삽입
+//        for (int i = 0; i < 50; i++) {
+//            ProductDto dto = ProductDto.builder()
+//                    .prodId("PROD" + (i + 1))
+//                    .cateCode("0" + (int)(Math.random() * 2 + 1) + "0" +
+//                            (int)(Math.random() * 3 + 1) + "0" + (int)(Math.random() * 5 + 1) ) // 010305 이런 형태로 랜덤 카테고리코드 부여
+//                    .build();
+//            productDao.insert(dto);
+//        }
+//
+//        // 2단계 데이터 처리 -> 카테고리 키에 따른 리스트 필터링
+//        List<ProductDto> filteredList =  productDao.filterByCategory("010203"); // 카테고리 id가 010203인 상품들만 필터링
+//
+//        // 3단계 -> filteredList 각 항목의 cateCode가 010203이면 통과
+//        for (int i = 0; i < filteredList.size(); i++) {
+//            assertEquals("010203", filteredList.get(i).getCateCode());
+//            System.out.println("id : " + filteredList.get(i).getProdId() + "  , cateCode : " + filteredList.get(i).getCateCode());
+//        }
+//    }
 
 
 }

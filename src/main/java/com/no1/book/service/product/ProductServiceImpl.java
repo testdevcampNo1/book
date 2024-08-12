@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -36,7 +35,6 @@ public class ProductServiceImpl implements ProductService {
     public int addProduct(ProductDto dto) throws Exception {
         return productDao.insert(dto);
     }
-
 
     @Override
     public int removeProduct(String prodId) throws Exception {
@@ -54,195 +52,50 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getProductListSortedByPriceAsc(Map map) throws Exception {
-        return productDao.sortByPriceAsc(map);
-    }
-
-
-    @Override
-    public List<ProductDto> getProductListSortedByPriceDesc(Map map) throws Exception {
-        return productDao.sortByPriceDesc(map);
-    }
-
-    @Override
-    public List<ProductDto> getProductListSortedByTotalSalesAsc(Map map) throws Exception {
-        return productDao.sortByTotalSalesAsc(map);
-    }
-
-    @Override
-    public List<ProductDto> getProductListSortedByTotalSalesDesc(Map map) throws Exception {
-        return productDao.sortByTotalSalesDesc(map);
-    }
-
-    @Override
-    public List<ProductDto> getProductListSortedByRegDateAsc(Map map) throws Exception {
-        return productDao.sortByRegDateAsc(map);
-    }
-
-    @Override
-    public List<ProductDto> getProductListSortedByRegDateDesc(Map map) throws Exception {
-        return productDao.sortByRegDateDesc(map);
-    }
-
-    @Override
-    public List<ProductDto> getProductListByCategoryCode(String key) throws Exception {
-        return productDao.filterByCategory(key);
-    }
-
-    @Override
-    public List<ProductDto> getPage(Map map) throws Exception {
-        return productDao.selectPage(map);
-    }
-
-    @Override
     public ProductDto readProductDetail(String prodId) throws Exception {
-        ProductDto productDto = productDao.select(prodId);
-        return productDto;
+        return productDao.select(prodId);
     }
 
     @Override
-    public List<ProductDto> getSortedPage(Map map) throws Exception {
-        String sortKey = (String) map.get("sortKey");
-        String sortOrder = (String) map.get("sortOrder");
-
-        switch (sortKey) {
-            case "sales":
-                if (sortOrder.equals("asc")) {
-                    return productDao.sortByTotalSalesAsc(map);
-                }
-                else if (sortOrder.equals("desc")) {
-                    return productDao.sortByTotalSalesDesc(map);
-                }
-                break;
-            case "date":
-                if (sortOrder.equals("asc")) {
-                    return productDao.sortByRegDateAsc(map);
-                }
-                else if (sortOrder.equals("desc")) {
-                    return productDao.sortByRegDateDesc(map);
-                }
-                break;
-            case "price":
-                if (sortOrder.equals("asc")) {
-                    return productDao.sortByPriceAsc(map);
-                }
-                else if (sortOrder.equals("desc")) {
-                    return productDao.sortByPriceDesc(map);
-                }
-                break;
-            default:
-                return productDao.selectPage(map);
-        }
-        return productDao.selectPage(map);
-
+    public List<ProductDto> getSortedPage(Map<String, Object> map) throws Exception {
+        return productDao.getFilteredAndSortedPage(map);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-    // ------------ 휴지통 -------------  (제출 전에 꼭 비워야 함)
-
-    //    @Override
-//    public List<ProductDto> sortItemsByPrice(int sortKey) throws Exception { // 0이면 내림차순, 1이면 오름차순
-//        List<ProductDto> prodList = getProductList();
-//
-//        switch (sortKey) {
-//            case 0:
-//                // 가격을 기준으로 내림차순 정렬
-//                Collections.sort(prodList, new Comparator<ProductDto>() {
-//                    @Override
-//                    public int compare(ProductDto p1, ProductDto p2) {
-//                        return p2.getProdBasePrice() - p1.getProdBasePrice();
-//                    }
-//                });
-//                break;
-//            case 1:
-//                // 가격을 기준으로 오름차순 정렬
-//                Collections.sort(prodList, new Comparator<ProductDto>() {
-//                    @Override
-//                    public int compare(ProductDto p1, ProductDto p2) {
-//                        return p1.getProdBasePrice() - p2.getProdBasePrice();
-//                    }
-//                });
-//                break;
-//
-//        }
-//        return prodList;
-//    }
-//
 //    @Override
-//    public List<ProductDto> sortItemsByTotalSales(int sortKey) throws Exception { // 0이면 내림차순, 1이면 오름차순
-//        List<ProductDto> prodList = getProductList();
+//    public List<ProductDto> getSortedPage(Map map) throws Exception {
+//        String sortKey = (String) map.get("sortKey");
+//        String sortOrder = (String) map.get("sortOrder");
 //
 //        switch (sortKey) {
-//            case 0:
-//                // 가격을 기준으로 내림차순 정렬
-//                Collections.sort(prodList, new Comparator<ProductDto>() {
-//                    @Override
-//                    public int compare(ProductDto p1, ProductDto p2) {
-//                        return p2.getTotalSales() - p1.getTotalSales();
-//                    }
-//                });
+//            case "sales":
+//                if (sortOrder.equals("asc")) {
+//                    return productDao.sortByTotalSalesAsc(map);
+//                }
+//                else if (sortOrder.equals("desc")) {
+//                    return productDao.sortByTotalSalesDesc(map);
+//                }
 //                break;
-//            case 1:
-//                // 가격을 기준으로 오름차순 정렬
-//                Collections.sort(prodList, new Comparator<ProductDto>() {
-//                    @Override
-//                    public int compare(ProductDto p1, ProductDto p2) {
-//                        return p1.getTotalSales() - p2.getTotalSales();
-//                    }
-//                });
+//            case "date":
+//                if (sortOrder.equals("asc")) {
+//                    return productDao.sortByRegDateAsc(map);
+//                }
+//                else if (sortOrder.equals("desc")) {
+//                    return productDao.sortByRegDateDesc(map);
+//                }
 //                break;
-//
+//            case "price":
+//                if (sortOrder.equals("asc")) {
+//                    return productDao.sortByPriceAsc(map);
+//                }
+//                else if (sortOrder.equals("desc")) {
+//                    return productDao.sortByPriceDesc(map);
+//                }
+//                break;
+//            default:
+//                return productDao.selectPage(map);
 //        }
-//        return prodList;
+//        return productDao.selectPage(map);
+//
 //    }
-//
-//    @Override
-//    public List<ProductDto> sortItemsByRegDate(int sortKey) throws Exception {
-//        List<ProductDto> prodList = getProductList();
-//
-//        switch (sortKey) {
-//            case 0:
-//                // 가격을 기준으로 내림차순 정렬
-//                Collections.sort(prodList, new Comparator<ProductDto>() {
-//                    @Override
-//                    public int compare(ProductDto p1, ProductDto p2) {
-//                        int numLocation[] = {0, 1, 2, 3, 5, 6, 8, 9, 11, 12, 14, 15, 17, 18}; // 문자열 형식의 날짜 데이터에서 숫자 데이터 자리 저장
-//
-//                        String p1Date = "";
-//                        String p2Date = "";
-//                        for (int i = 0; i < numLocation.length; i++) {
-//                            p1Date += p1.getRegDate().charAt(numLocation[i]);
-//                            p2Date += p1.getRegDate().charAt(numLocation[i]);
-//                        }
-//
-//                        int p1
-//
-//                        return p2Date-p1Date;
-//                    }
-//                });
-//                break;
-//            case 1:
-//                // 가격을 기준으로 오름차순 정렬
-//                Collections.sort(prodList, new Comparator<ProductDto>() {
-//                    @Override
-//                    public int compare(ProductDto p1, ProductDto p2) {
-//                        return p1.getRegDate() - p2.getRegDate();
-//                    }
-//                });
-//                break;
-//
-//        }
-//        return prodList;
-//    }
+
 }
