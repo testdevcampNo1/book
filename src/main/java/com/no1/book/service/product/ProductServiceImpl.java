@@ -18,6 +18,8 @@ package com.no1.book.service.product;
 
  */
 
+import com.no1.book.dao.product.AuthorDao;
+import com.no1.book.domain.product.AuthorDto;
 import com.no1.book.domain.product.ProductDto;
 import com.no1.book.dao.product.ProductDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductDao productDao;
+    @Autowired
+    private AuthorDao authorDao;
 
     @Override
     public int addProduct(ProductDto dto) throws Exception {
@@ -64,6 +68,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public int getFilteredAndSortedTotalSize(Map<String, Object> map) throws Exception {
         return productDao.getFilteredAndSortedTotalSize(map);
+    }
+
+    @Override
+    public AuthorDto getAuthorInfo(String prodId) throws Exception {
+        return authorDao.getAuthorInfo(prodId);
+    }
+
+    @Override
+    public String getCateName(String prodId) throws Exception {
+        return productDao.getCateName(prodId);
     }
 
 

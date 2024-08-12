@@ -164,4 +164,11 @@
         </choose>
     </select>
 
+    <select id="getCateName" parameterType="string" resultType="string">
+        select c.code_name from code c
+        join product p on c.code = p.cate_code
+        where p.cate_code = #{cateCode}
+        limit 1;
+    </select>
+
 </mapper>

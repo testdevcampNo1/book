@@ -3,7 +3,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Product List</title>
-    <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
+    <link rel="stylesheet" th:href="@{/css/list.css}">
 </head>
 <body>
 
@@ -13,17 +13,17 @@
             <a th:href="@{/product/list}" th:text="전체"></a>
             <ul>
                 <li th:each="category : ${cateList}" th:if="${category.cateCode.length() == 2}">
-                    <a th:href="@{/product/list(cateKey=${category.cateCode})}" th:text="${category.cateName}">카테고리1</a>
+                    <a th:href="@{/product/list(cateKey=${category.cateCode})}" th:text="${category.cateNow}">카테고리1</a>
                     <ul>
                         <li th:each="subCategory : ${cateList}"
                             th:if="${subCategory.cateCode.startsWith(category.cateCode) and subCategory.cateCode.length() == 4}">
                             <a th:href="@{/product/list(cateKey=${subCategory.cateCode})}"
-                               th:text="${subCategory.cateName}">카테고리2</a>
+                               th:text="${subCategory.cateNow}">카테고리2</a>
                             <ul>
                                 <li th:each="subSubCategory : ${cateList}"
                                     th:if="${subSubCategory.cateCode.startsWith(subCategory.cateCode) and subSubCategory.cateCode.length() == 6}">
                                     <a th:href="@{/product/list(cateKey=${subSubCategory.cateCode})}"
-                                       th:text="${subSubCategory.cateName}">카테고리3</a>
+                                       th:text="${subSubCategory.cateNow}">카테고리3</a>
                                 </li>
                             </ul>
                         </li>
@@ -37,16 +37,16 @@
 <div class="content">
 <form th:action="@{/product/list}" method="get">
     <!--    <input type="hidden" name="cateKey" th:value="${param.cateKey}" />-->
-    <input type="hidden" name="cateKey" th:value=${cateKey}/>
+    <input type="hidden" name="cateKey" th:value="${cateKey}"/>
 
     <select name="sortKey" th:value="*{sortKey}">
-        <option value="sales" th:selected="${sortKey == 'sales'}">판매량</option>
         <option value="date" th:selected="${sortKey == 'date'}">등록 날짜</option>
+        <option value="sales" th:selected="${sortKey == 'sales'}">판매량</option>
         <option value="price" th:selected="${sortKey == 'price'}">가격</option>
     </select>
     <select name="sortOrder" th:value="*{sortOrder}">
-        <option value="asc" th:selected="${sortOrder == 'asc'}">↑</option>
         <option value="desc" th:selected="${sortOrder == 'desc'}">↓</option>
+        <option value="asc" th:selected="${sortOrder == 'asc'}">↑</option>
     </select>
     <button type="submit">정렬</button>
 </form>
@@ -69,7 +69,7 @@
         <th>상품 등록일</th>
     </tr>
     <tr th:each="product : ${prodList}">
-        <td th:text="${product.prodName}">책 제목</td>
+        <td><a th:href="@{/product/detail(prodId=${product.prodId})}" th:text="${product.prodName}"></a></td>
         <td th:text="${product.prodBasePrice}">상품 가격</td>
         <td th:text="${product.discRate}">할인율</td>
         <td th:text="${product.discPrice}">할인 금액</td>

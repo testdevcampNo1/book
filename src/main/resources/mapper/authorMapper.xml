@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.no1.book.dao.product.AuthorDao">
+
+    <select id="count" resultType="int">
+        select count(*) from authorInfo
+    </select>
+
+    <insert id="insert" parameterType="com.no1.book.domain.product.AuthorDto">
+        INSERT INTO authorInfo (
+            author_info_id,
+            author_name,
+            author_born_date,
+            author_bio,
+            reg_date,
+            reg_id,
+            up_date,
+            up_id
+        ) VALUES (
+                     #{authorInfoId},
+                     #{authorName},
+                     #{authorBornDate},
+                     #{authorBio},
+                     now(),
+                     'admin',
+                     now(),
+                     'admin'
+                 )
+    </insert>
+
+    <select id="select" parameterType="String" resultType="com.no1.book.domain.product.AuthorDto">
+        SELECT * FROM authorInfo
+        WHERE author_info_id = #{authorInfoId}
+    </select>
+
+    <select id="selectAll" resultType="com.no1.book.domain.product.AuthorDto">
+        SELECT * FROM authorInfo
+    </select>
+
+    <update id="update" parameterType="com.no1.book.domain.product.AuthorDto">
+        UPDATE authorInfo
+        SET
+            author_name = #{authorName},
+            author_born_date = #{authorBornDate},
+            author_bio = #{authorBio},
+            up_date = now(),
+            up_id = #{upId}
+        WHERE author_info_id = #{authorInfoId}
+    </update>
+
+    <delete id="delete" parameterType="String">
+        DELETE FROM authorInfo
+        WHERE author_info_id = #{authorInfoId}
+    </delete>
+
+    <delete id="deleteAll">
+        DELETE FROM authorInfo
+    </delete>
+
+    <select id="getAuthorInfo" parameterType="string" resultType="com.no1.book.domain.product.AuthorDto">
+        select A.* from authorInfo A
+        join product P on A.author_info_id = p.author_info_id;
+    </select>
+
+</mapper>

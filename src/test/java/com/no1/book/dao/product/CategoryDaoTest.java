@@ -16,11 +16,23 @@ class CategoryDaoTest {
     private CategoryDao categoryDao;
 
     @Test
-    void getAllCategories() {
+    void getAllCategoriesTest() {
         List<CategoryDto> cateList = categoryDao.getAllCategories();
 
         for (int i = 0; i < cateList.size(); i++) {
             System.out.println(cateList.get(i).getCateCode() + " " + cateList.get(i).getCateName());
         }
     }
+
+    @Test
+    void getCateNowTest() {
+        List<CategoryDto> cateList = categoryDao.getAllCategories();
+
+        for (int i = 0; i < cateList.size(); i++) {
+            System.out.println(cateList.get(i).getCateCode() + " " + cateList.get(i).getCateNow());
+        }
+    }
+
+
+
 }

@@ -309,8 +309,33 @@ class ProductDaoTest {
 
         // 3단계 검증 -> 사이즈가 30이면 통과
         assertEquals(30, size);
-
     }
+
+    // 코드 테이블에 모든 카테고리 정보가 담겨있음을 가정
+    @Test
+    void getCateNameTest() throws Exception {
+        // 1단계 데이터 선택 -> id가 PROD_IMSI이면서 카테고리 코드가 010101인 임의의 dto
+            // 1-1. PROD_IMSI 데이터 비우기
+        productDao.delete("PROD_IMSI");
+            // 1-2. PROD_IMSI 데이터 생성
+        ProductDto dto = ProductDto.builder()
+                .prodId("PROD_IMSI")
+                .cateCode("010101")
+                .build();
+            // 1-3. 삽입
+        productDao.insert(dto);
+
+        // 2단계 데이터 처리 -> 카테고리 네임 가져오기
+            // 2-1. id가 PROD_IMSI인 dto의 cateCode 가져오기
+        String code = productDao.select("PROD_IMSI").getCateCode();
+            // 2-2. cateCode와 연결된 cateName 가져오기
+        String cateName = productDao.getCateName(code);
+
+        // 3단계 cateName이 "일반책>국내도서>인문/시/에세이"라면 통과
+        assertEquals("일반책>국내도서>인문/시/에세이", cateName);
+    }
+
+
 
 //    // 가격 오름차순 정렬 테스트
 //    @Test

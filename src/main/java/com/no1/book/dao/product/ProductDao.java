@@ -27,4 +27,5 @@ public interface ProductDao {
 
     int getFilteredAndSortedTotalSize(Map map) throws Exception;
 
+    String getCateName(String prodId) throws Exception;
 }

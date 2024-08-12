@@ -11,7 +11,7 @@
 </resultMap>
 
 <select id="getAllCategories" resultMap="categoryResultMap">
-    select code, code_name from code
+    select code, code_name, cate_now from code
     where code_type = '203';
 </select>
 

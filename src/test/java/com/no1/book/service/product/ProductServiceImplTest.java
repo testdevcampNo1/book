@@ -1,8 +1,12 @@
 package com.no1.book.service.product;
 
 import com.no1.book.dao.product.ProductDao;
+import com.no1.book.domain.product.ProductDto;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 @SpringBootTest
 class ProductServiceImplTest {
@@ -11,7 +15,8 @@ class ProductServiceImplTest {
     @Autowired
     private ProductDao productDao;
 
-    // 가격 기준 정렬 테스트1 (내림차순)
+
+////     가격 기준 정렬 테스트1 (내림차순)
 //    @Test
 //    void sortItemsByPrice1() throws Exception {
 //        // 1단계 데이터 선택 -> 임의의 30개 상품을 담고있는 리스트

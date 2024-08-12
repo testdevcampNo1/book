@@ -1,5 +1,6 @@
 package com.no1.book.controller.product;
 
+import com.no1.book.domain.product.AuthorDto;
 import com.no1.book.domain.product.CategoryDto;
 import com.no1.book.domain.product.PageHandler;
 import com.no1.book.domain.product.ProductDto;
@@ -72,5 +73,24 @@ public class ProductController {
             e.printStackTrace();
         }
         return "productList";
+    }
+
+    @GetMapping("/detail")
+    public String detail(String prodId, Model m) throws Exception {
+        try {
+            ProductDto pdto = productService.readProductDetail(prodId);
+            m.addAttribute("pdto", pdto);
+
+            AuthorDto adto = productService.getAuthorInfo(prodId);
+            m.addAttribute("adto", adto);
+
+            String cateCode = pdto.getCateCode();
+            String cateName = productService.getCateName(cateCode);
+            m.addAttribute("cateName", cateName);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "productDetail";
     }
 }
