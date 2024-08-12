@@ -57,10 +57,13 @@
         <p th:text="${pdto.smry}">요약 내용</p>
     </div>
 
-    <div class="author-section">
-<!--        <h3 th:text="${adto.authorName}">저자 이름</h3>-->
-<!--        <p th:text="${adto.authorBio}">저자 소개</p>-->
-    </div>
+<!--    <div class="author-section">-->
+<!--        <h3 th:text="${adto.authorName} ? ${adto.authorName} : '저자 정보 없음'">저자 이름</h3>-->
+<!--        <p th:text="${adto.authorBio} ? ${adto.authorBio} : '저자 정보 없음'">저자 소개</p>-->
+<!--    </div>-->
+
+    <h3 th:text="${adto.authorName != null ? adto.authorName : '저자 정보 없음'}">저자 이름</h3>
+    <p th:text="${adto.authorBio != null ? adto.authorBio : '저자 소개 없음'}">저자 소개</p>
 
     <div class="publisher-section">
         <h3 th:text="${pdto.pblcr}">출판사 이름</h3>

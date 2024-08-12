@@ -71,7 +71,7 @@ class AuthorDaoTest {
         authorDao.insert(adto);
 
         // 2. 데이터 처리 -> product의 저자정보 id와 일치하는 저자 정보 가져오기
-        AuthorDto selectedAdto = authorDao.getAuthorInfo(pdto.getAuthorInfoId());
+        AuthorDto selectedAdto = authorDao.getAuthorInfo(pdto.getProdId());
 
         // 3. 검증 -> selectedAdto의 이름이 "김저자"라면 통과
 //        System.out.println(selectedAdto);

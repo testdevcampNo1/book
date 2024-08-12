@@ -61,7 +61,8 @@
 
     <select id="getAuthorInfo" parameterType="string" resultType="com.no1.book.domain.product.AuthorDto">
         select A.* from authorInfo A
-        join product P on A.author_info_id = p.author_info_id;
+                            join product P on A.author_info_id = P.author_info_id
+        where P.prod_id = #{prodId};
     </select>
 
 </mapper>
