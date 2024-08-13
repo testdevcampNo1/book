@@ -1,10 +1,14 @@
 package com.no1.book.domain.order;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class OrderFormDto {
     private int custId = -1; // 비회원 -1
@@ -14,6 +18,7 @@ public class OrderFormDto {
     private int totalDiscPrice;
     private int totalSalePrice;
     private int dlvPrice;
+    private int totalOrdQty;
     private String orderRequestMessage;
     private String pwd; // 비회원 주문 조회 비밀번호
     private String isAllEbook;

@@ -1,19 +1,23 @@
 package com.no1.book.service.order;
 
+import com.no1.book.common.exception.*;
+import com.no1.book.common.validator.OrderValidator;
 import com.no1.book.dao.order.OrderDao;
 import com.no1.book.dao.order.OrderProductDao;
 import com.no1.book.dao.order.OrderStatusHistoryDao;
+import com.no1.book.domain.customer.CustomerDto;
+import com.no1.book.domain.customer.DeliveryAddressDto;
 import com.no1.book.domain.order.OrderDto;
 import com.no1.book.domain.order.OrderFormDto;
 import com.no1.book.domain.order.OrderProductDto;
 import com.no1.book.domain.order.OrderStatusHistoryDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional
 @Service
 public class OrderServiceImpl implements OrderService {
     @Autowired
@@ -25,299 +29,266 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderStatusHistoryDao orderStatusHistoryDao;
 
-    private OrderFormDto orderFormDto = new OrderFormDto();
-    private List<OrderProductDto> orderProductDtoList;
+    private final OrderValidator orderValidator = new OrderValidator();
+
+    private static final int MIN_ORDER_AMOUNT_FOR_FREE_DELIVERY = 15000; // 무료 배송을 위한 상품 최소 금액
+    private static final int DELIVERY_FEE = 2500; // 배송비
 
     /*
     # 주문 화면 진입
-    1. 주문 정보 삽입
+    1. 상품상세, 장바구니로부터 받은 주문 정보 저장 (DB 저장 X, 객체에 저장)
 
-    # 주문 버튼 클릭
-    1. 주문 정보 검증
-    2. 결제 요청
+    2. 받은 정보로 예상 배송일, 배송비 계산
+        - 상품 상세 화면에서 진입한 경우, 배송비를 넘기지 않으므로 계산 필요
+
+    3. 받은 정보로 회원일 경우 배송지, 회원 정보 조회
+        - 배송지 정보 : 기본 배송지를 보여주기 위해 필요
+        (배송지가 하나라도 추가되었다면 해당 주소가 기본 배송지이며, 기본 배송지는 삭제 불가능하다.)
+        - 회원 정보 : 주문 완료 후 배송 table에 수령자 정보를 저장하기 위해 필요
+        (비회원 또는 기본 배송지가 없는 회원은 배송지, 수령자 정보를 입력받아야 한다.)
+
+    4. 추가적으로 필요한 정보 입력받기
+        - 회원 : 결제수단, 요청 메세지, 공동현관출입 비밀번호
+            - 기본 배송지가 없는 경우 + 수령자 및 배송지 정보
+        - 비회원 : 결제수단, 요청 메세지, 공동현관출입 비밀번호, 주문 비밀번호, 수령자 정보, 배송지 정보
+    */
+
+    /*
+    # 주문 버튼 클릭 (=결제 요청)
+
+    1. 주문 정보 검증 - 모든 필수 정보 입력 & 상품 실시간 재고 확인
+
+    2. 결제 요청 및 검증 (결제 성공 가정. 검증은 추후 팀 코드 병합 후 구현)
+
     3. DB 저장 - 주문, 주문상품, 주문상태, 배송, 결제
+        - 다른 table에 주문 번호가 필요하기 때문에 반드시 주문 table에 먼저 저장되어야 한다.
+        - 주문 번호는 주문 목록을 최신순으로 정렬하여 가장 첫번째 주문의 주문 번호를 가져오도록 한다.
+
     4. 주문 완료 페이지로 redirect
+        - 뒤로가기를 막기 위해 redirect를 사용하여 주문 완료 페이지에 보내도록 한다.
      */
 
-    // 주문 정보 삽입
-    public void initOrderInfo(int custId) {
+    // 화면 첫 진입시 받은 정보를 OrderFormDto에 저장
+    @Override
+    public OrderFormDto initOrderInfo(int custId, List<OrderProductDto> productList) {
+        OrderFormDto orderFormDto = new OrderFormDto();
+
+        // 1. 회원ID 저장
+        // TODO: Q. 회원ID의 경우 다른 페이지에서 진입시 전달받아야 하는가, session에서 가져와야 하는가?
+        //  session에서 받을 경우 비회원 판단은 null로?
         orderFormDto.setCustId(custId);
-        // 상품, 금액, isAllEbook, isAllDawnDelivery
-        testOrderProductList();
-        // 고객 정보 - email, name, telNum
-        insertCustInfo();
-        // 배송 정보 - zipCode, mainAddress, detailAddress, commonEntrancePassword
-        insertAddressInfo();
-        // 테스트용 결제 수단
-        orderFormDto.setPaymentMethod("애플페이");
-    }
 
-    // TODO: 입력받은 데이터 삽입 - param 저장
-
-    // 주문자 정보 검증
-    private void validateOrderer() {
-        if(orderFormDto.getEmail() == null || orderFormDto.getEmail().isEmpty() || orderFormDto.getAddressName() == null || orderFormDto.getAddressName().isEmpty() || orderFormDto.getTelNum() == null || orderFormDto.getTelNum().isEmpty()) {
-            throw new IllegalArgumentException("이메일 또는 이름 또는 전화번호가 존재하지 않습니다.");
+        // 2. 회원일 경우 회원 table, 배송지 table 조회하여 저장
+            // 팀 코드 병합 후 실제 DB에서 받아서 진행 예정
+        if(custId > -1) { // 모든 비회원의 custId = -1
+            getCustomerInfo(orderFormDto);
+            getAddressInfo(orderFormDto);
         }
 
-        // 비회원일 경우 주문 조회 비밀번호 검증
-        if(orderFormDto.getCustId() == -1 && (orderFormDto.getPwd() == null || orderFormDto.getPwd().isEmpty())) {
-            throw new IllegalArgumentException("비회원은 주문 조회 비밀번호가 필요합니다.");
-        }
-    }
+        // 3. 전달 받은 주문상품 목록 저장
+            // 추후 주문 완료 화면으로 data를 보낼 때, 리스트도 주문폼 정보(OrderFormDto 객체)에 담아서 보내기 위함
+        orderFormDto.setProductList(productList);
 
-    // 배송지 정보 검증
-    private void validateAddress() {
-        if(orderFormDto.getZipCode() == null || orderFormDto.getZipCode().isEmpty() || orderFormDto.getMainAddress() == null || orderFormDto.getMainAddress().isEmpty() || orderFormDto.getDetailAddress() == null || orderFormDto.getDetailAddress().isEmpty()) {
-            throw new IllegalArgumentException("배송지 정보가 존재하지 않습니다.");
-        }
-    }
+        // 4. 상품 총 금액, 새벽배송 여부, ebook 여부 저장
+        setProductInfo(orderFormDto);
 
-    // 금액 검증
-    private void validateOrderPrice() {
-        if(orderFormDto.getTotalProdBasePrice() < 0 || orderFormDto.getTotalDiscPrice() < 0 || orderFormDto.getTotalSalePrice() < 0 || orderFormDto.getDlvPrice() < 0) {
-            throw new IllegalArgumentException("음수인 금액이 존재합니다.");
-        }
+        // 5. ebook, 새벽배송에 따른 예상 배송일 저장
+        setDeliveryDate(orderFormDto);
 
-        if(orderFormDto.getTotalProdBasePrice() < orderFormDto.getTotalSalePrice()) {
-            throw new IllegalArgumentException("정가의 합보다 판매가의 합이 더 큽니다.");
-        }
+        // 6. 상품 금액에 따른 배송비 계산
+        setDeliveryPrice(orderFormDto);
 
-        if(orderFormDto.getTotalSalePrice() < orderFormDto.getTotalDiscPrice()) {
-            throw new IllegalArgumentException("판매가의 합보다 할인가의 합이 더 큽니다.");
-        }
-    }
-
-    // 주문상품 검증
-    private void validateOrderProduct() {
-        // 주문 상품 리스트 검증
-        if(orderProductDtoList == null || orderProductDtoList.isEmpty()) {
-            throw new IllegalArgumentException("주문 상품 목록이 존재하지 않습니다.");
-        }
-
-        // 각 주문 상품 검증
-        for(OrderProductDto product : orderProductDtoList) {
-            // 상품id 검증
-            if(product.getProdId() == null || product.getProdId().isEmpty()) {
-                throw new IllegalArgumentException("주문 상품 id가 존재하지 않습니다.");
-            }
-
-            // 상품 상태 검증
-            if(product.getOrdProdStusCode() == null || product.getOrdProdStusCode().isEmpty() || product.getOrdProdStusCode() == "주문불가" || product.getCodeType() == null || product.getCodeType().isEmpty()) {
-                throw new IllegalArgumentException("주문 불가능한 상품이 존재합니다.");
-            }
-
-            // 0개 이하인 주문 수량 검증
-            if(product.getOrdQty() <= 0) {
-                throw new IllegalArgumentException("주문 수량이 0개 이하인 상품이 존재합니다.");
-            }
-
-            // 재고 부족 검증
-            // 재고 DB에서 실시간으로 조회 필요
-            if(getProductStockCount(product.getProdId()) < product.getOrdQty()) {
-                throw new IllegalArgumentException("재고가 부족한 상품이 존재합니다.");
-            }
-
-            // 상품 금액 검증
-            if(product.getTotalProdPrice() < 0 || product.getTotalDiscPrice() < 0 || product.getTotalPayPrice() < 0) {
-                throw new IllegalArgumentException("음수인 금액이 존재합니다.");
-            }
-
-            if(product.getTotalProdPrice() < product.getTotalPayPrice()) {
-                throw new IllegalArgumentException("정가의 합보다 판매가의 합이 더 큽니다.");
-            }
-
-            if(product.getTotalPayPrice() < product.getTotalDiscPrice()) {
-                throw new IllegalArgumentException("판매가의 합보다 할인가의 합이 더 큽니다.");
-            }
-        }
-    }
-
-    // 결제 정보 검증
-    private void validatePaymentMethod() {
-        if(orderFormDto.getPaymentMethod() == null || orderFormDto.getPaymentMethod().isEmpty()) {
-            throw new IllegalArgumentException("결제 수단이 존재하지 않습니다.");
-        }
+        return orderFormDto;
     }
 
     // 결제 요청
+        // 추후 팀 코드 병합 후 요청 필요
     boolean requestPayment() {
-        // 결제시 필요한 데이터 넘기기
-        // try catch로 결제 요청
-        // 결제 성공시 DB에 저장 - 주문 -> 결제, 주문상품, 주문상태, 배송
-        // 나머지 table이 주문id를 필요로 하기 때문에, 주문이 최우선순위로 DB에 저장되어야 한다.
-        // paymentDao.requestPayment();
-        // TODO: 결제 성공 여부로 변경 필요
         return true;
     }
 
-    // DB 저장
-    // 주문 저장
+    // 주문 DB 저장
+    @Transactional
     @Override
-    public void saveOrder() {
-        // TODO: ordId 일련번호로 수정해야 할까?
-        // TODO: ordDate sql에서 현재 시간으로 저장하도록 변경 필요
-        // TODO: 실제 데이터로 변경 필요
-        // TODO: 예외 처리
-        int custId = orderFormDto.getCustId();
-        String custCheck = custId > -1 ? "Y" : "N";
+    public void saveOrder(OrderFormDto orderInfo) {
+        // 주문 검증
+        orderValidator.validateOrder(orderInfo);
 
-        OrderDto orderDto = new OrderDto(1, custId, "결제완료", "301", custCheck, orderFormDto.getOrderRequestMessage(), orderFormDto.getTotalProdBasePrice(), orderFormDto.getTotalDiscPrice(), orderFormDto.getDlvPrice(), orderFormDto.getTotalSalePrice(), orderFormDto.getPwd(), getRegId(), getRegId());
+        // regId - 회원일 경우 custId, 비회원일 경우 email 저장
+        String regId = orderInfo.getCustId() > -1 ? String.valueOf(orderInfo.getCustId()) : orderInfo.getEmail();
+
+        // 회원 여부
+        String custCheck = orderInfo.getCustId() > -1 ? "Y" : "N";
+
+        // 객체 초기화
+        OrderDto orderDto = new OrderDto(orderInfo.getCustId(), "RCVD", "301", custCheck, orderInfo.getOrderRequestMessage(), orderInfo.getTotalProdBasePrice(), orderInfo.getTotalDiscPrice(), orderInfo.getDlvPrice(), orderInfo.getTotalSalePrice(), orderInfo.getPwd(), regId, regId);
 
         try {
+            // DB 저장
             orderDao.createOrder(orderDto);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+        } catch (DataAccessException e) { // DB 접근 중 발생하는 예외
+            throw new SystemException("DB에 저장 실패했습니다.");
         }
     }
 
-    // 주문상품 저장
+    // 주문상품 DB 저장
+    @Transactional
     @Override
-    public void saveOrderProduct() {
-        // 가장 최근 주문의 주문id 조회 필요 - 주문목록 최신순 정렬
-        // TODO: 예외 처리
+    public void saveOrderProduct(List<OrderProductDto> productList) {
+        int ordId = getOrderId();
+        String regId = getRegId(ordId);
+
         try {
-            for(OrderProductDto product : orderProductDtoList) {
-                product.setOrdId(getOrderId());
+            for(OrderProductDto product : productList) {
+                // TODO: Q. 시스템 컬럼을 업무에서 사용해도 되는가? & regDate는 반드시 DB에 저장하는 시점으로 저장해야 하는가?
+                //  주문상품은 반복문을 돌며 DB에 저장되고, regDate는 저장되는 시점의 "현재 일시"로 저장되어, 같은 주문의 상품이더라도 반복문을 도는 시간에 따라 regDate에 차이가 존재하게 된다.
+                //  주문상품의 regDate는 주문상품 취소가능일시를 계산할 때 사용되는데, 시스템 컬럼을 사용하지 말고 업무용으로 사용할 컬럼을 추가해야 하는가?
+                product.setOrdId(ordId);
+                product.setRegId(regId);
+                product.setUpId(regId);
+
+                // DB 저장
                 orderProductDao.insertOrderProduct(product);
             }
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+        } catch (DataAccessException e) { // DB 접근 중 발생하는 예외
+            throw new SystemException("DB에 저장 실패했습니다.");
         }
     }
 
-    // 주문상태 저장
+    // 주문상태이력 DB 저장
+    @Transactional
     @Override
     public void saveOrderStatus() {
-        // 가장 최근 주문의 주문id 조회 필요 - 주문목록 최신순 정렬
-        // TODO: 예외 처리
-        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(getOrderId(), null, "결제완료", "결제가 승인됨", getRegId(), getRegId());
+        int ordId = getOrderId();
+        String regId = getRegId(ordId);
+
+        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(ordId, null, "RCVD", "결제 승인", regId, regId);
+
         try {
+            // DB 저장
             orderStatusHistoryDao.createOrderStatusHistory(orderStatusHistoryDto);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+        } catch (DataAccessException e) { // DB 접근 중 발생하는 예외
+            throw new SystemException("DB에 저장 실패했습니다.");
         }
     }
 
-    // 배송 저장
+    // 배송 DB 저장
+        // 추후 팀 코드 병합 후 배송 table에 저장 필요
+    @Transactional
     @Override
     public void saveDelivery() {
-        // 배송 Dao 구현 필요
-        // TODO: 예외 처리
     }
 
-    // 결제 저장
+    // 결제 DB 저장
+        // 추후 팀 코드 병합 후 결제 table에 저장 필요
+    @Transactional
     @Override
     public void savePayment() {
-        // 구현된 결제 Dao 필요
-        // TODO: 예외 처리
     }
 
-    // 가장 최근 주문의 주문id 조회
+    // 가장 최근의 주문Id 조회
     @Override
     public int getOrderId() {
-        return orderDao.getAllOrder().get(0).getOrdId();
-    }
-
-    // 고객 정보 삽입 - email, name, telNum
-    @Override
-    public void insertCustInfo() {
-        // TODO: 실제 data 삽입 필요, 예외처리
-        if(orderFormDto.getCustId() > -1) {
-            // 회원일 경우 DB에서 조회하여 저장
-            // custDao.get(custId)
-        } else {
-            // 비회원일 경우 입력받아서 저장
-            // test용 비밀번호
-            orderFormDto.setPwd("1234");
+        // 비회원의 주문 조회를 고려하여, 모든 주문을 조회
+        // TODO: 최근 주문 조회시, 동시에 진행되고 있던 다른 고객의 주문 id를 조회할 가능성이 존재하므로, 주문 번호를 미리 생성하여 지정하도록 한다.
+        List<OrderDto> orders = orderDao.getAllOrder();
+        if(orders.isEmpty()) {
+            throw new OrderException("주문이 존재하지 않습니다.");
         }
-        orderFormDto.setEmail("test@test.com");
-        orderFormDto.setAddressName("학원");
-        orderFormDto.setTelNum("01012345678");
+        return orders.get(0).getOrdId();
     }
 
-    // 배송 정보 삽입 - zipCode, mainAddress, datailAddress
-    @Override
-    public void insertAddressInfo() {
-        // TODO: 배송 table 구현 필요, 예외처리
-        if(orderFormDto.getCustId() > -1) {
-            // 회원일 경우 DB에서 기본배송지 조회하여 저장
-            // deliveryDao.get(custId)
-            // 만약 기본배송지 데이터가 없다면 입력받아서 저장 필요
-        } else {
-            // 비회원일 경우 입력받아서 저장
-        }
-        orderFormDto.setZipCode("testZipCode");
-        orderFormDto.setMainAddress("서울특별시 강남구 역삼동 826-21");
-        orderFormDto.setDetailAddress("10C 강의장");
-        orderFormDto.setOrderRequestMessage("문 앞에 놔주세요.");
+    // 특정 주문의 regId 조회
+    public String getRegId(int ordId) {
+        return orderDao.getOrder(ordId).getRegId();
     }
 
-    // regId, upId
-    // 회원일 경우 custId를 String으로 변환하여 저장
-    // 비회원일 경우 email을 저장
-    String getRegId() {
-        int custId = orderFormDto.getCustId();
-        String regId = custId > -1 ? String.valueOf(custId) : orderFormDto.getEmail();
-        return regId;
-    }
+    // 상품 정보 저장
+    // 총 상품 금액, 총 할인 금액 계산
+    // 모두 새벽배송, 모두 Ebook 여부 판단
 
-    // 재고 개수
-    int getProductStockCount(String prodId) {
-        // 상품id로 재고 개수 조회
-        // productDao.getStockCount(prodId);
-        // TODO: 조회한 재고 개수로 변경 필요
-        return 10;
-    }
+    // TODO: Q. 금액 계산과 새벽 배송 판단은 다른 역할이지만, 둘 모두 판단을 위해서는 반복문이 필요하다.
+    //  가독성을 위해 역할에 따라 메서드를 분리해야 하는가, 성능을 위해 반복문 하나만 사용하도록 해야 하는가?
+    void setProductInfo(OrderFormDto orderFormDto) {
+        int totalProdBasePrice = 0; // 상품 정가 총합
+        int totalDiscPrice = 0; // 상품 할인가 총합
+        int totalOrderQuantity = 0; // 상품 주문 개수 총합
+        boolean isAllDawnDelivery = true; // 모두 새벽배송인가?
+        boolean isAllEbook = true; // 모두 Ebook인가?
 
-    // test용 상품목록 삽입
-    private void testOrderProductList() {
-        // test용 더미데이터
-        // order 테이블 아직 생성되기 전이므로 -1로 설정
-        OrderProductDto orderProductDto1 = new OrderProductDto(1, -1, "100", null, null, "N", "자바의 정석 3판", 3, ".img", "google.com", "Y", 75000, 7500, 67500, null, null);
-        OrderProductDto orderProductDto2 = new OrderProductDto(2, -1, "101", null, null, "N", "자바의 정석 2판", 1, ".img", "google.com", "N", 60000, 0, 60000,  null, null);
-        OrderProductDto orderProductDto3 = new OrderProductDto(3, -1, "102", null, null, "N", "데이터모델링", 1, ".img", "google.com", "Y", 35000, 5000, 30000,  null, null);
-        OrderProductDto orderProductDto4 = new OrderProductDto(4, -1, "103", null, null, "Y", "SQL 튜닝", 1, ".img", "google.com", "N", 25000, 0, 25000,  null, null);
-        OrderProductDto orderProductDto5 = new OrderProductDto(5, -1, "104", null, null, "Y", "토비의 스프링", 1, ".img", "google.com", "N", 30000, 0, 30000, null, null);
-
-        orderProductDtoList.add(orderProductDto1);
-        orderProductDtoList.add(orderProductDto2);
-        orderProductDtoList.add(orderProductDto3);
-        orderProductDtoList.add(orderProductDto4);
-        orderProductDtoList.add(orderProductDto5);
-
-        orderFormDto.setProductList(orderProductDtoList);
-
-        // 금액 정보
-        int totalProdBasePrice = 0;
-        int totalDiscPrice = 0;
-        int totalSalePrice = 0;
-
-        // 모든 상품이 새벽배송인가
-        /*
-        모든 상품이 새벽 배송일 경우 - 24시간 이내 배송 예정
-        새벽 배송 아닌 상품이 있을 경우 - 48시간 이내 배송 예정
-         */
-        boolean isAllDawnDelivery = true;
-
-        // 모든 상품이 ebook인가
-        boolean isAllEbook = true;
-
-        // 금액 계산
-        for(OrderProductDto product : orderProductDtoList) {
+        for(OrderProductDto product : orderFormDto.getProductList()) {
             totalProdBasePrice += product.getTotalProdPrice();
             totalDiscPrice += product.getTotalDiscPrice();
-            totalSalePrice += product.getTotalPayPrice();
+            totalOrderQuantity += product.getOrdQty();
 
-            if(product.getIsDawnDelivery() == "N") isAllDawnDelivery = false;
-            if(product.getEbookChk() == "N") isAllEbook = false;
+            if(product.getIsDawnDelivery().equals("N")) {
+                isAllDawnDelivery = false;
+            }
+
+            if(product.getEbookChk().equals("N")) {
+                isAllEbook = false;
+            }
+
+            // prodId로 상품 table 조회하여 유효한 상품ID인지 확인
+                // 추후 팀 코드 병합 후 구현 필요
+            // prodDao.findById(prodId).orElseThrow(() -> new InvalidateProductIdException("유효하지 않은 상품입니다."))
         }
 
         orderFormDto.setTotalProdBasePrice(totalProdBasePrice);
         orderFormDto.setTotalDiscPrice(totalDiscPrice);
-        orderFormDto.setTotalSalePrice(totalSalePrice);
-        orderFormDto.setDlvPrice(0);
-        orderFormDto.setIsAllEbook(isAllEbook ? "Y" : "N");
+        orderFormDto.setTotalOrdQty(totalOrderQuantity);
         orderFormDto.setIsAllDawnDelivery(isAllDawnDelivery ? "Y" : "N");
+        orderFormDto.setIsAllEbook(isAllEbook ? "Y" : "N");
     }
+
+    // 예상 배송일 계산
+    void setDeliveryDate(OrderFormDto orderFormDto) {
+        /*
+        배송일 - Ebook, 새벽배송 여부에 따라 달라진다.
+        1. 모두 Ebook -> 배송일 : 바로 다운로드 가능
+        2. 일부 Ebook 또는 모두 일반 책, 모두 새벽배송 -> 배송일 : 24시간 이내 배송
+        3. 일부 Ebook 또는 모두 일반 책, 일부 새벽배송 -> 배송일 : 48시간 이내 배송
+         */
+
+        if(orderFormDto.getIsAllEbook().equals("Y")) {
+            orderFormDto.setDlvDate("모두 Ebook 상품으로, 바로 다운로드 가능합니다.");
+        } else if(orderFormDto.getIsAllDawnDelivery().equals("Y")) {
+            orderFormDto.setDlvDate("모두 새벽배송 상품으로, 24시간 이내 배송 예정입니다.");
+        } else {
+            orderFormDto.setDlvDate("48시간 이내 배송 예정입니다.");
+        }
+    }
+
+    // 배송비 계산
+    void setDeliveryPrice(OrderFormDto orderFormDto) {
+        // 총 금액이 15000원보다 적으면 배송비 존재
+        int dlvPrice = orderFormDto.getTotalProdBasePrice() - orderFormDto.getTotalDiscPrice() < MIN_ORDER_AMOUNT_FOR_FREE_DELIVERY ? DELIVERY_FEE : 0;
+
+        // 총 결제 금액 = 총 상품 금액 - 총 할인 금액 - 배송비
+        orderFormDto.setTotalSalePrice(orderFormDto.getTotalProdBasePrice() - orderFormDto.getTotalDiscPrice() - dlvPrice);
+        orderFormDto.setDlvPrice(dlvPrice);
+    }
+
+    // 회원 정보 조회
+        // 추후 팀 코드 병합 후 회원 table에서 조회 필요
+    void getCustomerInfo(OrderFormDto orderFormDto) {
+        CustomerDto customerDto = new CustomerDto();
+
+        orderFormDto.setEmail(customerDto.getEmail()); // 회원 이메일
+        orderFormDto.setName(customerDto.getName()); // 회원 이름
+    }
+
+    // 배송 정보 조회
+        // 추후 팀 코드 병합 후 배송지 table에서 조회 필요
+    void getAddressInfo(OrderFormDto orderFormDto) {
+        DeliveryAddressDto deliveryAddressDto = new DeliveryAddressDto();
+
+        orderFormDto.setAddressName(deliveryAddressDto.getName()); // 배송지 이름
+        orderFormDto.setTelNum(deliveryAddressDto.getMobileNum()); // 휴대전화번호
+        orderFormDto.setZipCode(deliveryAddressDto.getZpcd()); // 우편번호
+        orderFormDto.setMainAddress(deliveryAddressDto.getMainAddr()); // 기본주소
+        orderFormDto.setDetailAddress(deliveryAddressDto.getDetailAddr()); // 상세주소
+        orderFormDto.setDefaultChk(deliveryAddressDto.getDefaultChk()); // 기본배송지 여부
+    }
+
 }

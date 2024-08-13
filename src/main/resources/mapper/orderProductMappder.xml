@@ -6,8 +6,8 @@
 
     <!--    주문상품 추가-->
     <insert id="insertOrderProduct" parameterType="OrderProductDto">
-        INSERT INTO no1.orderProduct ( ord_prod_id, ord_id, prod_id, ord_prod_stus_code, code_type, ebook_chk, name, ord_qty, img, prod_page_link, total_prod_price, total_disc_price, total_pay_price, cancelable_date, reg_date, reg_id, up_date, up_id )
-        VALUES ( #{ordProdId}, #{ordId}, #{prodId}, #{ordProdStusCode}, #{codeType}, #{ebookChk}, #{name}, #{ordQty}, #{img}, #{prodPageLink}, #{totalProdPrice}, #{totalDiscPrice}, #{totalPayPrice}, DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 7 DAY), '%Y-%m-%d %H:%i:%s'), DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), #{regId}, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), #{upId} )
+        INSERT INTO no1.orderProduct ( ord_id, prod_id, ord_prod_stus_code, code_type, ebook_chk, name, ord_qty, img, prod_page_link, total_prod_price, total_disc_price, total_pay_price, cancelable_date, reg_date, reg_id, up_date, up_id )
+        VALUES ( #{ordId}, #{prodId}, #{ordProdStusCode}, #{codeType}, #{ebookChk}, #{name}, #{ordQty}, #{img}, #{prodPageLink}, #{totalProdPrice}, #{totalDiscPrice}, #{totalPayPrice}, DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 7 DAY), '%Y-%m-%d %H:%i:%s'), DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), #{regId}, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), #{upId} )
     </insert>
 
     <!--    주문상품ID로 조회-->

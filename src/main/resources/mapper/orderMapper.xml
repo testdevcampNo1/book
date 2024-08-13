@@ -31,8 +31,10 @@
     </select>
 
     <!--    주문 전체 조회-->
+    <!--    최근 주문 순서로 정렬-->
     <select id="getAllOrder" resultType="OrderDto">
         SELECT * FROM no1.order
+        ORDER BY reg_date DESC
     </select>
 
     <!--    회원의 주문 전체 삭제-->

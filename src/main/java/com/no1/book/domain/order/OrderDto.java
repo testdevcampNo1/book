@@ -1,12 +1,14 @@
 package com.no1.book.domain.order;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class OrderDto {
-    private int ordId;
+    private int ordId; // auto increment
     private int custId;
     private String ordStusCode;
     private String codeType;
@@ -23,10 +25,8 @@ public class OrderDto {
     private String upDate;
     private String upId;
 
-    // TEST용
     // regDate, upDate, ordDate - 현재시간으로 추가
-    public OrderDto(int ordId, int custId, String ordStusCode, String codeType, String custChk, String ordReqMsg, int totalProdPrice, int totalDiscPrice, int dlvPrice, int totalPayPrice, String pwd, String regId, String upId) {
-        this.ordId = ordId;
+    public OrderDto(int custId, String ordStusCode, String codeType, String custChk, String ordReqMsg, int totalProdPrice, int totalDiscPrice, int dlvPrice, int totalPayPrice, String pwd, String regId, String upId) {
         this.custId = custId;
         this.ordStusCode = ordStusCode;
         this.codeType = codeType;
@@ -38,25 +38,6 @@ public class OrderDto {
         this.totalPayPrice = totalPayPrice;
         this.pwd = pwd;
         this.regId = regId;
-        this.upId = upId;
-    }
-
-    public OrderDto(int ordId, int custId, String ordStusCode, String codeType, String custChk, String ordDate, String ordReqMsg, int totalProdPrice, int totalDiscPrice, int dlvPrice, int totalPayPrice, String pwd, String regDate, String regId, String upDate, String upId) {
-        this.ordId = ordId;
-        this.custId = custId;
-        this.ordStusCode = ordStusCode;
-        this.codeType = codeType;
-        this.custChk = custChk;
-        this.ordDate = ordDate;
-        this.ordReqMsg = ordReqMsg;
-        this.totalProdPrice = totalProdPrice;
-        this.totalDiscPrice = totalDiscPrice;
-        this.dlvPrice = dlvPrice;
-        this.totalPayPrice = totalPayPrice;
-        this.pwd = pwd;
-        this.regDate = regDate;
-        this.regId = regId;
-        this.upDate = upDate;
         this.upId = upId;
     }
 
