@@ -151,7 +151,7 @@ public class OrderServiceImpl implements OrderService {
                 orderProductDao.insertOrderProduct(product);
             }
         } catch (DataAccessException e) { // DB 접근 중 발생하는 예외
-            throw new SystemException("DB에 저장 실패했습니다.");
+            throw new SystemException(OrderValidatorErrorMessage.SAVE_DATABASE_FAILED.getMessage());
         }
     }
 

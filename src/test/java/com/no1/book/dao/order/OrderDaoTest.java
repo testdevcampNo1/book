@@ -36,7 +36,7 @@ class OrderDaoTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 2, 3, 4, 5})
     void createOrder(int ordId) {
-        OrderDto orderDto = new OrderDto(ordId, 1, "주문완료", "301", "Y", "배송 메시지", 25000, 2500, 0, 22500, null, "1", "1");
+        OrderDto orderDto = new OrderDto(1, "주문완료", "301", "Y", "배송 메시지", 25000, 2500, 0, 22500, null, "1", "1");
         orderDao.createOrder(orderDto);
         assertEquals(countAllOrder(), 1);
     }
@@ -45,7 +45,7 @@ class OrderDaoTest {
     @Test
     void updateOrderStatus() {
         // 주문 생성
-        OrderDto orderDto = new OrderDto(1, 1, "주문완료", "301", "Y", "배송 메시지", 25000, 2500, 0, 22500, null, "1", "1");
+        OrderDto orderDto = new OrderDto(1, "주문완료", "301", "Y", "배송 메시지", 25000, 2500, 0, 22500, null, "1", "1");
         orderDao.createOrder(orderDto);
         assertEquals(countAllOrder(), 1);
 

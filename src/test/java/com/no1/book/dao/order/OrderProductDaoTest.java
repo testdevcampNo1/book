@@ -38,7 +38,7 @@ class OrderProductDaoTest {
         orderProductDao.deleteAllOrderProduct();
         assertEquals(countAllOrderProduct(), 0);
 
-        OrderDto orderDto = new OrderDto(1, 1, "주문완료", "301", "Y", "배송 메시지", 25000, 2500, 0, 22500, null, "1", "1");
+        OrderDto orderDto = new OrderDto(1, "주문완료", "301", "Y", "배송 메시지", 25000, 2500, 0, 22500, null, "1", "1");
         orderDao.createOrder(orderDto);
         assertEquals(countAllOrder(), 1);
     }
@@ -91,7 +91,7 @@ class OrderProductDaoTest {
     @DisplayName("회원의 주문상품 조회 테스트")
     void getCustomerOrderProducts() {
         // 회원2의 주문2 생성
-        OrderDto orderDto2 = new OrderDto(2, 2, "주문완료", "301", "Y", "배송 메시지", 25000, 2500, 0, 22500, null, "1", "1");
+        OrderDto orderDto2 = new OrderDto(2, "주문완료", "301", "Y", "배송 메시지", 25000, 2500, 0, 22500, null, "1", "1");
         orderDao.createOrder(orderDto2);
         // init에서 주문1 생성했으므로 총 주문 2개
         assertEquals(countAllOrder(), 2);

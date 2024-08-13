@@ -27,7 +27,7 @@ public class OrderValidator {
 
         validateNotEmpty(orderInfo.getZipCode(), OrderValidatorErrorMessage.MISSING_ZIP_CODE.getMessage());
         validateNotEmpty(orderInfo.getMainAddress(), OrderValidatorErrorMessage.MISSING_MAIN_ADDRESS.getMessage());
-        validateNotEmpty(orderInfo.getDefaultChk(), OrderValidatorErrorMessage.MISSING_DETAIL_ADDRESS.getMessage());
+        validateNotEmpty(orderInfo.getDetailAddress(), OrderValidatorErrorMessage.MISSING_DETAIL_ADDRESS.getMessage());
 
         // 금액 검증
         validateOrderPrice(orderInfo);
@@ -112,6 +112,6 @@ public class OrderValidator {
 
     // 결제 성공 여부 검증
     private void validateRequestPayment() {
-        throw new PaymentFailureException(OrderValidatorErrorMessage.PAYMENT_FAILED.getMessage());
+//        throw new PaymentFailureException(OrderValidatorErrorMessage.PAYMENT_FAILED.getMessage());
     }
 }

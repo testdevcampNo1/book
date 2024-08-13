@@ -36,7 +36,7 @@ class OrderStatusHistoryDaoTest {
         orderStatusHistoryDao.deleteAllOrderStatusHistory();
         assertEquals(countAllOrderStatusHistory(), 0);
 
-        OrderDto orderDto = new OrderDto(1, 1, "주문완료", "301", "Y", "배송 메시지", 25000, 2500, 0, 22500, null, "1", "1");
+        OrderDto orderDto = new OrderDto(1, "주문완료", "301", "Y", "배송 메시지", 25000, 2500, 0, 22500, null, "1", "1");
         orderDao.createOrder(orderDto);
         assertEquals(countAllOrder(), 1);
     }

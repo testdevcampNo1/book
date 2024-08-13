@@ -62,8 +62,8 @@ public class OrderController {
     // test product
     List<OrderProductDto> getOrderProductDtoList() {
         List<OrderProductDto> orderProductDtoList = new ArrayList<>();
-        OrderProductDto orderProductDto = new OrderProductDto(1, -1, "100", "주문가능", "301", "N", "[국내도서] Java의 정석:기초편 세트", 2, "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788994492049.jpg", "https://product.kyobobook.co.kr/detail/S000001550353", "N", 50000, 5000, 45000, "1", "1");
-        OrderProductDto orderProductDto2 = new OrderProductDto(2, -1, "101", "주문가능", "301", "N", "[국내도서] 토비의 스프링 3.1 세트", 1, "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788960773431.jpg", "https://product.kyobobook.co.kr/detail/S000000935360", "N", 75000, 7500, 67500, "1", "1");
+        OrderProductDto orderProductDto = new OrderProductDto(1, -1, "100", "AVBL", "301", "N", "[국내도서] Java의 정석:기초편 세트", 2, "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788994492049.jpg", "https://product.kyobobook.co.kr/detail/S000001550353", "N", 50000, 5000, 45000, "1", "1");
+        OrderProductDto orderProductDto2 = new OrderProductDto(2, -1, "101", "AVBL", "301", "N", "[국내도서] 토비의 스프링 3.1 세트", 1, "https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788960773431.jpg", "https://product.kyobobook.co.kr/detail/S000000935360", "N", 75000, 7500, 67500, "1", "1");
         orderProductDtoList.add(orderProductDto);
         orderProductDtoList.add(orderProductDto2);
         return orderProductDtoList;
