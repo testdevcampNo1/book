@@ -60,6 +60,8 @@
 <table border="1">
     <tr>
         <th>책 제목</th>
+        <th>이미지</th>
+        <th>내용</th>
         <th>상품 가격</th>
         <th>할인율</th>
         <th>할인 금액</th>
@@ -70,6 +72,8 @@
     </tr>
     <tr th:each="product : ${prodList}">
         <td><a th:href="@{/product/detail(prodId=${product.prodId})}" th:text="${product.prodName}"></a></td>
+        <td><img th:src="@{/images/imsi.png}" alt="상품 이미지" style="width: 100px; height: 150px;"></td>
+        <td th:text="${product.smry}"></td>
         <td th:text="${product.prodBasePrice}">상품 가격</td>
         <td th:text="${product.discRate}">할인율</td>
         <td th:text="${product.discPrice}">할인 금액</td>

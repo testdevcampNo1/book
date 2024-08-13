@@ -14,29 +14,45 @@
     <img th:src="@{/images/imsi.png}" alt="상품 이미지" class="product-image">
     <h1 th:text="${pdto.prodName}">책 제목</h1>
 
-
     <div class="product-info">
         <div class="product-price">
             <h2 th:text="${pdto.prodBasePrice}+'원'">상품 기본가</h2>
             <h3 th:text="${pdto.discRate}+'%'">상품 할인률</h3>
             <h4 th:text="${pdto.salePrice}+'원'">상품 주문가</h4>
         </div>
+
         <div class="product-purchase">
             <div class="quantity">
-<!--                <button>-</button>-->
-<!--                <input type="text" th:value="${quantity}" size="3">-->
-<!--                <button>+</button>-->
-                <input type='button'
-                       onclick='count("plus")'
-                       value='+'/>
-                <div id='result'>0</div>
-                <input type='button'
-                       onclick='count("minus")'
-                       value='-'/>
+                <input type='button' onclick='count("plus")' value='+'/>
+                <div id='result'>1</div>
+                <input type='button' onclick='count("minus")' value='-'/>
             </div>
-            <button>장바구니</button>
+            <button onclick="addToCart()">장바구니</button>
             <button>바로구매</button>
         </div>
+        <script>
+            let countValue = 1; // 초기값을 1로 설정
+
+            function count(action) {
+                if (action === "plus") {
+                    countValue++;
+                } else if (action === "minus") {
+                    if (countValue > 1) {
+                        countValue--;
+                    }
+                }
+                document.getElementById("result").textContent = countValue;
+            }
+
+            function addToCart() {
+                const pricePerItem = /*[[${pdto.salePrice}]]*/ 0;
+                const totalPrice = countValue * pricePerItem;
+
+                const cartUrl = '/cart/custId=';
+                window.location.href = cartUrl;
+            }
+        </script>
+
         <div class="rating">
             <p></p>
             <p th:text="${pdto.starAvg} ? '구매자 별점 : ' + ${pdto.starAvg} : '별점 없음'">별점</p>

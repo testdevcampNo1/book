@@ -10,11 +10,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +36,18 @@ public class ProductController {
 
     @Autowired
     CategoryService categoryService;
+
+    @ExceptionHandler({NullPointerException.class, FileNotFoundException.class})
+    public String catcher1(Exception e, Model m) {
+        m.addAttribute("e", e);
+        return "error";
+    }
+
+    @ExceptionHandler(Exception.class)
+    public String catcher2(Exception e, Model m) {
+        m.addAttribute("e", e);
+        return "error";
+    }
 
     @GetMapping("/list")
     public String list(Integer page, Integer pageSize, String sortKey, String sortOrder, String cateKey, Model m) {
@@ -93,4 +107,12 @@ public class ProductController {
 
         return "productDetail";
     }
+
+    @GetMapping("/manage")
+    public String manage() throws Exception {
+
+        return "manage";
+    }
+
+
 }
