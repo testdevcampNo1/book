@@ -42,32 +42,41 @@
             <p th:text="${pdto.starAvg} ? '구매자 별점 : ' + ${pdto.starAvg} : '별점 없음'">별점</p>
         </div>
         <div class="sales">
-            <p th:text="${pdto.totalSales} ? '판매량 : ' + ${pdto.totalSales}: '판매량 없음'">판매량</p>
+            <p th:text="${pdto.totalSales} ? '판매량 : ' + ${pdto.totalSales} + ' 부': '판매량 없음'">판매량</p>
         </div>
-        <div class="delivery-check">
-            <p th:text="${dawnDeliveryAvailable} ?: '새벽 배송 불가'">새벽 배송 가능 여부</p>
+        <div class="delivery-check" th:if ="${pdto.dawnDeliChk} == null or ${pdto.dawnDeliChk} == 'N'">
+            <p th:text="'새벽 배송 불가 샹품'">새벽 배송 가능 여부</p>
+        </div>
+        <div class="delivery-check" th:if ="${pdto.dawnDeliChk} != null">
+            <p th:text="'새벽 배송 가능 상품'">새벽 배송 가능 여부</p>
         </div>
     </div>
 
     <div class="product-details">
         <h3>목차</h3>
-        <p th:text="${pdto.tableOfContent}">목차 내용</p>
+        <p th:utext="${#strings.replace(pdto.tableOfContent, '\n', '<br/>')}">목차 내용</p>
 
         <h3>요약</h3>
         <p th:text="${pdto.smry}">요약 내용</p>
     </div>
 
 <!--    <div class="author-section">-->
-<!--        <h3 th:text="${adto.authorName} ? ${adto.authorName} : '저자 정보 없음'">저자 이름</h3>-->
-<!--        <p th:text="${adto.authorBio} ? ${adto.authorBio} : '저자 정보 없음'">저자 소개</p>-->
+<!--        <h3 th:text="${adto.authorName} ? '저자 ' + ${adto.authorName} : '저자 정보 없음'">저자 이름</h3>-->
+<!--        <p th:text="${adto.authorBio} ?  ${adto.authorBio} : ''">저자 소개</p>-->
 <!--    </div>-->
 
-    <h3 th:text="${adto.authorName != null ? adto.authorName : '저자 정보 없음'}">저자 이름</h3>
-    <p th:text="${adto.authorBio != null ? adto.authorBio : '저자 소개 없음'}">저자 소개</p>
+    <div class="author-section" th:if="${adto != null}">
+        <h3 th:text="${'저자 ' + adto.authorName}">저자 이름</h3>
+        <p th:text="${adto.authorBio}">저자 소개</p>
+    </div>
+
+    <div class="author-section" th:if="${adto == null}">
+        <h3>저자 정보 없음</h3>
+    </div>
 
     <div class="publisher-section">
-        <h3 th:text="${pdto.pblcr}">출판사 이름</h3>
-        <p th:text="${pdto.pblcrReview}">출판사 서평</p>
+        <h3 th:text="'출판사 : ' + ${pdto.pblcr}">출판사 이름</h3>
+        <p th:text="'출판사 서평 : ' + ${pdto.pblcrReview}">출판사 서평</p>
     </div>
 
     <div class="additional-info">

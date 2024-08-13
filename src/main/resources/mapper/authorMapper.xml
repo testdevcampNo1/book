@@ -65,4 +65,5 @@
         where P.prod_id = #{prodId};
     </select>
 
+
 </mapper>
