@@ -113,12 +113,19 @@
 <!--                <label for="star_avg">평균 별점</label>-->
 <!--                <input type="number" id="star_avg" name="starAvg" step="0.01">-->
 <!--            </div>-->
+<!--            <div class="form-group">-->
+<!--                <label for="cate_code">카테고리 코드</label>-->
+<!--                <input type="text" id="cate_code" name="cateCode">-->
+<!--            </div>-->
             <div class="form-group">
-                <label for="cate_code">카테고리 코드</label>
-                <input type="text" id="cate_code" name="cateCode">
+                <label for="cate_option">카테고리</label>
+                <select id="cate_option" name="cateCode">
+                    <option value="" disabled selected>카테고리 선택</option>
+                    <option th:each="option : ${cateList}" th:value="${option.cateCode}" th:text="${option.cateName}"></option>
+                </select>
             </div>
             <div class="form-group">
-                <label for="author_info_id">저자 정보 ID (저자 미상일 경우 "AUTH000" 입력하시오.)</label>
+                <label for="author_info_id">저자 정보 ID (저자 미상일 경우 "AUTH000"를 선택하시오.)</label>
                 <input type="text" id="author_info_id" name="authorInfoId">
             </div>
             <div class="form-group">
@@ -178,6 +185,7 @@
         let discRate = document.getElementById("disc_rate").value;
         let totalPage = document.getElementById("total_pages").value;
         let totalBooks = document.getElementById("total_books").value;
+        let selectedCate = document.getElementById("cate_option").value;
 
         if (prodName === "") {
             alert("상품 이름을 입력하세요.");
@@ -197,6 +205,11 @@
         }
         if (totalBooks <= 0) {
             alert("유효한 총 권 수를 입력하시오 (1 이상).");
+            return false;
+        }
+
+        if (selectedCate == "" || selectedCate == null) {
+            alert("카테고리를 선택 하시오");
             return false;
         }
         return true;

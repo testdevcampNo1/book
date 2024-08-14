@@ -63,11 +63,6 @@ public class ProductController {
 
         return "product/error";
     }
-//    @ExceptionHandler(Exception.class)
-//    public String except(Exception ex, Model m) {
-//        m.addAttribute("message", "올바르지 않은 요청입니다.");
-//        return "product/error";
-//    }
 
     @GetMapping("/list")
     public String list(Integer page, Integer pageSize, String sortKey, String sortOrder, String cateKey, Model m) throws Exception {
@@ -119,6 +114,10 @@ public class ProductController {
     @GetMapping("/manage")
     public String manage(Model m) throws Exception {
         m.addAttribute("productDto", new ProductDto());
+
+        List<CategoryDto> cateList = categoryService.getAllFinalCategories();
+        m.addAttribute("cateList", cateList);
+
         return "product/manage";
     }
 

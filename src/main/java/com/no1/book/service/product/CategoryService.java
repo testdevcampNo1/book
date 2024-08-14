@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface CategoryService {
     List<CategoryDto> getAllCategories() throws Exception;
+
+    List<CategoryDto> getAllFinalCategories() throws Exception;
 }

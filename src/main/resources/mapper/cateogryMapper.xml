@@ -5,14 +5,22 @@
 
 <mapper namespace="com.no1.book.dao.product.CategoryDao">
 
-<resultMap id="categoryResultMap" type="com.no1.book.domain.product.CategoryDto">
-    <result property="cateCode" column="code"/>
-    <result property="cateName" column="code_name"/>
-</resultMap>
+    <resultMap id="categoryResultMap" type="com.no1.book.domain.product.CategoryDto">
+        <result property="cateCode" column="code"/>
+        <result property="cateName" column="code_name"/>
+    </resultMap>
 
-<select id="getAllCategories" resultMap="categoryResultMap">
-    select code, code_name, cate_now from code
-    where code_type = '203';
-</select>
+    <select id="getAllCategories" resultMap="categoryResultMap">
+        select code, code_name, cate_now
+        from code
+        where code_type = '203';
+    </select>
+
+    <select id="getAllFinalCategories" resultMap="categoryResultMap">
+        select code, code_name, cate_now
+        from code
+        where code_type = '203' and length(code) = 6
+        order by code_name
+    </select>
 
 </mapper>

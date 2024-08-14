@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,6 +31,15 @@ class CategoryDaoTest {
 
         for (int i = 0; i < cateList.size(); i++) {
             System.out.println(cateList.get(i).getCateCode() + " " + cateList.get(i).getCateNow());
+        }
+    }
+
+    @Test
+    void getAllFinalCategoriesTest() {
+        List<CategoryDto> finalCateList = categoryDao.getAllFinalCategories();
+
+        for (int i = 0; i < finalCateList.size(); i++) {
+            System.out.println(finalCateList.get(i).getCateCode() + " " + finalCateList.get(i).getCateName());
         }
     }
 

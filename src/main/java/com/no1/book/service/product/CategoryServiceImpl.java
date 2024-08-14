@@ -17,4 +17,9 @@ public class CategoryServiceImpl implements CategoryService{
     public List<CategoryDto> getAllCategories() throws Exception {
         return categoryDao.getAllCategories();
     }
+
+    @Override
+    public List<CategoryDto> getAllFinalCategories() throws Exception {
+        return categoryDao.getAllFinalCategories();
+    }
 }
