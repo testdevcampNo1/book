@@ -49,7 +49,7 @@ public class PageHandler {
 
     private void doPaging(int totalCnt, SearchCondition sc) {
         this.totalPage = totalCnt / sc.getPageSize() + (totalCnt % sc.getPageSize()==0? 0:1);
-        this.sc.setPage(Math.min(sc.getPage(), totalPage));  // page가 totalPage보다 크지 않게
+        this.sc.setPage(Math.max(Math.min(sc.getPage(), totalPage), 1));  // page가 totalPage보다 크지 않게
         this.startPage = (this.sc.getPage() - 1) / navSize * navSize + 1; // 11 -> 11, 10 -> 1, 15->11. 따로 떼어내서 테스트
         this.endPage = Math.min(startPage + navSize - 1, totalPage);
         this.showPrev = sc.getPage()!=1;

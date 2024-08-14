@@ -1,13 +1,12 @@
 package com.no1.book.service.board;
 
 import com.no1.book.domain.board.BoardNoticeDto;
-import com.no1.book.mapper.board.BoardNoticeDao;
+import com.no1.book.dao.board.BoardNoticeDao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.jdbc.BadSqlGrammarException;
 
 import java.util.ArrayList;
 import java.util.HashSet;

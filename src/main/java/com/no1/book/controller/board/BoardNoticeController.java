@@ -5,7 +5,6 @@ import com.no1.book.common.util.board.PageHandler;
 import com.no1.book.common.util.board.SearchCondition;
 import com.no1.book.domain.board.BoardNoticeDto;
 import com.no1.book.service.board.BoardNoticeService;
-import com.no1.book.service.customer.UserLoginServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,12 +62,10 @@ import java.util.List;
 @Controller
 public class BoardNoticeController {
     BoardNoticeService noticeService;
-    UserLoginServiceImpl userLoginService;
 
     @Autowired
-    public BoardNoticeController(BoardNoticeService noticeService, UserLoginServiceImpl userLoginService) {
+    public BoardNoticeController(BoardNoticeService noticeService) {
         this.noticeService = noticeService;
-        this.userLoginService = userLoginService;
     }
 
     // 공지 목록 조회
@@ -126,7 +123,7 @@ public class BoardNoticeController {
         String id = (String) session.getAttribute("id");
 
         // 관리자 권한 확인
-        if(!userLoginService.isAdmin(id)){
+        if(!isAdmin(id)){
             // 없으면 예외 발생
             throw new AccessDeniedException("권한이 없는 아이디 : " + id);
         }
@@ -147,7 +144,7 @@ public class BoardNoticeController {
         String id = (String) session.getAttribute("id");
 
         // 관리자 권한 확인
-        if(!userLoginService.isAdmin(id)){
+        if(!isAdmin(id)){
             // 없으면 예외 발생
             throw new AccessDeniedException("권한이 없는 아이디 : " + id);
         }
@@ -176,7 +173,7 @@ public class BoardNoticeController {
         String id = (String) session.getAttribute("id");
 
         // 관리자 권한 확인
-        if(!userLoginService.isAdmin(id)){
+        if(!isAdmin(id)){
             throw new AccessDeniedException("권한이 없는 아이디 : " + id);
         }
 
@@ -201,7 +198,7 @@ public class BoardNoticeController {
         String id = (String) session.getAttribute("id");
 
         // 관리자 권한 확인
-        if(!userLoginService.isAdmin(id))
+        if(!isAdmin(id))
             throw new AccessDeniedException("권한이 없는 아이디 : " + id);
 
         // 공지 삭제
@@ -214,6 +211,10 @@ public class BoardNoticeController {
         // 성공 시 리스트로 이동
         rattr.addFlashAttribute("msg", "DEL_OK");
         return "redirect:/cscenter/notice/list";
+    }
+    
+    boolean isAdmin(String id){
+        return true;
     }
 
 

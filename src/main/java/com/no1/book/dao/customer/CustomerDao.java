@@ -1,4 +1,4 @@
-package com.no1.book.mapper.customer;
+package com.no1.book.dao.customer;
 
 import com.no1.book.domain.customer.CustomerDto;
 import org.apache.ibatis.annotations.Mapper;
