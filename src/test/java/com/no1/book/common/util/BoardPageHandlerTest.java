@@ -1,6 +1,6 @@
 package com.no1.book.common.util;
 
-import com.no1.book.common.util.board.PageHandler;
+import com.no1.book.common.util.board.BoardPageHandler;
 import com.no1.book.common.util.board.SearchCondition;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,12 +8,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class PageHandlerTest {
+public class BoardPageHandlerTest {
 
     @Test
     public void testPagingCalculation() {
         SearchCondition sc = new SearchCondition(1, 10);
-        PageHandler ph = new PageHandler(105, sc);
+        BoardPageHandler ph = new BoardPageHandler(105, sc);
 
         assertEquals(11, ph.getTotalPage(), "105개의 항목에 대해 페이지 크기가 10일 때 전체 페이지는 11이어야 합니다.");
         assertEquals(1, ph.getStartPage(), "시작 페이지는 1이어야 합니다.");
@@ -25,7 +25,7 @@ public class PageHandlerTest {
     @Test
     public void testPagingWithDifferentPage() {
         SearchCondition sc = new SearchCondition(11, 10);
-        PageHandler ph = new PageHandler(105, sc);
+        BoardPageHandler ph = new BoardPageHandler(105, sc);
 
         assertEquals(11, ph.getTotalPage(), "105개의 항목에 대해 페이지 크기가 10일 때 전체 페이지는 11이어야 합니다.");
         assertEquals(11, ph.getStartPage(), "11페이지일 때 시작 페이지는 11이어야 합니다.");
@@ -37,7 +37,7 @@ public class PageHandlerTest {
     @Test
     public void testQueryStringGeneration() {
         SearchCondition sc = new SearchCondition(5, 10, "A", "", "title");
-        PageHandler ph = new PageHandler(50, sc);
+        BoardPageHandler ph = new BoardPageHandler(50, sc);
 
         String expectedQuery = "?page=5&pageSize=10&searchOption=A&category=&keyword=title";
         assertEquals(expectedQuery, ph.getQueryString(5), "쿼리 문자열이 올바르게 생성되어야 합니다.");
@@ -46,7 +46,7 @@ public class PageHandlerTest {
     @Test
     public void testPageNavigationDisplay() {
         SearchCondition sc = new SearchCondition(5, 10);
-        PageHandler ph = new PageHandler(100, sc);
+        BoardPageHandler ph = new BoardPageHandler(100, sc);
 
         String expectedNavigation = "< 1 2 3 4 [5] 6 7 8 9 10 >";
         assertEquals(expectedNavigation, ph.showPageNavi(), "페이지 네비게이션이 올바르게 표시되어야 합니다.");

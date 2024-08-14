@@ -1,6 +1,6 @@
 package com.no1.book.dao.board;
 
-import com.no1.book.common.util.board.PageHandler;
+import com.no1.book.common.util.board.BoardPageHandler;
 import com.no1.book.common.util.board.SearchCondition;
 import com.no1.book.domain.board.BoardNoticeDto;
 import org.apache.ibatis.annotations.Mapper;
@@ -20,10 +20,10 @@ public interface BoardNoticeDao {
     List<BoardNoticeDto> selectNoticeSpecial();
 
     // 페이징 결과 조회
-    List<BoardNoticeDto> selectNoticePage(PageHandler ph);
+    List<BoardNoticeDto> selectNoticePage(BoardPageHandler ph);
 
     // 검색
-    List<BoardNoticeDto> selectNoticeSearch(PageHandler ph);
+    List<BoardNoticeDto> selectNoticeSearch(BoardPageHandler ph);
 
     // 상세 조회
     BoardNoticeDto selectNotice(int notcNum);

@@ -8,7 +8,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Getter
 @Setter
 @ToString
-public class PageHandler {
+public class BoardPageHandler {
     private SearchCondition sc;
     // 한 페이지 당 게시물 갯수
 //    private int pageSize;
@@ -29,17 +29,17 @@ public class PageHandler {
     // 이전을 보여 줄지의 여부
     private boolean showNext;
 
-    public PageHandler(){}
+    public BoardPageHandler(){}
 
-    public PageHandler(int totalCnt, Integer page) {
+    public BoardPageHandler(int totalCnt, Integer page) {
         this(totalCnt, new SearchCondition(page, 10));
     }
 
-    public PageHandler(int totalCnt, Integer page, Integer pageSize) {
+    public BoardPageHandler(int totalCnt, Integer page, Integer pageSize) {
         this(totalCnt, new SearchCondition(page, pageSize));
     }
 
-    public PageHandler(int totalCnt, SearchCondition sc) {
+    public BoardPageHandler(int totalCnt, SearchCondition sc) {
         this.totalCnt = totalCnt;
         this.sc = sc;
 
