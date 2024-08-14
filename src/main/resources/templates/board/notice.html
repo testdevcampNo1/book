@@ -1,0 +1,236 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!--<html xmlns:th="http://www.w3.org/1999/html">-->
+<head>
+    <meta charset="UTF-8">
+    <title>fastcampus</title>
+    <link rel="stylesheet" href="/css/board/menu.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Noto Sans KR", sans-serif;
+        }
+
+        .container {
+            width : 50%;
+            margin : auto;
+        }
+
+        .writing-header {
+            position: relative;
+            margin: 20px 0 0 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #323232;
+        }
+
+        input {
+            width: 100%;
+            height: 35px;
+            margin: 5px 0px 10px 0px;
+            border: 1px solid #e9e8e8;
+            padding: 8px;
+            background: #f8f8f8;
+            outline-color: #e6e6e6;
+        }
+
+        textarea {
+            width: 100%;
+            background: #f8f8f8;
+            margin: 5px 0px 10px 0px;
+            border: 1px solid #e9e8e8;
+            resize: none;
+            padding: 8px;
+            outline-color: #e6e6e6;
+        }
+
+        .frm {
+            width:100%;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 13px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .checkbox-container label {
+            vertical-align: middle;
+        }
+
+        .btn {
+            background-color: rgb(236, 236, 236); /* Blue background */
+            border: none; /* Remove borders */
+            color: black; /* White text */
+            padding: 6px 12px; /* Some padding */
+            font-size: 16px; /* Set a font size */
+            cursor: pointer; /* Mouse pointer on hover */
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            text-decoration: underline;
+        }
+
+        .text_box {position:relative; display:inline-block; width:100%;}
+        .text_box textarea {width:100%; height:152px; color:#666; font-family:"ht_r"; font-size:13px; line-height:28px; padding:20px; border:1px solid #e4dcd3; outline:0; resize:none}
+        .text_box .count {position:absolute; right:20px; bottom:20px; color:#666; font-family:"ht_r"; font-size:15px;}
+
+    </style>
+</head>
+<body>
+<script th:inline="javascript">
+    let msg = [[${msg}]];
+    if(msg=="LIST_ERR")     alert("게시물 목록을 가져오는데 실패했습니다. 다시 시도해 주세요.");
+    if(msg=="READ_ERR")     alert("삭제되었거나 없는 게시물입니다.");
+    if(msg=="MOD_ERR")      alert("삭제되었거나 없는 게시물입니다.");
+    if(msg=="DEL_ERR")      alert("삭제되었거나 없는 게시물입니다.");
+    if(msg=="CRT_ERR")      alert("게시물이 생성 되지 않았습니다.");
+    if(msg=="UND_ERR")      alert("서버 에러.");
+    if(msg=="DB_ERR")       alert("서버 에러.");
+
+    if(msg=="DEL_OK")       alert("성공적으로 삭제되었습니다.");
+    if(msg=="WRT_OK")       alert("성공적으로 등록되었습니다.");
+    if(msg=="MOD_OK")       alert("성공적으로 수정되었습니다.");
+
+    let v_msg = [[${v_msg}]];
+    if (v_msg != null) alert(v_msg);
+
+</script>
+<!-- 공통 헤더-->
+<th:block th:replace="~{fragments/head :: headFragment}"/>
+
+<div class="container">
+    <h2 class="writing-header">게시판</h2>
+    <form id="form" class="frm" action="" method="post">
+        <input type="hidden" name="notcNum" th:value="${notice?.notcNum}">
+        <input type="hidden" name="notcType" th:value="${notice?.notcType ?:'01'}">
+        <input type="hidden" name="writer" th:value="${notice?.writer ?:session.id}">
+        <input type="hidden" name="notcStus1" th:value="${notice?.notcStus1 ?:'702'}">
+        <input type="hidden" name="notcStus2" th:value="${notice?.notcStus2 ?:'POST'}">
+        <input type="hidden" name="viewCnt" th:value="${notice?.viewCnt ?:0}">
+        <input type="hidden" name="page" th:value="${sc?.page}">
+        <input type="hidden" name="pageSize" th:value="${sc?.pageSize}">
+
+        <input name="notcTitle" type="text" th:value="${notice?.notcTitle}" placeholder="  제목을 입력해 주세요." maxlength="50" th:attr="readonly=${mode != 'new' ? 'readonly' : null}"><br>
+        <div class="checkbox-container" th:style="${mode != 'new' ? 'display:none' : ''}">
+            <input id="notice" type="checkbox" class="input_check" name="speclChk" th:attr="checked = ${notice?.speclChk == 'Y' ? true : false}">
+            <label for="notice" class="label">특별 공지로 등록</label>
+        </div>
+        <div class="text_box">
+            <textarea name="notcContent" rows="20" placeholder=" 내용을 입력해 주세요." th:text="${notice?.notcContent}" th:attr="readonly=${mode != 'new' ? 'readonly' : null}"></textarea><br>
+            <div class="count"><span>0</span>/2000</div>
+        </div>
+        <th:block th:if="${mode eq 'new'}">
+            <button type="button" id="writeBtn" class="btn btn-write"><i class="fa fa-pencil"></i> 등록</button>
+        </th:block>
+        <th:block th:if="${mode ne 'new' and session.auth eq 'admin'}">
+            <button type="button" id="writeNewBtn" class="btn btn-write"><i class="fa fa-pencil"></i> 글쓰기</button>
+        </th:block>
+        <th:block th:if="${notice?.writer eq session.id and mode != 'new'}">
+            <button type="button" id="modifyBtn" class="btn btn-modify"><i class="fa fa-edit"></i> 수정</button>
+            <button type="button" id="removeBtn" class="btn btn-remove"><i class="fa fa-trash"></i> 삭제</button>
+        </th:block>
+        <button type="button" id="listBtn" th:if="${mode ne 'new'}" class="btn btn-list"><i class="fa fa-bars"></i> 목록</button>
+        <button type="button" class="btn btn-list" th:if="${mode eq 'new'}" th:onclick="|location.href='@{/cscenter/notice/list}'|"><i class="fa fa-bars"></i> 취소</button>
+    </form>
+</div>
+<script th:inline="javascript">
+    $(document).ready(function(){
+        var pageUrl = "?page=" + [[${param.page}]] + "&pageSize=" + [[${param.pageSize}]];
+        let formCheck = function() {
+            let form = document.getElementById("form");
+            if(form.notcTitle.value=="") {
+                alert("제목을 입력해 주세요.");
+                form.notcTitle.focus();
+                return false;
+            }
+
+            if(form.notcContent.value=="") {
+                alert("내용을 입력해 주세요.");
+                form.notcContent.focus();
+                return false;
+            }
+            return true;
+        }
+
+        $("#writeNewBtn").on("click", function(){
+            location.href="/cscenter/notice" + pageUrl;
+        });
+
+        $("#writeBtn").on("click", function(){
+            let form = $("#form");
+            form.attr("action", "/cscenter/notice");
+            form.attr("method", "post");
+
+            if(formCheck())
+                form.submit();
+        });
+
+        $("#modifyBtn").on("click", function(){
+            let form = $("#form");
+            let isReadonly = $("input[name=notcTitle]").attr('readonly');
+
+            // 1. 읽기 상태이면, 수정 상태로 변경
+            if(isReadonly=='readonly') {
+                $(".writing-header").html("게시판 수정");
+                $("input[name=notcTitle]").attr('readonly', false);
+                $("textarea").attr('readonly', false);
+                $("#modifyBtn").html("<i class='fa fa-pencil'></i> 등록");
+                $('.checkbox-container').show();
+                return;
+            }
+
+            // 2. 수정 상태이면, 수정된 내용을 서버로 전송
+            form.attr("action", "/cscenter/notice/modify");
+            form.attr("method", "post");
+            if(formCheck())
+                form.submit();
+        });
+
+        $("#removeBtn").on("click", function(){
+            if(!confirm("정말로 삭제하시겠습니까?")) return;
+
+            let form = $("#form");
+            form.attr("action", "/cscenter/notice/remove/[[${notice?.notcNum}]]");
+            form.attr("method", "get");
+            form.submit();
+        });
+
+        $("#listBtn").on("click", function(){
+            location.href="list" + pageUrl;
+        });
+
+        $('.text_box textarea').keyup(function(){
+            var content = $(this).val();
+            $('.text_box .count span').html(content.length);
+            if (content.length > 2000){
+                alert("최대 2000자까지 입력 가능합니다.");
+                $(this).val(content.substring(0, 2000));
+                $('.text_box .count span').html(2000);
+            }
+        });
+
+        $('#notice').on({click: isSpecial});
+
+        function isSpecial(){
+            isChecked = $('#notice')[0].checked;
+
+            if (isChecked){
+                $('#notice').val("Y");
+            } else {
+                $('#notice').val("N");
+            }
+        }
+    });
+</script>
+</body>
+</html>
