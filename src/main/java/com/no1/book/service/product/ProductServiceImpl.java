@@ -65,12 +65,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> getSortedPage(Map<String, Object> map) throws Exception {
+    public List<ProductDto> getSortedPage(Map<String, Object> map) throws Exception{
         return productDao.getFilteredAndSortedPage(map);
     }
 
     @Override
-    public int getFilteredAndSortedTotalSize(Map<String, Object> map) throws Exception {
+    public int getFilteredAndSortedTotalSize(Map<String, Object> map) throws Exception{
         return productDao.getFilteredAndSortedTotalSize(map);
     }
 
