@@ -1,4 +1,4 @@
-package com.no1.book.common.exception;
+package com.no1.book.common.exception.order;
 
 public class InvalidAmountException extends OrderException {
     public InvalidAmountException(String message) {

@@ -1,4 +1,4 @@
-package com.no1.book.common.exception;
+package com.no1.book.common.exception.order;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 // 모든 컨트롤러에서 발생하는 예외를 중앙에서 처리하는 클래스
-@ControllerAdvice
+@ControllerAdvice(basePackages = "com.no1.book.controller.order")
 public class GlobalExceptionHandler {
 
     // 상품 재고 부족 처리

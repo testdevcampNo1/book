@@ -1,4 +1,4 @@
-package com.no1.book.common.exception;
+package com.no1.book.common.exception.order;
 
 // DB 연결 오류시 던지는 예외
 public class SystemException extends OrderException{

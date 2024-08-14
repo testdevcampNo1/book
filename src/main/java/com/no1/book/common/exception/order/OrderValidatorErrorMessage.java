@@ -1,4 +1,4 @@
-package com.no1.book.common.exception;
+package com.no1.book.common.exception.order;
 
 public enum OrderValidatorErrorMessage {
     MISSING_EMAIL("이메일 정보가 필요합니다."),

@@ -1,7 +1,9 @@
 package com.no1.book.service.order;
 
-import com.no1.book.common.exception.*;
-import com.no1.book.common.validator.OrderValidator;
+import com.no1.book.common.exception.order.OrderException;
+import com.no1.book.common.exception.order.OrderValidatorErrorMessage;
+import com.no1.book.common.exception.order.SystemException;
+import com.no1.book.common.validator.order.OrderValidator;
 import com.no1.book.dao.order.OrderDao;
 import com.no1.book.dao.order.OrderProductDao;
 import com.no1.book.dao.order.OrderStatusHistoryDao;
@@ -13,7 +15,6 @@ import com.no1.book.domain.order.OrderProductDto;
 import com.no1.book.domain.order.OrderStatusHistoryDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

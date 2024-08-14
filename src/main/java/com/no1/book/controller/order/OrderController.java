@@ -1,7 +1,5 @@
 package com.no1.book.controller.order;
 
-import com.no1.book.domain.customer.CustomerDto;
-import com.no1.book.domain.customer.DeliveryAddressDto;
 import com.no1.book.domain.order.OrderFormDto;
 import com.no1.book.domain.order.OrderProductDto;
 import com.no1.book.service.order.OrderService;

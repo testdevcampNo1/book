@@ -1,11 +1,10 @@
 package com.no1.book.service.order;
 
-import com.no1.book.common.exception.OrderValidatorErrorMessage;
-import com.no1.book.common.exception.SystemException;
+import com.no1.book.common.exception.order.OrderValidatorErrorMessage;
+import com.no1.book.common.exception.order.SystemException;
 import com.no1.book.dao.order.OrderDao;
 import com.no1.book.dao.order.OrderProductDao;
 import com.no1.book.dao.order.OrderStatusHistoryDao;
-import com.no1.book.domain.customer.CustomerDto;
 import com.no1.book.domain.order.OrderDto;
 import com.no1.book.domain.order.OrderFormDto;
 import com.no1.book.domain.order.OrderProductDto;

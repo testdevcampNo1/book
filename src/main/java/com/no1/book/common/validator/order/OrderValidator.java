@@ -1,6 +1,6 @@
-package com.no1.book.common.validator;
+package com.no1.book.common.validator.order;
 
-import com.no1.book.common.exception.*;
+import com.no1.book.common.exception.order.*;
 import com.no1.book.domain.order.OrderFormDto;
 import com.no1.book.domain.order.OrderProductDto;
 
