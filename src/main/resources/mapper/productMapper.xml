@@ -24,8 +24,8 @@
         ) VALUES (
                      #{prodId}, #{isEbook}, #{prodName}, #{prodBasePrice}, #{discRate}, #{prodBasePrice} * #{discRate} / 100, #{prodBasePrice} - (#{prodBasePrice} * #{discRate} / 100),
                      0, #{tableOfContent}, #{smry}, #{pblcr}, #{pblcrReview}, #{imageId}, #{isbn}, #{pblshDate},
-                     #{totalPages}, #{totalBooks}, #{trlr}, #{dawnDeliChk}, #{starAvg}, #{cateCode}, now(), 'admin', now(), 'admin',
-                      #{authorInfoId}, #{ordChkCode}, #{codeType}
+                     #{totalPages}, #{totalBooks}, #{trlr}, #{dawnDeliChk}, #{starAvg}, #{cateCode}, date(now()), 'admin', now(), 'admin',
+                      #{authorInfoId}, #{ordChkCode}, 202
                  )
     </insert>
 
@@ -170,5 +170,11 @@
         where p.cate_code = #{cateCode}
         limit 1;
     </select>
+
+    <select id="idChk" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM product
+        WHERE prod_id = #{prodId}
+    </select>
+
 
 </mapper>

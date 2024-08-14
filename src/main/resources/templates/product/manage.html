@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리 페이지</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .form-container {
+            width: 48%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-group textarea {
+            height: 100px;
+        }
+        .btn-group {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+<!--상품 추가-->
+    <div class="form-container">
+        <h2>상품 등록</h2>
+        <form th:action="@{/product/add}" method="post" id="addForm">
+            <div class="form-group">
+                <div style="display: flex; align-items: center;">
+                    <input type="hidden" id="prod_id" name="prodId" value="1">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="prod_name">상품 이름</label>
+                <input type="text" id="prod_name" name="prodName">
+            </div>
+<!--            <div class="form-group">-->
+<!--                <label for="is_ebook">전자책 여부</label>-->
+<!--&lt;!&ndash;                <input type="hidden" name="isEbook" value="N">&ndash;&gt;-->
+<!--                <input type="checkbox" id="is_ebook" value="Y" name="isEbook">-->
+<!--            </div>-->
+            <div class="form-group">
+                <label for="prod_base_price">기본 가격</label>
+                <input type="number" id="prod_base_price" name="prodBasePrice">
+            </div>
+            <div class="form-group">
+                <label for="disc_rate">할인율</label>
+                <input type="number" id="disc_rate" name="discRate">
+            </div>
+<!--            <div class="form-group">-->
+<!--                <label for="total_sales">총 판매량</label>-->
+<!--                <input type="number" id="total_sales" name="totalSales">-->
+<!--            </div>-->
+            <div class="form-group">
+                <label for="table_of_content">목차</label>
+                <textarea id="table_of_content" name="tableOfContent"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="smry">요약</label>
+                <textarea id="smry" name="smry"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="pblcr">출판사</label>
+                <input type="text" id="pblcr" name="pblcr">
+            </div>
+            <div class="form-group">
+                <label for="pblcr_review">출판사 서평</label>
+                <textarea id="pblcr_review" name="pblcrReview"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="isbn">ISBN</label>
+                <input type="text" id="isbn" name="isbn">
+            </div>
+            <div class="form-group">
+                <label for="pblsh_date">출판 날짜</label>
+                <input type="date" id="pblsh_date" name="pblshDate">
+            </div>
+            <div class="form-group">
+                <label for="total_pages">총 페이지 수</label>
+                <input type="number" id="total_pages" name="totalPages">
+            </div>
+            <div class="form-group">
+                <label for="total_books">총 권 수</label>
+                <input type="number" id="total_books" name="totalBooks">
+            </div>
+            <div class="form-group">
+                <label for="trlr">번역가</label>
+                <input type="text" id="trlr" name="trlr">
+            </div>
+            <div class="form-group">
+<!--                <input type="hidden" name="dawnDeliChk" value="N">-->
+                <label for="dawn_deli_chk">새벽 배송 여부</label>
+                <input type="checkbox" id="dawn_deli_chk" value="Y" name="dawnDeliChk">
+            </div>
+<!--            <div class="form-group">-->
+<!--                <label for="star_avg">평균 별점</label>-->
+<!--                <input type="number" id="star_avg" name="starAvg" step="0.01">-->
+<!--            </div>-->
+            <div class="form-group">
+                <label for="cate_code">카테고리 코드</label>
+                <input type="text" id="cate_code" name="cateCode">
+            </div>
+            <div class="form-group">
+                <label for="author_info_id">저자 정보 ID (저자 미상일 경우 "AUTH000" 입력하시오.)</label>
+                <input type="text" id="author_info_id" name="authorInfoId">
+            </div>
+            <div class="form-group">
+                <label for="ord_chk_code">주문 상태 코드</label>
+                <select id="ord_chk_code" name="ordChkCode">
+                    <option value="AVBL">AVBL (주문 가능)</option>
+                    <option value="OSTK">OSTK (일시 품절)</option>
+                    <option value="STOP">STOP (판매 중지)</option>
+                </select>
+            </div>
+            <div class="btn-group">
+                <button type="submit" id="addBtn">상품 등록</button>
+            </div>
+        </form>
+    </div>
+
+<!--상품관리-->
+    <div class="form-container">
+        <h2>상품 수정, 삭제</h2>
+        <form th:action="@{/product/manage}" method="post">
+            <div class="form-group">
+                <label for="search_prod_id">상품 ID</label>
+                <input type="text" id="search_prod_id" name="search_prod_id">
+                <button type="button" formaction="@{/product/view}">조회</button>
+            </div>
+            <!-- 동일한 필드가 오른쪽에도 복사됨 -->
+        <div th:if="${pdto != null}">
+                <div class="form-group">
+                    <label for="prod_name">상품 이름</label>
+                    <input type="text" id="prod_name" name="prod_name" th:value="${pdto.prodName}">
+                </div>
+                <!-- 추가 필드들... -->
+                <div class="form-group">
+                    <label for="prod_base_price">기본 가격</label>
+                    <input type="number" id="prod_base_price" name="prod_base_price" th:value="${pdto.prodBasePrice}">
+                </div>
+                <div class="form-group">
+                    <label for="disc_rate">할인율</label>
+                    <input type="number" id="disc_rate" name="disc_rate" th:value="${pdto.discRate}">
+                </div>
+                <!-- 나머지 필드들도 동일하게 처리 -->
+                <div class="btn-group">
+                    <button type="submit" formaction="@{/product/update}">수정</button>
+                    <button type="submit" formaction="@{/product/delete}">삭제</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div style="text-align: center;">
+    <a th:href="@{/product/list}">목록</a>
+</div>
+<script>
+    function validateForm() {
+        let prodName = document.getElementById("prod_name").value.trim();
+        let prodBasePrice = document.getElementById("prod_base_price").value;
+        let discRate = document.getElementById("disc_rate").value;
+        let totalPage = document.getElementById("total_pages").value;
+        let totalBooks = document.getElementById("total_books").value;
+
+        if (prodName === "") {
+            alert("상품 이름을 입력하세요.");
+            return false;
+        }
+        if (prodBasePrice === "" || prodBasePrice <= 0) {
+            alert("유효한 기본 가격을 입력하세요.");
+            return false;
+        }
+        if (discRate === "" || discRate < 0 || discRate > 100) {
+            alert("유효한 할인율을 입력하세요 (0~100).");
+            return false;
+        }
+        if (totalPage <= 0) {
+            alert("유효한 총 페이지를 입력하시오 (1 이상).");
+            return false;
+        }
+        if (totalBooks <= 0) {
+            alert("유효한 총 권 수를 입력하시오 (1 이상).");
+            return false;
+        }
+        return true;
+    }
+    function isNumeric(value) {
+        return /^\d+$/.test(value);
+    }
+
+    function validateNumericFields() {
+        let totalSales = document.getElementById("total_sales").value;
+
+        if (!isNumeric(totalSales)) {
+            alert("판매량은 숫자만 입력해야 합니다.");
+            return false;
+        }
+        return true;
+    }
+    document.getElementById("addForm").addEventListener("submit", function(event) {
+        if (!validateForm() || !validateNumericFields()) {
+            event.preventDefault(); // 폼 제출을 막음
+        }
+    });
+</script>
+</body>
+</html>

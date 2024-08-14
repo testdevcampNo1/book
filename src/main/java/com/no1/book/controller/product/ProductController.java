@@ -6,17 +6,16 @@ import com.no1.book.domain.product.PageHandler;
 import com.no1.book.domain.product.ProductDto;
 import com.no1.book.service.product.CategoryService;
 import com.no1.book.service.product.ProductService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.io.FileNotFoundException;
+import java.util.DuplicateFormatFlagsException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,26 +36,14 @@ public class ProductController {
     @Autowired
     CategoryService categoryService;
 
-    @ExceptionHandler({NullPointerException.class, FileNotFoundException.class})
-    public String catcher1(Exception e, Model m) {
-        m.addAttribute("e", e);
-        return "error";
-    }
-
-    @ExceptionHandler(Exception.class)
-    public String catcher2(Exception e, Model m) {
-        m.addAttribute("e", e);
-        return "error";
-    }
 
     @GetMapping("/list")
     public String list(Integer page, Integer pageSize, String sortKey, String sortOrder, String cateKey, Model m) {
-
         if (page==null) page=1;
         if (pageSize==null) pageSize=10;
         if (sortKey == null) sortKey = "date";
         if (sortOrder == null) sortOrder = "desc";
-        if (cateKey == null) cateKey = "";
+//        if (cateKey == null) cateKey = "";
 
 
         try {
@@ -86,7 +73,7 @@ public class ProductController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "productList";
+        return "product/productList";
     }
 
     @GetMapping("/detail")
@@ -104,14 +91,23 @@ public class ProductController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return "productDetail";
+        return "product/productDetail";
     }
 
     @GetMapping("/manage")
-    public String manage() throws Exception {
+    public String manage(Model m) throws Exception {
+        m.addAttribute("productDto", new ProductDto());
+        return "product/manage";
+    }
 
-        return "manage";
+    @PostMapping("/add")
+    public String add(@ModelAttribute ProductDto productDto, Model m) throws Exception {
+        try {
+            productService.addProduct(productDto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "redirect:/product/manage";
     }
 
 

@@ -3,7 +3,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Product List</title>
-    <link rel="stylesheet" th:href="@{/css/list.css}">
+    <link rel="stylesheet" th:href="@{/css/product/list.css}">
 </head>
 <body>
 
@@ -72,7 +72,7 @@
     </tr>
     <tr th:each="product : ${prodList}">
         <td><a th:href="@{/product/detail(prodId=${product.prodId})}" th:text="${product.prodName}"></a></td>
-        <td><img th:src="@{/images/imsi.png}" alt="상품 이미지" style="width: 100px; height: 150px;"></td>
+        <td><img th:src="@{/images/product/imsi.png}" alt="상품 이미지" style="width: 100px; height: 150px;"></td>
         <td th:text="${product.smry}"></td>
         <td th:text="${product.prodBasePrice}">상품 가격</td>
         <td th:text="${product.discRate}">할인율</td>
@@ -83,6 +83,10 @@
         <td th:text="${product.regDate}">상품 등록일</td>
     </tr>
 </table>
+</div>
+<br>
+<div style="float: right;">
+    <a th:href="@{/product/manage}">manage</a>
 </div>
 <br>
 <nav style="text-align: center;">

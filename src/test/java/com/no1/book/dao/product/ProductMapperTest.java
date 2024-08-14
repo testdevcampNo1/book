@@ -72,7 +72,7 @@ class ProductDaoTest {
             // 1-2단계 : 새로로운 Dto 생성
         ProductDto dto = ProductDto.builder()
                 .prodId("PROD_IMSI")
-                .isEbook(false)
+                .isEbook("N")
                 .prodName("테스트 상품")
                 .prodBasePrice(20000)
                 .discRate(10)
@@ -139,13 +139,69 @@ class ProductDaoTest {
         // 3단계 검증 -> 조회해서 Not Null 데이터들이 default로 잘 들어갔는지 확인
         ProductDto insertedDto = productDao.select("PROD_IMSI");
         // 3-1단계 is_book이 false면 통과
-        assertEquals(false, insertedDto.getIsEbook());
+        assertEquals("N", insertedDto.getIsEbook());
         // 3-2단계 authorInfoId가 "0"이면 통과
         assertEquals("0", insertedDto.getOrdChkCode());
-        // 3-3단계 ordChkCode가 "0"이면 통과
-        assertEquals("0", insertedDto.getCodeType());
+        // 3-3단계 ordChkCode가 "202"이면 통과
+        assertEquals("202", insertedDto.getCodeType());
 
     }
+
+//    // 이미 존재하는 prodId에 대해 삽입을 하려 할 때
+//    @Test
+//    void insertTest3() throws Exception {
+//        // 1단계: 데이터 선택 -> 삽입할 새로운 Dto
+//        // 1-1단계 : 삽입할 데이터의 prodId와 동일한 데이터 제거
+//        productDao.delete("PROD_IMSI");
+//        // 1-2단계 : 새로로운 Dto 생성
+//        ProductDto dto = ProductDto.builder()
+//                .prodId("PROD_IMSI")
+//                .prodName("테스트 상품")
+//                .prodBasePrice(20000)
+//                .discRate(10)
+//                .totalSales(0)
+//                .tableOfContent("테스트 목차")
+//                .smry("테스트 요약")
+//                .pblcr("테스트 출판사")
+//                .pblcrReview("테스트 리뷰")
+//                .imageId("테스트 이미지")
+//                .isbn("1234567890123")
+//                .pblshDate("2023-08-07")
+//                .totalPages("200")
+//                .totalBooks("30")
+//                .trlr("테스트 트레일러")
+//                .dawnDeliChk("N")
+//                .build();
+//
+//        // 1-3 단계 : 삽입
+//        productDao.insert(dto);
+//
+//        // 2단계 : 같은 id를 가진 새로운 dto를 삽입
+//            // 2-1 단계 : 새로로운 Dto 생성
+//        ProductDto dto2 = ProductDto.builder()
+//                .prodId("PROD_IMSI")
+//                .prodName("테스트 상품")
+//                .prodBasePrice(20000)
+//                .discRate(10)
+//                .totalSales(0)
+//                .tableOfContent("테스트 목차")
+//                .smry("테스트 요약")
+//                .pblcr("테스트 출판사")
+//                .pblcrReview("테스트 리뷰")
+//                .imageId("테스트 이미지")
+//                .isbn("1234567890123")
+//                .pblshDate("2023-08-07")
+//                .totalPages("200")
+//                .totalBooks("30")
+//                .trlr("테스트 트레일러")
+//                .dawnDeliChk("N")
+//                .build();
+//
+//        // 2-2 단계 : 삽입
+//        productDao.insert(dto2);
+//
+//        // 3단계 검증 -> 실행하고 에러 뜨는지 안뜨는지 확인
+//    }
 
 
     // 전체 상품 갯수 카운트 테스트
@@ -199,7 +255,7 @@ class ProductDaoTest {
         if (dto == null) {
             dto = ProductDto.builder()
                     .prodId("PROD_IMSI")
-                    .isEbook(false)
+                    .isEbook("N")
                     .prodName("테스트 상품")
                     .prodBasePrice(20000)
                     .discRate(10)
@@ -246,7 +302,7 @@ class ProductDaoTest {
         productDao.delete("PROD_IMSI");
         ProductDto dto = ProductDto.builder()
                 .prodId("PROD_IMSI")
-                .isEbook(false)
+                .isEbook("N")
                 .prodName("테스트 상품")
                 .prodBasePrice(20000)
                 .discRate(10)
@@ -311,7 +367,6 @@ class ProductDaoTest {
         assertEquals(30, size);
     }
 
-    // 코드 테이블에 모든 카테고리 정보가 담겨있음을 가정
     @Test
     void getCateNameTest() throws Exception {
         // 1단계 데이터 선택 -> id가 PROD_IMSI이면서 카테고리 코드가 010101인 임의의 dto
@@ -333,8 +388,9 @@ class ProductDaoTest {
 
         // 3단계 cateName이 "일반책>국내도서>인문/시/에세이"라면 통과
         assertEquals("일반책>국내도서>인문/시/에세이", cateName);
-    }
 
+        productDao.delete("RPOD_IMSI");
+    }
 
 
 //    // 가격 오름차순 정렬 테스트

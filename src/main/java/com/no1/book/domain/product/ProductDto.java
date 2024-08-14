@@ -17,7 +17,7 @@ public class ProductDto {
     // 필드 선언부
     private String prodId;
     @Builder.Default
-    private Boolean isEbook = false;
+    private String isEbook = "N";
     private String prodName;
     private Integer prodBasePrice;
     private Integer discRate;
