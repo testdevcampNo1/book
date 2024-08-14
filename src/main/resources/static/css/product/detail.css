@@ -1,0 +1,66 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.product-image {
+    width: 100%;
+    height: auto;
+    max-width: 400px;
+    margin: 0 auto;
+    display: block;
+}
+
+.product-info {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.product-price {
+    margin-top: 20px;
+}
+
+.product-purchase {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.product-purchase .quantity {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.product-purchase .quantity button {
+    margin: 0 5px;
+}
+
+.rating-sales,
+.delivery-check,
+.product-details,
+.author-section,
+.publisher-section,
+.additional-info {
+    margin-top: 20px;
+}
+
+h2, h3, h4, p {
+    margin: 10px 0;
+}
+
+.product-price h2 {
+    text-decoration: line-through; /* 취소선 */
+    font-size: 1.2em; /* 기본 폰트 크기 */
+}
+
+.product-price h4 {
+    font-size: 1.5em; /* 주문가의 폰트 크기 */
+    font-weight: bold; /* 더 굵게 */
+}

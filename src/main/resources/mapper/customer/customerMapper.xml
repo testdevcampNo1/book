@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.no1.book.dao.customer.CustomerDao">
+
+    <!--   회원가입     -->
+    <insert id="insertCustomer" parameterType="CustomerDto">
+        INSERT INTO customer (cust_id, pwd, name, main_addr, mobile_num, gender, email, birth_date, date, image, nickname, acc_price, point, tou, adult_chk, withd_chk, grade_id, reg_date, reg_id, up_date, up_id)
+        VALUES (#{custId}, #{pwd},#{name},#{mainAddr},#{mobileNum},#{gender},#{email},#{birthDate},#{date},#{image},#{nickName},#{accPrice},#{point},#{tou},#{adultChk},#{withdChk},#{gradeId},#{regDate},#{regId},#{upDate},#{upId})
+    </insert>
+
+    <!--   회원전체조회     -->
+    <select id="selectCustomerList" resultType="CustomerDto">
+        select *
+        from customer
+    </select>
+
+    <!--   회원한명조회     -->
+    <select id="selectCustomer" parameterType="String" resultType="CustomerDto">
+        select *
+        from customer
+        where cust_id=#{custId}
+    </select>
+    <!--   아이디 사용가능 여부     -->
+    <select id="idCheckCustomer" resultType="int" parameterType="String">
+        select
+            IF(COUNT(cust_id>0), 1, 0)
+        FROM
+            customer
+        where cust_id = #{custId}
+    </select>
+
+    <!--    로그인     -->
+    <select id="loginCustomer" resultType="CustomerDto">
+        select *
+        FROM customer
+        where cust_id=#{custId}
+        and pwd=#{pwd}
+    </select>
+
+
+
+
+
+    <!--   회원정보수정     -->
+    <select id="updateCustomer">
+       update customer
+       set pwd = #{pwd},
+           email = #{email},
+           name = #{name},
+           mobile_num = #{mobileNum},
+           gender = #{gender},
+           birth_date = #{birthDate},
+           up_date = NOW()
+        where cust_id= #{custId}
+    </select>
+    <!--   회원삭제     -->
+   <delete id="deleteCustomer">
+       DELETE
+       from customer
+       where cust_id=#{custId}
+    </delete>
+
+</mapper>
