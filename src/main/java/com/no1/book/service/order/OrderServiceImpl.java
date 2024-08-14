@@ -12,6 +12,8 @@ import com.no1.book.domain.order.OrderFormDto;
 import com.no1.book.domain.order.OrderProductDto;
 import com.no1.book.domain.order.OrderStatusHistoryDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +33,12 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderValidator orderValidator = new OrderValidator();
 
-    private static final int MIN_ORDER_AMOUNT_FOR_FREE_DELIVERY = 15000; // 무료 배송을 위한 상품 최소 금액
-    private static final int DELIVERY_FEE = 2500; // 배송비
+    // 상수 - application.properties에서 정의
+    @Value("${MIN_ORDER_AMOUNT_FOR_FREE_DELIVERY}")
+    private int minOrderAmountForFreeDelivery;
+
+    @Value("${DELIVERY_FEE}")
+    private int deliveryFee;
 
     /*
     # 주문 화면 진입
@@ -65,7 +71,7 @@ public class OrderServiceImpl implements OrderService {
         - 주문 번호는 주문 목록을 최신순으로 정렬하여 가장 첫번째 주문의 주문 번호를 가져오도록 한다.
 
     4. 주문 완료 페이지로 redirect
-        - 뒤로가기를 막기 위해 redirect를 사용하여 주문 완료 페이지에 보내도록 한다.
+        - 뒤로가기를 막기 위해 redirect를 사용하여 주문 완료 페이지에 보내도록 한다. ? 고민 필요
      */
 
     // 화면 첫 진입시 받은 정보를 OrderFormDto에 저장
@@ -74,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
         OrderFormDto orderFormDto = new OrderFormDto();
 
         // 1. 회원ID 저장
-        // TODO: Q. 회원ID의 경우 다른 페이지에서 진입시 전달받아야 하는가, session에서 가져와야 하는가?
+        // TODO: Q. 회원ID의 경우 다른 페이지에서 진입시 전달받아야 하는가, session에서 가져와야 하는가? -> session으로 하는 게 맞겠다
         //  session에서 받을 경우 비회원 판단은 null로?
         orderFormDto.setCustId(custId);
 
@@ -262,7 +268,7 @@ public class OrderServiceImpl implements OrderService {
     // 배송비 계산
     void setDeliveryPrice(OrderFormDto orderFormDto) {
         // 총 금액이 15000원보다 적으면 배송비 존재
-        int dlvPrice = orderFormDto.getTotalProdBasePrice() - orderFormDto.getTotalDiscPrice() < MIN_ORDER_AMOUNT_FOR_FREE_DELIVERY ? DELIVERY_FEE : 0;
+        int dlvPrice = orderFormDto.getTotalProdBasePrice() - orderFormDto.getTotalDiscPrice() < minOrderAmountForFreeDelivery ? deliveryFee : 0;
 
         // 총 결제 금액 = 총 상품 금액 - 총 할인 금액 - 배송비
         orderFormDto.setTotalSalePrice(orderFormDto.getTotalProdBasePrice() - orderFormDto.getTotalDiscPrice() - dlvPrice);

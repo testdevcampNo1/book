@@ -235,9 +235,10 @@
                         <div class="sale_price" th:text="${product.getTotalPayPrice()} + '원'"></div>
                         <div class="product_base_price" th:text="${product.getTotalProdPrice()} + '원'"></div>
                     </div>
+                    <input type="hidden" name="email" th:value="${orderInfo.getEmail()}">
                 </div>
             </div>
-            <div th:text="'예상 도착일 : ' + ${orderInfo.getDlvDate()} + ' 이전'" style="margin-top: 12px"></div>
+            <div th:text="'예상 도착일 : ' + ${orderInfo.getDlvDate()}" style="margin-top: 12px"></div>
             <input type="hidden" name="dlvDate" th:value="${orderInfo.getDlvDate()}">
         </div>
         <!-- 결제 수단 정보 -->
