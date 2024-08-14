@@ -1,4 +1,4 @@
-package com.no1.book.common.exception;
+package com.no1.book.common.exception.board;
 
 import com.no1.book.domain.board.BoardNoticeDto;
 import org.springframework.dao.DataAccessException;

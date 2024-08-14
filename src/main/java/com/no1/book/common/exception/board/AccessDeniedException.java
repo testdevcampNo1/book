@@ -1,4 +1,4 @@
-package com.no1.book.common.exception;
+package com.no1.book.common.exception.board;
 
 public class AccessDeniedException extends RuntimeException {
 

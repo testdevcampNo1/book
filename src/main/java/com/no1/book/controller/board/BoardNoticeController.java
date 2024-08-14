@@ -1,8 +1,8 @@
 package com.no1.book.controller.board;
 
-import com.no1.book.common.exception.*;
-import com.no1.book.common.util.PageHandler;
-import com.no1.book.common.util.SearchCondition;
+import com.no1.book.common.exception.board.*;
+import com.no1.book.common.util.board.PageHandler;
+import com.no1.book.common.util.board.SearchCondition;
 import com.no1.book.domain.board.BoardNoticeDto;
 import com.no1.book.service.board.BoardNoticeService;
 import com.no1.book.service.customer.UserLoginServiceImpl;

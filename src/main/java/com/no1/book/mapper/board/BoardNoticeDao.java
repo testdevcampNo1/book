@@ -1,11 +1,10 @@
 package com.no1.book.mapper.board;
 
-import com.no1.book.common.util.PageHandler;
-import com.no1.book.common.util.SearchCondition;
+import com.no1.book.common.util.board.PageHandler;
+import com.no1.book.common.util.board.SearchCondition;
 import com.no1.book.domain.board.BoardNoticeDto;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.HashMap;
 import java.util.List;
 
 @Mapper

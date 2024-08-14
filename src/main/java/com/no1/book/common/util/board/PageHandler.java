@@ -1,4 +1,4 @@
-package com.no1.book.common.util;
+package com.no1.book.common.util.board;
 
 import lombok.Getter;
 import lombok.Setter;
