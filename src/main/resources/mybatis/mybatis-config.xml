@@ -7,6 +7,5 @@
     <settings>
         <!-- DB 조회결과 snake_case -> camelCase 변환 -->
         <setting name="mapUnderscoreToCamelCase" value="true" />
-
     </settings>
 </configuration>
