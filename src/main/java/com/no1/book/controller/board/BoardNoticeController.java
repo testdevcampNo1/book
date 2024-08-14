@@ -1,7 +1,7 @@
 package com.no1.book.controller.board;
 
 import com.no1.book.common.exception.board.*;
-import com.no1.book.common.util.board.PageHandler;
+import com.no1.book.common.util.board.BoardPageHandler;
 import com.no1.book.common.util.board.SearchCondition;
 import com.no1.book.domain.board.BoardNoticeDto;
 import com.no1.book.service.board.BoardNoticeService;
@@ -81,7 +81,7 @@ public class BoardNoticeController {
         int count = noticeService.countNoticeSearch(sc);
 
         // 페이지 핸들러 생성
-        PageHandler ph = new PageHandler(count, sc);
+        BoardPageHandler ph = new BoardPageHandler(count, sc);
 
         // 공지 목록 조회
         List<BoardNoticeDto> noticeList = noticeService.findNoticeSearch(ph);

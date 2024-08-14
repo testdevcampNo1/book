@@ -1,6 +1,6 @@
 package com.no1.book.service.board;
 
-import com.no1.book.common.util.board.PageHandler;
+import com.no1.book.common.util.board.BoardPageHandler;
 import com.no1.book.common.util.board.SearchCondition;
 import com.no1.book.domain.board.BoardNoticeDto;
 import com.no1.book.dao.board.BoardNoticeDao;
@@ -46,13 +46,13 @@ public class BoardNoticeServiceImpl implements BoardNoticeService {
 
     // 페이지 결과 조회
     @Override
-    public List<BoardNoticeDto> findNoticePage(PageHandler ph) {
+    public List<BoardNoticeDto> findNoticePage(BoardPageHandler ph) {
         return noticeDao.selectNoticePage(ph);
     }
 
     // 검색 결과 조회
     @Override
-    public List<BoardNoticeDto> findNoticeSearch(PageHandler ph) {
+    public List<BoardNoticeDto> findNoticeSearch(BoardPageHandler ph) {
         return noticeDao.selectNoticeSearch(ph);
     }
 

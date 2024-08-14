@@ -1,6 +1,6 @@
 package com.no1.book.service.board;
 
-import com.no1.book.common.util.board.PageHandler;
+import com.no1.book.common.util.board.BoardPageHandler;
 import com.no1.book.common.util.board.SearchCondition;
 import com.no1.book.domain.board.BoardNoticeDto;
 
@@ -13,8 +13,8 @@ public interface BoardNoticeService {
     List<BoardNoticeDto> findNoticeList();
     // 특별 공지 목록 조회
     List<BoardNoticeDto> findNoticeSpecial();
-    List<BoardNoticeDto> findNoticePage(PageHandler ph);
-    List<BoardNoticeDto> findNoticeSearch(PageHandler ph);
+    List<BoardNoticeDto> findNoticePage(BoardPageHandler ph);
+    List<BoardNoticeDto> findNoticeSearch(BoardPageHandler ph);
     // 공지 상세 조회
     BoardNoticeDto findNotice(int notcNum);
     // 공지 수정
