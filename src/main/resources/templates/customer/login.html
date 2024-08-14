@@ -1,0 +1,446 @@
+<!DOCTYPE html><html lang="ko" xmlns:th="http://www.thymeleaf.org"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Login</title>
+    <style>
+        body {
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #ecf2f8, #eaf3f9, #ffffff);
+            position: relative; /* body를 상대 위치로 설정 */
+        }
+        body::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 10vh; /* 원하는 높이로 설정 */
+            background-color: #ffffff; /* 흰색 배경 */
+        }
+        body {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            min-height: 100vh; /* Ensures the body is at least the full height of the viewport */
+            margin: 0;
+            background: linear-gradient(to right, #ecf2f8, #eaf3f9, #ffffff);
+            font-family: 'Pretendard-Regular';
+        }
+
+
+
+        @font-face {
+            font-family: 'Pretendard-Regular';
+            src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+            font-weight: 400;
+            font-style: normal;
+        }
+        html>header{
+            font-family:'Pretendard-Regular';
+        }
+        .menu-1{
+            font-family:'Pretendard-Regular';
+        }
+        .menu-1>li>a{
+            color:black;
+            text-decoration: none;
+        }
+        html>body{
+            font-family:'Pretendard-Regular'
+        }
+        body,ul,li{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .a{
+            color: inherit;
+            text-decoration: none;
+        }
+        h1 a {
+            text-decoration: none; /* 링크의 밑줄 제거 */
+            color: inherit; /* 기본 링크 색상 유지 */
+        }
+        p {
+            padding-left: 10px; /* 왼쪽에 20px의 공백을 추가합니다. */
+        }
+
+
+        .con{
+            width:1080px;
+            margin-left: auto;
+            margin-right:auto;
+        }
+        .block{
+            display: block;
+        }
+        .flex{
+            display:flex;
+        }
+        .flex-grow{
+            flex-grow: 1;
+        }
+        .items-center{
+            align-items: center;
+        }
+        .h-full{
+            height: 100%;
+        }
+        .w-full{
+            width:100%;
+        }
+        .bg-red-500{
+            background-color: red;
+        }
+        .bg-blue-500{
+            background-color: blue;
+        }
+        .bg-green-500{
+            background-color: green;
+        }
+        .bg-gold-500{
+            background-color: yellow;
+        }
+        .px-4{
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        .br-space{
+            line-height: 1.5;
+        }
+        .custom-link {
+            display: inline-block; /* 링크를 블록 요소로 설정하여 너비와 높이를 조절할 수 있도록 합니다. */
+            padding: 5px 10px; /* 텍스트 주변에 여백을 추가합니다. */
+            background-color:  #2a7de1;; /* 배경색을 파란색으로 설정합니다. */
+            color: white; /* 텍스트 색상을 흰색으로 설정합니다. */
+            text-decoration: none; /* 기본 링크 스타일인 밑줄을 제거합니다. */
+            border-radius: 15px; /* 둥근 테두리를 위한 테두리 반경을 설정합니다. */
+        }
+        .custom-box {
+            display: inline-block; /* 링크를 블록 요소로 설정하여 너비와 높이를 조절할 수 있도록 합니다. */
+            padding: 5px 10px; /* 텍스트 주변에 여백을 추가합니다. */
+            background-color:  rgb(126, 161, 222); /* 배경색을 파란색으로 설정합니다. */
+            color: white; /* 텍스트 색상을 흰색으로 설정합니다. */
+            border-radius: 15px; /* 둥근 테두리를 위한 테두리 반경을 설정합니다. */
+        }
+
+        /*커스텀*/
+        .top-bar{
+            position: fixed;
+            top:0;
+            left:0;
+            right:0;
+            z-index: 1000;
+            width: 100%;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            height:81px;
+            backdrop-filter: blur(100px);
+            background-color: white;
+        }
+        .top-bar >.con{
+            height: 100%;
+            padding: 0 20px;
+        }
+        .top-bar>.con>.logo{
+            padding:0 20px;
+        }
+
+
+        .top-bar .menu-1 li a:hover {
+            text-decoration: underline; /* 호버 시에 밑줄 추가 */
+        }
+
+        .intro_text{
+            padding-top: 81px;
+            text-align: center;
+        }
+
+        .main_text0{
+            width: 100%;
+            height: 0px;
+            margin-top:0;
+            background: rgb(108, 11, 11);
+        }
+        .main_text0> h1{
+            text-align: center;
+        }
+        .main_text0 > .contents1 {
+            text-align: center;
+        }
+        h1 a.custom-link {
+            margin-top: 100px; /* 위쪽 마진 크기 조절 */
+        }
+
+        .custom-link {
+            display: block; /* 링크를 블록 레벨 요소로 설정하여 가로폭을 가득 채우도록 합니다. */
+            margin: 0 auto; /* 가운데 정렬을 위해 margin을 auto로 설정합니다. */
+            width: fit-content; /* 링크의 내용에 맞게 너비를 설정합니다. */
+            text-align: center; /* 링크 안의 텍스트를 가운데 정렬합니다. */
+        }
+        .grey{
+            color:grey;
+        }
+
+
+
+
+        .icons{
+            display: flex;
+            width:1080px;
+            height:402px;
+            margin: auto;
+        }
+        .icons > li {
+            flex: 1;
+            margin-top:49px;
+            height:302px;
+            text-align: center;
+            border-radius: 10px;
+            list-style-type:none;
+        }
+        .icons > li > .icon_img{
+            margin-top:18px;
+        }
+
+        .icons > li:not(:last-child){
+            margin-right: 20px;
+        }
+
+        .icons .contents2 {
+            width:280px;
+            margin:auto;
+            letter-spacing: -1px;
+        }
+        .more{
+            width:100px;
+            height: 30px;
+            background: #2F7AF4;
+            color: #fff;
+            font-size: 12px;
+            line-height: 30px;
+            margin:25px auto;
+        }
+
+        .filter {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-left: 200px;
+        }
+
+        .category-box {
+            display: none;
+            margin-top: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            overflow-y: auto; /* 카테고리가 박스를 넘어갈 경우 스크롤 생성 (선택사항) */
+        }
+        .category-item {
+            cursor: pointer;
+            padding: 5px;
+            background-color: rgba(255, 255, 255, 0.0);
+            border-bottom: 1px solid #ccc; /* 아래쪽에 1px 두께의 실선을 추가 */
+            padding: 10px; /* 안쪽 여백 설정 */
+            margin: 3px 3px; /* 위아래로 5px, 좌우로는 0 설정 */
+            border-radius: 5px; /* 네모난 박스의 모서리를 둥글게 만듦 */
+            border: 1px solid #0d2e59; /* 테두리 추가 */
+        }
+        .category-item:hover {
+            display: flex;
+            flex-wrap:wrap;
+            background-color: #e0e0e0;
+        }
+        #categoryInput {
+            width: 1000px; /* 원하는 너비 값으로 변경 */
+            height: 30px; /* 원하는 높이 값으로 변경 */
+            /* 다른 스타일 속성 추가 가능 */
+        }
+        select[name="price-range"] {
+            width: 1000px; /* 원하는 너비로 조정 */
+            height: 30px; /* 원하는 높이 값으로 변경 */
+        }
+        select[name="review-range"] {
+            width: 1000px; /* 원하는 너비로 조정 */
+            height: 30px; /* 원하는 높이 값으로 변경 */
+        }
+        select[name="price-range"] option[disabled] {
+            color: rgb(154, 59, 59); /* 변경하고자 하는 색상 */
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(calc(20% - 32px), 1fr)); /* 한 줄에 5개씩 배치, 여백 추가 */
+            gap: 20px; /* 아이템 사이의 간격 설정 */
+            padding: 20px;
+            margin-left: 200px;
+        }
+        .gallery1 {
+            display: grid;
+            gap: 20px; /* 아이템 사이의 간격 설정 */
+            padding: 20px;
+            justify-content: center;
+            text-align: center;
+            margin-left: 150px;
+        }
+
+
+        .item {
+            border: 1px solid #6f6f6f;
+            padding: 10px;
+            text-align: center;
+            margin: 10px; /* 여백을 적절한 값으로 수정 */
+            width: calc(40%); /* 너비를 줄임 */
+            height: 270px;
+            background-color: rgb(255, 255, 255);
+            border-radius: 25px; /* 네모난 박스의 모서리를 둥글게 만듦 */
+        }
+
+        .item img {
+            max-width: 100%;
+            height: auto;
+        }
+        .item a {
+            text-decoration: none; /* 링크의 밑줄 제거 */
+            color: inherit; /* 기본 링크 색상 유지 */
+        }
+
+        /* 첫 번째와 마지막 아이템 조정 */
+        .item:nth-child(4n + 1) {
+            margin-left: 10px; /* 각 줄의 첫 번째 아이템은 왼쪽 여백을 없앰 */
+        }
+
+        .item:nth-child(4n) {
+            margin-right: 0; /* 각 줄의 마지막 아이템은 오른쪽 여백을 없앰 */
+        }
+        #linkInput {
+            width: 1000px; /* 원하는 너비 값으로 변경 */
+            height: 30px; /* 원하는 높이 값으로 변경 */
+            /* 다른 스타일 속성 추가 가능 */
+        }
+        #linkInput {
+            margin-left: 190px; /* 원하는 왼쪽 마진 값 설정 */
+        }
+        .ranking {
+
+            top: 5px;
+            left: 5px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 5px;
+            font-size: 12px;
+            border-radius: 5px;
+        }
+        .additional-content {
+            display: flex;
+
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .additional-details a {
+            cursor: pointer;
+            text-decoration: none;
+            color: blue;
+            margin-right: 5px; /* 간격을 더 좁게 조정 */
+
+        }
+
+        .hidden {
+            display: none;
+            text-align: center;
+        }
+        .contents1 {
+            text-align: center;
+        }
+        .icon_img.contents1 a {
+            text-decoration: none;
+            color: black;
+            background-color: rgb(126, 161, 222);
+            border-radius: 15px;
+            font-size: 30px;
+            padding: 5px 10px; /* 텍스트 주변에 여백을 추가합니다. */
+            color:white;
+            margin-left: 50px;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px; /* Set a width for the container to control its size */
+        }
+
+        .logo-small {
+            width: 400%; /* Resizes with the container width */
+            max-width: 200px; /* Limits the maximum size */
+            height: auto;
+        }
+    </style>
+<head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <title>정석문고 jungsukbook</title>
+    </head>
+</head>
+    <header class="top-bar">
+        <div class="con flex h-full">
+            <a href="/" class="logo flex items-center">
+                <img th:src="@{/images/logo_transparent.png}" class="logo-small">
+
+            </a>
+            <div class="flex-grow"></div>
+
+            <ul class="menu-1 flex" >
+                <li><a href="/" class="flex h-full items-center px-4">소개</a></li>
+                <li><a href="/customer/login" id="login-link" class="flex h-full items-center px-4">로그인</a></li>
+                <li><a href="/customer/mypage" class="flex h-full items-center px-4">마이페이지</a></li>
+                <li><a href="/cart/list" class="flex h-full items-center px-4">장바구니</a></li>
+                <li><a href="#" class="flex h-full items-center px-4">문의하기</a></li>
+            </ul>
+        </div>
+    </header>
+<body class="center-area custom-body">
+<div class="container">
+    <h2>Login</h2>
+    <form id="loginForm" method="POST" action="/customer/login">
+        <div class="error" id="error" style="display: none;"></div>
+        <div>
+            <label for="custId">아이디</label>
+            <input type="text" id="custId" name="custId" placeholder="ID"/>
+        </div>
+        <div>
+            <label for="pwd">비밀번호</label>
+            <input type="password" id="pwd" name="pwd" placeholder="Password"/>
+        </div>
+        <div>
+            <button type="submit">로그인</button>
+        </div>
+    </form>
+    <div class="link">
+        <a href="/customer/signup">회원가입</a>
+    </div></div>
+
+<script>
+    document.getElementById('loginForm').onsubmit = function () {
+        const custId = document.getElementById('custId').value.trim();
+        const pwd = document.getElementById('pwd').value.trim();
+        const errorElement = document.getElementById('error');
+
+        if (!custId || !pwd) {
+            errorElement.textContent = 'ID와 비밀번호를 모두 입력해주세요.';
+            errorElement.style.display = 'block';  // Show error message
+            return false;  // Prevent form from submitting
+        }
+
+        errorElement.style.display = 'none';  // Hide error message if input is valid
+        return true;  // Allow form submission
+    };
+
+
+</script>
+
+</body>
+</html>

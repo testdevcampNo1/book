@@ -1,0 +1,15 @@
+<html xmlns:th="http://www.thymeleaf.org">
+    <th:block th:fragment="headFragment">
+        <div id="menu">
+            <ul>
+                <li id="logo">No.1</li>
+                <li><a th:href="@{/}">Home</a></li>
+                <li><a th:href="@{/cscenter/notice/list}">공지</a></li>
+                <li><a th:href="@{/logout}">loginOut</a></li>
+                <li><a th:href="@{/loginForm(toURL = ${servletPath})}">Sign in</a></li>
+                <li th:text="${session?.id ?:''}"></li>
+                <li><a href="#"><i class="fa fa-search"></i></a></li>
+            </ul>
+        </div>
+    </th:block>
+</html>
