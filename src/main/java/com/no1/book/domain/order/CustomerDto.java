@@ -1,4 +1,4 @@
-package com.no1.book.domain.customer;
+package com.no1.book.domain.order;
 
 import lombok.Data;
 
