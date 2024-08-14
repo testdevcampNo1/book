@@ -7,7 +7,7 @@ import com.no1.book.common.validator.order.OrderValidator;
 import com.no1.book.dao.order.OrderDao;
 import com.no1.book.dao.order.OrderProductDao;
 import com.no1.book.dao.order.OrderStatusHistoryDao;
-import com.no1.book.domain.order.CustomerDto;
+import com.no1.book.domain.customer.CustomerDto;
 import com.no1.book.domain.order.DeliveryAddressDto;
 import com.no1.book.domain.order.OrderDto;
 import com.no1.book.domain.order.OrderFormDto;

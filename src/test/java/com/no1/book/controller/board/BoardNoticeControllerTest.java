@@ -2,7 +2,7 @@ package com.no1.book.controller.board;
 
 import com.no1.book.common.util.board.SearchCondition;
 import com.no1.book.domain.board.BoardNoticeDto;
-import com.no1.book.mapper.board.BoardNoticeDao;
+import com.no1.book.dao.board.BoardNoticeDao;
 import com.no1.book.service.board.BoardNoticeService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;

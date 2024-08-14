@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.no1.book.mapper.customer.CustomerDao">
+<mapper namespace="com.no1.book.dao.customer.CustomerDao">
 
     <!--   회원가입     -->
     <insert id="insertCustomer" parameterType="CustomerDto">

@@ -1,4 +1,4 @@
-package com.no1.book.mapper.board;
+package com.no1.book.dao.board;
 
 import com.no1.book.common.util.board.PageHandler;
 import com.no1.book.common.util.board.SearchCondition;
