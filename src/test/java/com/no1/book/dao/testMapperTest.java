@@ -1,4 +1,4 @@
-package com.no1.book.mapper;
+package com.no1.book.dao;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
