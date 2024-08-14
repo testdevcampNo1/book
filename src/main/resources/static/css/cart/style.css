@@ -1,0 +1,161 @@
+/* 전체 레이아웃 설정 */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+/* 장바구니 컨테이너 설정 */
+.container {
+    width: 80%;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 제목 스타일 */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+h2 {
+    color: #666;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* 테이블 스타일 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+thead {
+    background-color: #f2f2f2;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    font-weight: bold;
+}
+
+td input[type="number"] {
+    width: 50px;
+    padding: 5px;
+    font-size: 1rem;
+}
+
+/* 버튼 스타일 */
+input[type="submit"], .btn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+input[type="submit"]:hover, .btn:hover {
+    background-color: #0056b3;
+}
+
+/* 총합 가격 섹션 스타일 */
+.cart-summary {
+    text-align: right;
+    margin-top: 20px;
+}
+
+.cart-summary h3 {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+/* 알림 메시지 스타일 */
+.alert {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* 장바구니 비어있는 경우 스타일 */
+p {
+    text-align: center;
+    color: #666;
+    font-size: 1.2rem;
+}
+
+.input_size_20{
+    width:20px;
+    height:20px;
+}
+.all_check_input{
+    margin: 18px 0 18px 18px;
+}
+.all_chcek_span{
+    padding-left: 8px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.order-summary {
+    display: flex;
+    justify-content: flex-end;
+}
+.order-summary strong {
+    margin: 10px;
+    padding: 10px 20px;
+}
+.order-summary button {
+    margin: 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    display: inline-block;
+    float: right;
+}
+
+.order-summary button:hover {
+    background-color: #0056b3;
+}
+
+/* 수량 증감 버튼 */
+
+.quantity-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    margin: 0 auto;
+    padding: 5px;
+}
+.quantity-wrapper button {
+    background-color: white;
+    border: none;
+    font-size: 12px;
+    padding: 3px 5px;
+    cursor: pointer;
+}
+
+.quantity-wrapper input {
+    width: 18px;
+    text-align: center;
+    border: none;
+    font-size: 15px;
+    outline: none;
+}
