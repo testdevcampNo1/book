@@ -28,7 +28,7 @@ public class OrderController {
         model.addAttribute("orderInfo", orderInfo);
         model.addAttribute("productList", orderInfo.getProductList());
 
-        return "orderForm";
+        return "/order/orderForm";
     }
 
     @PostMapping("/orderComplete")
@@ -54,7 +54,7 @@ public class OrderController {
         model.addAttribute("productList", orderInfo.getProductList());
         model.addAttribute("ordId", ordId);
 
-        return "orderComplete";
+        return "/order/orderComplete";
     }
 
     // test product
