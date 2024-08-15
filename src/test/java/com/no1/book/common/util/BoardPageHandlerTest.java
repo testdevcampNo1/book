@@ -1,7 +1,7 @@
 package com.no1.book.common.util;
 
 import com.no1.book.common.util.board.BoardPageHandler;
-import com.no1.book.common.util.board.SearchCondition;
+import com.no1.book.common.util.board.BoardSearchCondition;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -12,7 +12,7 @@ public class BoardPageHandlerTest {
 
     @Test
     public void testPagingCalculation() {
-        SearchCondition sc = new SearchCondition(1, 10);
+        BoardSearchCondition sc = new BoardSearchCondition(1, 10);
         BoardPageHandler ph = new BoardPageHandler(105, sc);
 
         assertEquals(11, ph.getTotalPage(), "105개의 항목에 대해 페이지 크기가 10일 때 전체 페이지는 11이어야 합니다.");
@@ -24,7 +24,7 @@ public class BoardPageHandlerTest {
 
     @Test
     public void testPagingWithDifferentPage() {
-        SearchCondition sc = new SearchCondition(11, 10);
+        BoardSearchCondition sc = new BoardSearchCondition(11, 10);
         BoardPageHandler ph = new BoardPageHandler(105, sc);
 
         assertEquals(11, ph.getTotalPage(), "105개의 항목에 대해 페이지 크기가 10일 때 전체 페이지는 11이어야 합니다.");
@@ -36,7 +36,7 @@ public class BoardPageHandlerTest {
 
     @Test
     public void testQueryStringGeneration() {
-        SearchCondition sc = new SearchCondition(5, 10, "A", "", "title");
+        BoardSearchCondition sc = new BoardSearchCondition(5, 10, "A", "", "title");
         BoardPageHandler ph = new BoardPageHandler(50, sc);
 
         String expectedQuery = "?page=5&pageSize=10&searchOption=A&category=&keyword=title";
@@ -45,7 +45,7 @@ public class BoardPageHandlerTest {
 
     @Test
     public void testPageNavigationDisplay() {
-        SearchCondition sc = new SearchCondition(5, 10);
+        BoardSearchCondition sc = new BoardSearchCondition(5, 10);
         BoardPageHandler ph = new BoardPageHandler(100, sc);
 
         String expectedNavigation = "< 1 2 3 4 [5] 6 7 8 9 10 >";
@@ -54,7 +54,7 @@ public class BoardPageHandlerTest {
 
     @Test
     public void testSearchConditionDefaultConstructor() {
-        SearchCondition sc = new SearchCondition();
+        BoardSearchCondition sc = new BoardSearchCondition();
         assertNull(sc.getPage(), "기본 생성자에서는 페이지가 null이어야 합니다.");
         assertNull(sc.getPageSize(), "기본 생성자에서는 페이지 크기가 null이어야 합니다.");
         assertNull(sc.getSearchOption(), "기본 생성자에서는 검색 옵션이 null이어야 합니다.");
@@ -64,7 +64,7 @@ public class BoardPageHandlerTest {
 
     @Test
     public void testSearchConditionCustomConstructor() {
-        SearchCondition sc = new SearchCondition(1, 10, "option", "category", "keyword");
+        BoardSearchCondition sc = new BoardSearchCondition(1, 10, "option", "category", "keyword");
         assertEquals(1, sc.getPage(), "페이지는 1이어야 합니다.");
         assertEquals(10, sc.getPageSize(), "페이지 크기는 10이어야 합니다.");
         assertEquals("option", sc.getSearchOption(), "검색 옵션은 'option'이어야 합니다.");
