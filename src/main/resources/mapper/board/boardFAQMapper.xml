@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.no1.book.dao.board.BoardFAQDao">
+<!--    스칼라 서브쿼리 사용 : 일반 조인 보다 성능 40% 향상-->
+    <sql id="selectColumn">
+        faq_num,
+        cate_num1,
+        cate_num2,
+        (select code_name
+               from code
+               where code_type = cate_num1
+               and code = cate_num2)
+               category_name,
+        faq_title,
+        faq_content,
+        img,
+        wrt_date,
+        writer,
+        best_faq_chk,
+        view_cnt,
+        (select code_name
+               from code
+               where code_type = faq_stus1
+               and code = faq_stus2)
+               faq_stus
+    </sql>
+
+<!--    검색 키워드 조건
+        키워드 검색(A : 제목, 내용 검색, T : 제목 검색, C : 내용 검색), 유형 검색
+        검색 타입에 따라 조건절 변경 -->
+    <sql id="searchKeyword">
+        <choose>
+            <when test='searchOption == "A"'>
+                and faq_title like concat('%', #{keyword}, '%')
+                or faq_content like concat('%', #{keyword}, '%')
+            </when>
+            <when test='searchOption == "T"'>
+                and faq_title like concat('%', #{keyword}, '%')
+            </when>
+            <when test='searchOption == "W"'>
+                and writer like concat('%', #{keyword}, '%')
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </sql>
+
+<!--    카테고리 검색 조건-->
+    <sql id="searchCategory">
+        <choose>
+            <when test='category != null'>
+                and cate_num2 like concat(#{category}, '%')
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </sql>
+
+<!--    검색 조건 게시글 개수-->
+    <select id="searchFAQCount" resultType="int" parameterType="BoardSearchCondition">
+        select count(*)
+        from boardFAQ
+        where true
+        <include refid="searchKeyword"/>
+        <include refid="searchCategory"/>
+    </select>
+
+
+<!--    게시글 목록 페이징-->
+    <select id="searchFAQPage" resultType="BoardFAQDto" parameterType="BoardPageHandler">
+        select <include refid="selectColumn"/>
+        from boardnotice
+        where true
+        <include refid="searchKeyword"/>
+        <include refid="searchCategory"/>
+        order by wrt_date desc, faq_num desc
+        limit #{offset}, #{pageSize}
+    </select>
+
+<!--    게시글 삭제-->
+    <delete id="deleteFAQ" parameterType="int">
+        delete
+        from boardFAQ
+        where faq_num = #{faqNum}
+    </delete>
+
+<!--    게시글 수정-->
+    <update id="updateFAQ" parameterType="BoardFAQDto">
+        update boardFAQ
+        set cate_num2 = #{cateNum2},
+            faq_title = #{faqTitle},
+            faq_content = #{faqContent},
+            img = #{img},
+            wrt_date = date_format(now(), '%Y-%m-%d %H:%i:%s'),
+            writer = #{writer},
+            best_faq_chk = #{bestFAQChk},
+            view_cnt = #{viewCnt},
+            up_date = date_format(now(), '%Y-%m-%d %H:%i:%s'),
+            up_id = #{writer},
+            faq_stus2 = #{faqStus2}
+        WHERE faq_num = #{faqNum}
+    </update>
+
+<!--    게시글 등록-->
+    <insert id="insertFAQ" parameterType="BoardFAQDto">
+        insert into boardFAQ
+            (cate_num1,
+             cate_num2,
+             faq_title,
+             faq_content,
+             img,
+             wrt_date,
+             writer,
+             best_faq_chk,
+             view_cnt,
+             reg_date,
+             reg_id,
+             up_date,
+             up_id,
+             faq_stus1,
+             faq_stus2)
+        values
+            (#{cateNum1},
+             #{cateNum2},
+             #{faqTitle},
+             #{faqContent},
+             #{img},
+             date_format(now(), '%Y-%m-%d %H:%i:%s'),
+             #{writer},
+             #{bestFAQChk},
+             #{viewCnt},
+             date_format(now(), '%Y-%m-%d %H:%i:%s'),
+             #{writer},
+             date_format(now(), '%Y-%m-%d %H:%i:%s'),
+             #{writer},
+             #{faqStus1},
+             #{faqStus2})
+    </insert>
+
+<!--    테스트 용-->
+<!--    전체 개수-->
+    <select id="count" resultType="int">
+        select count(*)
+        from boardFAQ
+    </select>
+
+<!--    전체 삭제-->
+    <delete id="deleteAll">
+        delete
+        from boardFAQ
+    </delete>
+
+<!--    전체 게시글 목록 조회-->
+    <select id="selectFAQAll" resultType="BoardFAQDto">
+        select <include refid="selectColumn"/>
+        from boardFAQ
+        order by wrt_date desc, faq_num desc
+    </select>
+</mapper>
+
+
+       
