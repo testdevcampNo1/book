@@ -14,14 +14,14 @@ public interface OrderProductDao {
     // read
     OrderProductDto getOrderProduct(int ordProdId);
     List<OrderProductDto> getCustomerOrderProducts(int custId);
-    List<OrderProductDto> getOrderProductsByOrderId(int ordId);
+    List<OrderProductDto> getOrderProductsByOrderId(String ordId);
     List<OrderProductDto> getAllOrderProduct();
 
     // update
     void updateOrderProductStatus(Map params);
 
     // delete
-    void deleteOrderProducts(int ordId);
+    void deleteOrderProducts(String ordId);
     void deleteCustomerOrderProducts(int custId);
     void deleteAllOrderProduct();
 }

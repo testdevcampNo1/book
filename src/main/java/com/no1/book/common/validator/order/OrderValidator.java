@@ -3,10 +3,13 @@ package com.no1.book.common.validator.order;
 import com.no1.book.common.exception.order.*;
 import com.no1.book.domain.order.OrderFormDto;
 import com.no1.book.domain.order.OrderProductDto;
+import com.no1.book.service.product.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public class OrderValidator {
+
     // 필수입력정보 검증시 공통으로 사용
     private void validateNotEmpty(String value, String errorMessage) {
         if(value == null || value.isEmpty()) {
@@ -44,15 +47,15 @@ public class OrderValidator {
 
     // 금액 검증
     private void validateOrderPrice(OrderFormDto orderFormDto) {
-        if(orderFormDto.getTotalProdBasePrice() < 0 || orderFormDto.getTotalDiscPrice() < 0 || orderFormDto.getTotalSalePrice() < 0 || orderFormDto.getDlvPrice() < 0) {
+        if(orderFormDto.getTotalProdBasePrice() < 0 || orderFormDto.getTotalDiscPrice() < 0 || orderFormDto.getTotalPayPrice() < 0 || orderFormDto.getDlvPrice() < 0) {
             throw new InvalidAmountException(OrderValidatorErrorMessage.NEGATIVE_AMOUNT.getMessage());
         }
 
-        if(orderFormDto.getTotalProdBasePrice() < orderFormDto.getTotalSalePrice()) {
+        if(orderFormDto.getTotalProdBasePrice() < orderFormDto.getTotalPayPrice()) {
             throw new InvalidAmountException(OrderValidatorErrorMessage.SALE_PRICE_EXCEEDS_BASE_PRICE.getMessage());
         }
 
-        if(orderFormDto.getTotalSalePrice() < orderFormDto.getTotalDiscPrice()) {
+        if(orderFormDto.getTotalProdBasePrice() < orderFormDto.getTotalDiscPrice()) {
             throw new InvalidAmountException(OrderValidatorErrorMessage.DISCOUNT_PRICE_EXCEEDS_SALE_PRICE.getMessage());
         }
     }
@@ -73,7 +76,7 @@ public class OrderValidator {
 
             // 상품 상태 검증
             // 상품 상태 DB에서 실시간으로 조회 필요
-            if (product.getOrdProdStusCode() == null || product.getOrdProdStusCode().isEmpty() || !product.getOrdProdStusCode().equals("AVBL") || product.getCodeType() == null || product.getCodeType().isEmpty()) {
+            if (product.getOrdChkCode() == null || product.getOrdChkCode().isEmpty() || !product.getOrdChkCode().equals("AVBL") || product.getCodeType() == null || product.getCodeType().isEmpty()) {
                 throw new ProductNotOrderableException(OrderValidatorErrorMessage.INVALID_PRODUCT_STATUS.getMessage());
             }
 
@@ -82,22 +85,16 @@ public class OrderValidator {
                 throw new ProductNotOrderableException(OrderValidatorErrorMessage.ZERO_OR_NEGATIVE_QUANTITY.getMessage());
             }
 
-            // 재고 부족 검증
-            // 재고 DB에서 실시간으로 조회 필요
-//            if(getProductStockCount(product.getProdId()) < product.getOrdQty()) {
-//                throw new ProductNotOrderableException("재고가 부족한 상품이 존재합니다.");
-//            }
-
             // 상품 금액 검증
-            if (product.getTotalProdPrice() < 0 || product.getTotalDiscPrice() < 0 || product.getTotalPayPrice() < 0) {
+            if (product.getProdBasePrice() < 0 || product.getDiscPrice() < 0 || product.getTotalPayPrice() < 0) {
                 throw new InvalidAmountException(OrderValidatorErrorMessage.NEGATIVE_AMOUNT.getMessage());
             }
 
-            if (product.getTotalProdPrice() < product.getTotalPayPrice()) {
+            if (product.getProdBasePrice() < product.getDiscPrice()) {
                 throw new InvalidAmountException(OrderValidatorErrorMessage.SALE_PRICE_EXCEEDS_BASE_PRICE.getMessage());
             }
 
-            if (product.getTotalPayPrice() < product.getTotalDiscPrice()) {
+            if (product.getTotalPayPrice() < product.getDiscPrice() * product.getOrdQty()) {
                 throw new InvalidAmountException(OrderValidatorErrorMessage.DISCOUNT_PRICE_EXCEEDS_SALE_PRICE.getMessage());
             }
         }

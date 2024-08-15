@@ -91,9 +91,9 @@
     <div class="order_product">
         <div class="box_title">주문상품</div>
         <div class="box_wrap" style="padding-top: 32px">
-            <div class="product_list" th:each="product : ${productList}">
+            <div class="product_list" th:each="product : ${orderFormDto.getProductList()}">
                 <div class="product_item">
-                    <div class="product_name" th:text="${product.getName()}"></div>
+                    <div class="product_name" th:text="${product.getProdName()}"></div>
                     <div class="product_quantity" th:text="${product.getOrdQty()} + '개'"></div>
                 </div>
             </div>
@@ -105,8 +105,8 @@
         <div class="box_title">결제정보</div>
         <div class="box_wrap" style="padding-top: 32px">
             <div class="title">최종결제금액</div>
-            <div class="total_payment_price" th:text="${orderInfo.getTotalSalePrice()} + '원'"> </div>
-            <div class="content" th:text="${orderInfo.getPaymentMethod()}"></div>
+            <div class="total_payment_price" th:text="${orderFormDto.getTotalPayPrice()} + '원'"> </div>
+            <div class="content" th:text="${orderFormDto.getPaymentMethod()}"></div>
         </div>
     </div>
 
@@ -115,13 +115,13 @@
         <div class="box_title">배송지 정보</div>
         <div class="box_wrap" style="padding-top: 32px">
             <div class="title">받는 사람</div>
-            <div class="content" th:text="${orderInfo.getName()} + ' / ' + ${orderInfo.getTelNum()}"></div>
+            <div class="content" th:text="${orderFormDto.getName()} + ' / ' + ${orderFormDto.getTelNum()}"></div>
             <br>
             <div class="title">받는 주소</div>
-            <div class="content" th:text="'[' + ${orderInfo.getZipCode()} + '] ' + ${orderInfo.getMainAddress()} + ${orderInfo.getDetailAddress()}"></div>
+            <div class="content" th:text="'[' + ${orderFormDto.getZipCode()} + '] ' + ${orderFormDto.getMainAddress()} + ${orderFormDto.getDetailAddress()}"></div>
             <br>
             <div class="title">요청사항</div>
-            <div class="content" th:text="${orderInfo.getOrderRequestMessage()}"></div>
+            <div class="content" th:text="${orderFormDto.getOrderRequestMessage()}"></div>
         </div>
     </div>
 

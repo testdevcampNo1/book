@@ -13,10 +13,10 @@ public interface OrderStatusHistoryDao {
     // read
     OrderStatusHistoryDto getOrderStatusHistory(int ordStusHistorySeq);
     List<OrderStatusHistoryDto> getCustomerOrderStatusHistory(int custId);
-    List<OrderStatusHistoryDto> getOrderStatusHistoryByOrdId(int ordId);
+    List<OrderStatusHistoryDto> getOrderStatusHistoryByOrdId(String ordId);
     List<OrderStatusHistoryDto> getAllOrderStatusHistory();
 
     // delete
-    void deleteOrderStatusHistory(int ordId);
+    void deleteOrderStatusHistory(String ordId);
     void deleteAllOrderStatusHistory();
 }
