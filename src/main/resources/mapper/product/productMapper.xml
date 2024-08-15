@@ -176,5 +176,11 @@
         WHERE prod_id = #{prodId}
     </select>
 
+    <select id="createId" resultType="string">
+        select prod_id from product
+        order by prod_id desc
+        limit 1;
+    </select>
+
 
 </mapper>

@@ -47,4 +47,6 @@ public interface ProductService {
     String getCateName(String prodId) throws Exception;
 
     int idChk(String prodId) throws Exception;
+
+
 }

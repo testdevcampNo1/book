@@ -4,6 +4,7 @@ import com.no1.book.domain.product.AuthorDto;
 import com.no1.book.domain.product.CategoryDto;
 import com.no1.book.domain.product.PageHandler;
 import com.no1.book.domain.product.ProductDto;
+import com.no1.book.service.product.AuthorService;
 import com.no1.book.service.product.CategoryService;
 import com.no1.book.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,9 @@ public class ProductController {
 
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    AuthorService authorService;
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public String dataInteVioEx(Exception ex, Model m) {
@@ -118,11 +122,14 @@ public class ProductController {
         List<CategoryDto> cateList = categoryService.getAllFinalCategories();
         m.addAttribute("cateList", cateList);
 
+        List<AuthorDto> authList = authorService.getAllAuthorOrderedByName();
+        m.addAttribute("authList", authList);
+
         return "product/manage";
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute ProductDto productDto, Model m) throws Exception {
+    public String add(@ModelAttribute ProductDto productDto) throws Exception {
         productService.addProduct(productDto);
 
         return "redirect:/product/manage";

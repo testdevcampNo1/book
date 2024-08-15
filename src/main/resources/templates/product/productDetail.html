@@ -5,6 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>상품 상세 페이지</title>
     <link rel="stylesheet" th:href="@{/css/product/detail.css}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        let countValue = 1;
+
+        function count(action) {
+            if (action === "plus") {
+                countValue++;
+            } else if (action === "minus") {
+                if (countValue > 1) {
+                    countValue--;
+                }
+            }
+            document.getElementById("result").textContent = String(countValue);
+        }
+
+        function addToCart() {
+            document.getElementById("cartItemQty").value = countValue;
+
+            var prodId = document.getElementById("");
+            var itemQty = document.getElementById("");
+
+            var params = {
+                prodId : prodId,
+                itemQty : itemQty
+            }
+
+            // 서버에 AJAX 요청 보내기
+            $.ajax({
+                url: '/cart/add',  // 서버의 API 엔드포인트
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(params),
+                success: function(response) {
+                    // reponse( status : success, fail)
+                    if(response.status == "success"){
+                        // 성공
+                        // 이동할건지
+                        alert("성공!");
+                    }else{
+                        // 실패
+                        alert("실패")
+                    }
+                },
+                error: function() {
+                    alert('장바구니 담기에 실패했습니다.');
+                }
+            });
+
+
+        }
+        function goToOrder() {
+            document.getElementById("orderItemQty").value = countValue;
+        }
+    </script>
 </head>
 <body>
 
@@ -25,7 +79,7 @@
             <input type='button' onclick='count("minus")' value='-'/>
             <div id='result'>1</div>
             <input type='button' onclick='count("plus")' value='+'/>
-            <form th:action="@{cart/add}" method="post">
+            <form th:action="@{/cart/add}" method="post">
                 <input type="hidden" th:value="${pdto.prodId}">
                 <input type="hidden" id="cartItemQty">
                 <button type="submit" onclick="addToCart()">장바구니</button>
@@ -35,37 +89,7 @@
                 <input type="hidden" id="orderItemQty">
                 <button type="submit" onclick="goToOrder()">바로구매</button>
             </form>
-            <script>
-                let countValue = 1;
 
-                function count(action) {
-                    if (action === "plus") {
-                        countValue++;
-                    } else if (action === "minus") {
-                        if (countValue > 1) {
-                            countValue--;
-                        }
-                    }
-                    document.getElementById("result").textContent = String(countValue);
-                }
-
-                function addToCart() {
-                    document.getElementById("cartItemQty").value = countValue;
-                }
-                function goToOrder() {
-                    document.getElementById("orderItemQty").value = countValue;
-                }
-
-                // function addToCart() {
-                //     const pricePerItem = /*[[${pdto.salePrice}]]*/ 0;
-                //     const totalPrice = countValue * pricePerItem;
-                //
-                //     const cartUrl = '/cart/custId=';
-                //     window.location.href = cartUrl;
-                // }
-                // 이건 GET이고 POST 방식으로 보내야 함
-
-            </script>
         </div>
         <div class="rating">
             <p></p>

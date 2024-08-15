@@ -124,9 +124,16 @@
                     <option th:each="option : ${cateList}" th:value="${option.cateCode}" th:text="${option.cateName}"></option>
                 </select>
             </div>
+<!--            <div class="form-group">-->
+<!--                <label for="author_info_id">저자 정보 ID (저자 미상일 경우 "AUTH000"를 선택하시오.)</label>-->
+<!--                <input type="text" id="author_info_id" name="authorInfoId">-->
+<!--            </div>-->
             <div class="form-group">
-                <label for="author_info_id">저자 정보 ID (저자 미상일 경우 "AUTH000"를 선택하시오.)</label>
-                <input type="text" id="author_info_id" name="authorInfoId">
+                <label for="auth_option">저자</label>
+                <select id="auth_option" name="authorInfoCode">
+                    <option value="" disabled selected>저자 선택</option>
+                    <option th:each="option : ${authList}" th:value="${option.authorInfoId}" th:text="${option.authorName}+'('+${option.authorInfoId}+')'"></option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="ord_chk_code">주문 상태 코드</label>
@@ -186,6 +193,7 @@
         let totalPage = document.getElementById("total_pages").value;
         let totalBooks = document.getElementById("total_books").value;
         let selectedCate = document.getElementById("cate_option").value;
+        let selectedAuthor = document.getElementById("auth_option").value;
 
         if (prodName === "") {
             alert("상품 이름을 입력하세요.");
@@ -209,9 +217,15 @@
         }
 
         if (selectedCate == "" || selectedCate == null) {
-            alert("카테고리를 선택 하시오");
+            alert("카테고리를 선택하시오");
             return false;
         }
+
+        if (selectedAuthor == "" || selectedAuthor == null) {
+            alert("저자를 선택하시오")
+            return false;
+        }
+
         return true;
     }
     function isNumeric(value) {
