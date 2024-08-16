@@ -185,12 +185,23 @@
             })
         }
 
+        function validationForm(event) {
+            var passwordRadio = document.getElementById('passwordRadio');
+            var passwordField = document.getElementById('password');
+
+            if(passwordRadio.checked && passwordField.value.trim() === '') {
+                event.preventDefault(); // 폼 제출 방지
+                alert("공동현관 비밀번호가 입력되지 않았습니다.");
+                passwordField.focus(); // 포커스 이동
+            }
+        }
+
     </script>
 
 </head>
 <body>
 
-<form action="/orderComplete" method="post">
+<form action="/orderComplete" method="post" onsubmit="validationForm(event)">
     <p class="title_heading">주문/결제</p>
 
     <div class="form_body">

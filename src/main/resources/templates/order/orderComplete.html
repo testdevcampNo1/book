@@ -90,6 +90,19 @@
                 window.location.href = '/orderHistory';
             });
         });
+
+        function formatPrice(price) {
+            return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        window.onload = function () {
+            var paymentPrice = document.getElementById('paymentPrice');
+            if(paymentPrice) {
+                var price = parseInt(paymentPrice.getAttribute('data-price'));
+                paymentPrice.textContent = formatPrice(price) + "원";
+            }
+        }
+
     </script>
 
 </head>
@@ -114,7 +127,7 @@
         <div class="box_title">결제정보</div>
         <div class="box_wrap" style="padding-top: 32px">
             <div class="title">최종결제금액</div>
-            <div class="total_payment_price" th:text="${orderFormDto.getTotalPayPrice()} + '원'"> </div>
+            <div id="paymentPrice" class="total_payment_price" th:attr="data-price=${orderFormDto.getTotalPayPrice()}"> </div>
             <div class="content" th:text="${orderFormDto.getPaymentMethod()}"></div>
         </div>
     </div>
