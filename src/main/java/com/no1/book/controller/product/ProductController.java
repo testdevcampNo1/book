@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -111,6 +112,18 @@ public class ProductController {
         return "product/productDetail";
     }
 
+    @PostMapping("/detail")
+    public void detail(@RequestBody Map map) throws Exception {
+
+        String prodId = map.get("prodId").toString();
+        int itemQty = Integer.parseInt(map.get("itemQty").toString());
+
+        for (int i = 0; i < itemQty; i++) {
+            productService.plusSales(prodId);
+        }
+    }
+
+
     @GetMapping("/manage")
     public String manage(Model m) throws Exception {
         // 모든 카테고리 정보 모델에 담기 (셀렉트 버튼에 띄우기 용)
@@ -151,6 +164,8 @@ public class ProductController {
         productService.removeProduct(prodId);
         return "redirect:/product/manage";
     }
+
+
 
 
     @ExceptionHandler(DataIntegrityViolationException.class)

@@ -75,6 +75,7 @@
                 salePrice: salePrice
             };
 
+
             // order로 주문 정보 보내기
             $.ajax({
                 url: '/order',
@@ -89,19 +90,18 @@
                 }
             });
 
+            $.ajax({
+                url: '/product/detail',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({prodId : prodId, itemQty : itemQty}),
+                success: function() {
+                },
+                error: function() {
+                }
+            });
 
-            // $.ajax({
-            //     url: '/order',
-            //     method: 'POST',
-            //     contentType: 'application/json',
-            //     data: JSON.stringify(params),
-            //     success: function() {
-            //         alert('주문 창으로 이동합니다.');
-            //     },
-            //     error: function() {
-            //         alert('주문에 실패했습니다.');
-            //     }
-            // });
+
         }
 
         window.onload = function() { // window.onload -> 화면이 로드되면 자동으로 실행
@@ -201,7 +201,7 @@
         <p th:text="${pdto.pblshDate}">발행일자 내용</p>
 
         <h3>쪽 수</h3>
-        <p th:text="${pdto.totalP∫ages}">쪽 수 내용</p>
+        <p th:text="${pdto.totalPages}">쪽 수 내용</p>
 
         <h3>총 권수</h3>
         <p th:text="${pdto.totalBooks}">총 권수 내용</p>

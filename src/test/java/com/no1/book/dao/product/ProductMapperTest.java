@@ -411,6 +411,8 @@ class ProductDaoTest {
 
         // 3단계 검증 -> 판매량이 1이면 통과
         assertEquals(1, productDao.select("PROD_IMSI").getTotalSales());
+
+//        productDao.delete("PROD_IMSI");
     }
 
 
