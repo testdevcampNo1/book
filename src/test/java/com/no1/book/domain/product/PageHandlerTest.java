@@ -1,13 +1,12 @@
 package com.no1.book.domain.product;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class BoardPageHandlerTest {
+class PageHandlerTest {
 
     @Test
     public void test1() {

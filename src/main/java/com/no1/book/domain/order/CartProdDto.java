@@ -15,9 +15,13 @@ public class CartProdDto {
     String ordAbStusCode;
     String registerDate;
     String expiredDate;
+    String isBook;
+    String dawnDeliCk;
 
 
-    public CartProdDto() {}
+    public CartProdDto() {
+    }
+
     public CartProdDto(Integer custId, String prodId, Integer salePrice, String registerDate) {
         this.custId = custId;
         this.prodId = prodId;
@@ -122,6 +126,21 @@ public class CartProdDto {
         this.expiredDate = expiredDate;
     }
 
+    public String getIsBook() {
+        return isBook;
+    }
+
+    public void setIsBook(String isBook) {
+        this.isBook = isBook;
+    }
+
+    public String getDawnDeliCk() {
+        return dawnDeliCk;
+    }
+
+    public void setDawnDeliCk(String dawnDeliCk) {
+        this.dawnDeliCk = dawnDeliCk;
+    }
 
     @Override
     public String toString() {
@@ -138,6 +157,8 @@ public class CartProdDto {
                 ", ordAbStusCode='" + ordAbStusCode + '\'' +
                 ", registerDate='" + registerDate + '\'' +
                 ", expiredDate='" + expiredDate + '\'' +
+                ", isBook='" + isBook + '\'' +
+                ", dawnDeliCk='" + dawnDeliCk + '\'' +
                 '}';
     }
 
@@ -146,11 +167,11 @@ public class CartProdDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CartProdDto that = (CartProdDto) o;
-        return custId == that.custId && itemQty == that.itemQty && prodBasePrice == that.prodBasePrice && discRate == that.discRate && discPrice == that.discPrice && salePrice == that.salePrice && Objects.equals(prodId, that.prodId) && Objects.equals(imageId, that.imageId) && Objects.equals(prodName, that.prodName) && Objects.equals(ordAbStusCode, that.ordAbStusCode) && Objects.equals(registerDate, that.registerDate) && Objects.equals(expiredDate, that.expiredDate);
+        return Objects.equals(custId, that.custId) && Objects.equals(prodId, that.prodId) && Objects.equals(itemQty, that.itemQty) && Objects.equals(imageId, that.imageId) && Objects.equals(prodName, that.prodName) && Objects.equals(prodBasePrice, that.prodBasePrice) && Objects.equals(discRate, that.discRate) && Objects.equals(discPrice, that.discPrice) && Objects.equals(salePrice, that.salePrice) && Objects.equals(ordAbStusCode, that.ordAbStusCode) && Objects.equals(registerDate, that.registerDate) && Objects.equals(expiredDate, that.expiredDate) && Objects.equals(isBook, that.isBook) && Objects.equals(dawnDeliCk, that.dawnDeliCk);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(custId, prodId, itemQty, imageId, prodName, prodBasePrice, discRate, discPrice, salePrice, ordAbStusCode, registerDate, expiredDate);
+        return Objects.hash(custId, prodId, itemQty, imageId, prodName, prodBasePrice, discRate, discPrice, salePrice, ordAbStusCode, registerDate, expiredDate, isBook, dawnDeliCk);
     }
 }

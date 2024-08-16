@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.util.MapUtils;
 
 import java.util.*;
 
@@ -26,16 +27,26 @@ public class CartController {
     @GetMapping("/list")
     public String read(Integer custId, Model m, HttpServletRequest request, HttpServletResponse response) throws Exception{
 
-        HttpSession session = request.getSession();
-        System.out.println("session = " + session.getId());
+        // 세션에서 회원 여부 조회
 
+        // 회원이면
+        // DB에서 조회
+
+        // 회원이 아니면
+        // 세션에서 조회
+
+        // 모델에 담기
+
+        // cart View 리턴
+        HttpSession session = request.getSession();
+        //System.out.println("session = " + session);
 
 //        if(!loginCheck(request))
 //            return "redirect:/login/login?toURL="+request.getRequestURL();  // 로그인을 안했으면 로그인 화면으로 이동
 
         try{
             List<CartProdDto> cartProducts  = cartService.read(custId);
-            System.out.println("cartProduct = " + cartProducts.size());
+            //System.out.println("cartProduct = " + cartProducts.toString());
 
             session.setAttribute("cartLists",cartProducts);
 
@@ -45,11 +56,38 @@ public class CartController {
             e.printStackTrace();
         }
 
-        System.out.println("session.getAttributeNames = " + session.getAttributeNames());
-        System.out.println("session.getAttribute(\"cartLists\") = " + session.getAttribute("cartLists"));
+        //System.out.println("session.getAttributeNames = " + session.getAttributeNames());
+        //System.out.println("session.getAttribute(\"cartLists\") = " + session.getAttribute("cartLists"));
 
         return "cart";
     }
+//    @GetMapping("/list")
+//    public String read(Integer custId, Model m, HttpServletRequest request, HttpServletResponse response) throws Exception{
+//
+//        HttpSession session = request.getSession();
+//        System.out.println("session = " + session.getId());
+//
+//
+////        if(!loginCheck(request))
+////            return "redirect:/login/login?toURL="+request.getRequestURL();  // 로그인을 안했으면 로그인 화면으로 이동
+//
+//        try{
+//            List<CartProdDto> cartProducts  = cartService.read(custId);
+//            System.out.println("cartProduct = " + cartProducts.size());
+//
+//            session.setAttribute("cartLists",cartProducts);
+//
+//            m.addAttribute("custId",custId);
+//            m.addAttribute("cartProdDto", cartProducts);
+//        } catch(Exception e){
+//            e.printStackTrace();
+//        }
+//
+//        System.out.println("session.getAttributeNames = " + session.getAttributeNames());
+//        System.out.println("session.getAttribute(\"cartLists\") = " + session.getAttribute("cartLists"));
+//
+//        return "cart";
+//    }
 
     @GetMapping("/remove")
     public String remove(String prodId,  Model m, HttpSession session, RedirectAttributes rattr, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -80,13 +118,52 @@ public class CartController {
 
     @PostMapping("/add")
     @ResponseBody
-    public int addItem(@RequestBody CartDto dto,HttpServletRequest request, HttpServletResponse response) throws Exception{
+    public  Map<String, Object> addItem(@RequestBody CartDto reqDto, HttpServletRequest request, HttpServletResponse response) throws Exception{
+
+        Map map = new HashMap();
+        // 객체에 prodId와 itemQty가 담겼는지 확인하기
+
+        // 회원일 경우 - DB에서
+
+        HttpSession session = request.getSession();
+//        Integer custId  = (Integer)session.getAttribute("custId");
+        Integer custId  = 1; // 임의로 아이디값 설정
+
+        CartDto dto = reqDto;
+                dto.setCustId(custId);
+
+        System.out.println("dto = " + dto.toString());
+
+        List<CartProdDto> cartProducts  = cartService.read(custId);
+        boolean hasItem  = false;
+
+        String dtoProd = dto.getProdId();
+
+        for(CartProdDto product : cartProducts){
+            if (product.getProdId().equals(dtoProd)) {
+                hasItem   = true;
+                dto.setItemQty(product.getItemQty()+dto.getItemQty());
+                break;
+            }
+        }
 
 
-        // 서비스에서 이미 있는 값이면 수량만 업데이트해주고 아니면 상품 추가
+        // 장바구니에 상품이 존재하면 수량만 업데이트, 존재하지 않으면 상품 추가
+        int ret;
+
+        if(hasItem == true) { ret = cartService.updateItemQty(dto); }
+        else                { ret = cartService.insertItem(dto); }
+
+        if(ret == 1) { map.put("status", "success"); }
+        else         { map.put("status", "fail"); }
 
 
-        return 0;
+        // 비회원일 경우 - 세션 상품목록에서
+
+
+
+
+        return map;  // status : successs, fail
     }
 
 
@@ -106,10 +183,11 @@ public class CartController {
         Map<String, Object> updateResult = new HashMap<>();
         updateResult.put("itemQty", dto.getItemQty());
 
+
+        // 비회원일때 수량 처리
+
         return updateResult;
     }
-
-
 
 
 

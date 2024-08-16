@@ -24,15 +24,15 @@
             console.log("checkboxs", checkboxes);
 
             checkboxes.forEach(function(checkbox) {
-                var row = checkbox.closest('tr'); //
+                var row = checkbox.closest('tr'); // getElement 이걸로 수정하기
                 var price = row.querySelector('td.itemTotalPrice').textContent;
 
                 total += parseInt(price);
 
-                console.log("row",row);
-                console.log("price", price);
-                console.log("typeof total : "+ typeof total);
-                console.log("total : "+ total);
+                // console.log("row",row);
+                // console.log("price", price);
+                // console.log("typeof total : "+ typeof total);
+                // console.log("total : "+ total);
             });
             document.getElementById('totalPrice').textContent = total.toLocaleString();
         }
@@ -74,23 +74,16 @@
                 success: function(response) {
                     // 서버로부터 새로운 총 가격을 받아서 화면에 업데이트
                     var ttlPrice = parseInt(itemPrice) * response.itemQty;
-                    console.log("response.itemQty ", response.itemQty);
-                    console.log("ttlPrice ", ttlPrice);
+                    // console.log("response.itemQty ", response.itemQty);
+                    // console.log("ttlPrice ", ttlPrice);
 
-                    // 받아온 값 지정
                     // alert('수량이 수정되었습니다.');
-                    // var aa = "quantity-input-".concat(prodId);
-
-                    // 고유한 ID를 사용하여 특정 상품의 요소 선택
-                    //const quantityInput = document.getElementById(`quantity-input-${prodId}`);
                     quantityInput.value = currentValue;
 
                     // 특정 상품에 해당하는 가격 업데이트 (필요에 따라 클래스 이름도 동적으로 생성 가능)
                     const itemTotalPrice = document.getElementById(`itemTotalPrice-${prodId}`);
-                    itemTotalPrice.textContent = ttlPrice;
+                          itemTotalPrice.textContent = ttlPrice;
 
-                    // document.getElementById('quantity-input').value = currentValue;
-                    // document.getElementsByClassName('itemTotalPrice')[0].textContent = ttlPrice;
                     calculateTotal();
                 },
                 error: function() {
@@ -131,7 +124,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="product : ${cartProdDto}">
+        <tr th:each="product : ${cartProdDto}" th:id="ordAbStusCode">
             <td><input type="checkbox" name="selectedProducts" th:value="${product.prodId}" onclick="calculateTotal()" /></td>
             <td th:text="${product.prodName}">Product Name</td>
             <td th:id="'priceSpan-'+ ${product.prodId}" th:text="${product.salePrice}">Price</td>
@@ -166,10 +159,17 @@
 <script>
     // 주문하기 버튼 누른 후
     function order() {
+        // 선택된 상품 정보 가져오기
+        // var prodCnt = 0;
+        // if(confirm('총 ' + prodCnt+'개 상품을 주문하시겠습니까?')){
+        //
+        // }
+
+
         var totalAmount = document.getElementById('totalPrice').textContent;
         alert('총 ' + totalAmount + ' 금액의 주문이 완료되었습니다.');
         // 여기에 실제 주문 처리를 위한 추가 로직을 구현할 수 있습니다.
-        // 주문완료되면 장바구니에서 상품 삭제
+
     }
 </script>
 </body>
