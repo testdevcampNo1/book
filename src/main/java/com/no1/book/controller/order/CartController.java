@@ -189,6 +189,20 @@ public class CartController {
         return updateResult;
     }
 
+//    @PostMapping("/order")
+//    public String order(@RequestParam List<CartProdDto> dto, Model model) {
+//        // 선택된 상품 IDs를 처리합니다. 실제 애플리케이션에서는 DB에서 상품 정보를 가져올 수 있습니다.
+//
+//        // 예시: 상품 ID를 기반으로 상품 목록을 조회하는 로직
+//        // List<Product> selectedProducts = productService.findProductsByIds(productIds);
+//
+//        // model.addAttribute("productList", productIds);
+//        return "orderForm"; // 주문 요약 페이지로 이동
+//    }
+
+
+
+
 
 
     private boolean loginCheck(HttpServletRequest request) {
@@ -197,5 +211,7 @@ public class CartController {
         // 2. 세션에 id가 있는지 확인, 있으면 true를 반환
         return session.getAttribute("custId")!=null;
     }
+
+
 }
 

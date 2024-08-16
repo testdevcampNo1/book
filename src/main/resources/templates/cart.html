@@ -95,9 +95,9 @@
 </head>
 <body>
 
-<h1>Shopping Cart</h1>
+<h2>장바구니</h2>
 
-<h2 th:text="${custId}+'회원의 장바구니 상품 목록'">[]회원의 장바구니 상품 목록</h2>
+<h3 th:text="${custId}+'회원의 장바구니 상품 목록'">[]회원의 장바구니 상품 목록</h3>
 
 <script>
     let msg = "${msg}"
@@ -116,18 +116,21 @@
         <thead>
         <tr>
             <th></th>
-            <th>Product Name</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Total</th>
-            <th>Actions</th>
+            <th>상품명</th>
+            <th></th>
+            <th>가격</th>
+            <th>수량</th>
+            <th>합계</th>
+            <th></th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="product : ${cartProdDto}" th:id="ordAbStusCode">
-            <td><input type="checkbox" name="selectedProducts" th:value="${product.prodId}" onclick="calculateTotal()" /></td>
+            <td><input type="checkbox" name="selectedProducts"  th:disabled="${product.ordAbStusCode != '202' ? 'disabled' : null}" onclick="calculateTotal()" /></td>
             <td th:text="${product.prodName}">Product Name</td>
-            <td th:id="'priceSpan-'+ ${product.prodId}" th:text="${product.salePrice}">Price</td>
+            <td class="original-price" th:id="'originPriceSpan-'+ ${product.prodId}" th:text="${product.prodBasePrice}">originPrice</td>
+            <td class="sale-price" th:id="'priceSpan-'+ ${product.prodId}" th:text="${product.salePrice}">salePrice</td>
             <td th:id="qtySpan" class="quantity-wrapper">
                 <button type="button" th:name="${product.prodId}" th:onclick="updateQuantity('decrement', this.getAttribute('name'))">&#8722;</button>
                 <input type="text"  th:value="${product.itemQty}" th:id="'quantity-input-' + ${product.prodId}" readonly />
@@ -135,8 +138,19 @@
             </td>
             <td th:class="itemTotalPrice" th:id="'itemTotalPrice-' + ${product.prodId}" th:text="${product.salePrice * product.itemQty}">Total Price</td>
             <td>
+                <div class="product-info">
+                    <!-- 조건에 따라 텍스트가 보이도록 설정 -->
+                    <div class="product-text"
+                         th:if="${product.dawnDeliCk} == 'Y'">새벽배송</div>
+                    <div class="product-text"
+                         th:if="${product.isEBook} == 0">종이책</div>
+                    <div class="product-text"
+                         th:if="${product.isEBook} == 1">e-book</div>
+                </div>
+            </td>
+            <td class="rmvBtn">
                 <form action="/cart/remove" method="get" id="removeBtn" onsubmit="return confirmDelete()">
-                    <input type="submit" value="삭제">
+                    <input type="submit" value="X" >
                     <input type="hidden" name="prodId" th:value="${product.prodId}">
                 </form>
             </td>

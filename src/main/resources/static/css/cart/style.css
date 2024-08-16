@@ -4,12 +4,12 @@ body {
     line-height: 1.6;
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
 }
 
 /* 장바구니 컨테이너 설정 */
 .container {
-    width: 80%;
+    width: 90%;
     margin: 50px auto;
     background-color: #fff;
     padding: 20px;
@@ -17,15 +17,17 @@ body {
 }
 
 /* 제목 스타일 */
-h1 {
-    text-align: center;
+h2 {
+    padding-left: 30px;
+    text-align: left;
     margin-bottom: 20px;
     color: #333;
 }
 
-h2 {
+h3 {
+    padding-left: 30px;
     color: #666;
-    text-align: center;
+    text-align: left;
     margin-bottom: 20px;
 }
 
@@ -42,7 +44,6 @@ thead {
 
 th, td {
     padding: 10px;
-    text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
@@ -58,17 +59,22 @@ td input[type="number"] {
 
 /* 버튼 스타일 */
 input[type="submit"], .btn {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 8px 12px;
-    cursor: pointer;
-    border-radius: 4px;
+    background-color: transparent; /* 배경색을 투명으로 설정 */
+    color: #9d9999; /* "X" 문자 색상을 빨간색으로 설정 */
+    border: none; /* 테두리를 제거 */
+    font-size: 20px; /* 글자 크기를 크게 설정 */
+    font-weight: bold; /* 글자를 굵게 설정 */
+    cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+    transition: color 0.3s ease; /* 색상 전환 효과 */
+    padding: 0; /* 패딩을 제거 */
+    margin: 0; /* 마진을 제거 */
+    line-height: 1; /* 줄 높이를 설정 */
 }
 
 input[type="submit"]:hover, .btn:hover {
-    background-color: #0056b3;
+    color: #524f4f; /* 호버 시 더 진한 빨간색 */
 }
+
 
 /* 총합 가격 섹션 스타일 */
 .cart-summary {
@@ -91,6 +97,7 @@ input[type="submit"]:hover, .btn:hover {
 
 /* 장바구니 비어있는 경우 스타일 */
 p {
+    padding-top:200px;
     text-align: center;
     color: #666;
     font-size: 1.2rem;
@@ -120,7 +127,7 @@ p {
 .order-summary button {
     margin: 10px;
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color: #3f1e85;
     color: white;
     border: none;
     border-radius: 5px;
@@ -131,31 +138,105 @@ p {
 }
 
 .order-summary button:hover {
-    background-color: #0056b3;
+    background-color: #251544;
+}
+
+/* 장바구니 삭제 버튼 */
+.original-price {
+    text-decoration: line-through; /* 취소선 추가 */
+    color: #999; /* 회색으로 표시 */
+    margin-right: 8px; /* 가격 간 간격 추가 */
+    text-align: left;
+}
+
+.sale-price {
+    color: #000000; /* 검정색으로 강조 */
+    font-weight: bold; /* 굵게 표시 */
 }
 
 /* 수량 증감 버튼 */
 
 .quantity-wrapper {
+    padding: 25px;
+    border-bottom: 1px solid #ddd;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: fit-content;
-    margin: 0 auto;
-    padding: 5px;
+    align-items: center; /* 수직 정렬 */
+
 }
 .quantity-wrapper button {
-    background-color: white;
-    border: none;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
     font-size: 12px;
-    padding: 3px 5px;
     cursor: pointer;
+    width: 25px; /* 버튼 너비 */
+    height: 25px; /* 버튼 높이 */
 }
 
 .quantity-wrapper input {
-    width: 18px;
+    width: 40px;
+    height: 30px;
     text-align: center;
-    border: none;
-    font-size: 15px;
-    outline: none;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin: 0 5px; /* 버튼과 입력란 사이의 간격 */
+}
+
+.rmvBtn input {
+    background-color: transparent; /* 배경색을 투명으로 설정 */
+    color: #c5c3c3; /* "X" 문자 색상을 빨간색으로 설정 */
+    border: none; /* 테두리를 제거 */
+    font-size: 13px; /* 글자 크기를 크게 설정 */
+    font-weight: bold; /* 글자를 굵게 설정 */
+    cursor: pointer; /* 마우스 커서를 포인터로 변경 */
+    transition: color 0.3s ease; /* 색상 전환 효과 */
+    padding-right: 5px; /* 패딩을 제거 */
+    margin: 0; /* 마진을 제거 */
+    line-height: 1; /* 줄 높이를 설정 */
+}
+
+
+
+/* 새벽배송, 종이책, e-book 스타일 */
+.product-info {
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+    width: 140px; /* 필요한 너비 조정 */
+    display: inline-block; /* 버튼처럼 보이도록 설정 */
+}
+
+/* 상품 상태별 배경색 설정 */
+.product-text {
+    display: block; /* 한 줄씩 표시 */
+    margin-bottom: 5px; /* 각 줄 간의 간격 조정 */
+    font-weight: bold; /* 텍스트 굵게 */
+}
+
+/* 상태에 따른 배경색과 텍스트 색상 */
+.product-text:nth-child(1) {
+    background-color: #a6b2f3; /* 오렌지색 배경 */
+    color: #000000; /* 흰색 텍스트 */
+    display: inline-block; /* 버튼처럼 보이도록 설정 */
+    border-radius: 3px;
+    padding: 5px;
+}
+
+.product-text:nth-child(2) {
+    background-color: #77be77; /* 초록색 배경 */
+    color: #ffffff; /* 흰색 텍스트 */
+    display: inline-block; /* 버튼처럼 보이도록 설정 */
+    border-radius: 3px;
+    padding: 5px;
+}
+
+.product-text:nth-child(3) {
+    background-color: #ccc885; /* 파란색 배경 */
+    color: white; /* 흰색 텍스트 */
+    display: inline-block; /* 버튼처럼 보이도록 설정 */
+    border-radius: 3px;
+    padding: 5px;
 }
