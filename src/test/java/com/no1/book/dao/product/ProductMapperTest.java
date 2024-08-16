@@ -392,6 +392,27 @@ class ProductDaoTest {
         productDao.delete("RPOD_IMSI");
     }
 
+    @Test
+    void plusSalesTest() throws Exception {
+        // 1단계 데이터 선택 -> id가 PROD_IMSI이면서 카테고리 코드가 010101인 임의의 dto
+        // 1-1. PROD_IMSI 데이터 비우기
+        productDao.delete("PROD_IMSI");
+        // 1-2. PROD_IMSI 데이터 생성
+        ProductDto dto = ProductDto.builder()
+                .prodId("PROD_IMSI")
+                .cateCode("010101")
+                .totalSales(0)
+                .build();
+        // 1-3. 삽입
+        productDao.insert(dto);
+
+        // 2단계 데이터 처리 -> 판매량 업데이트
+        productDao.plusSales("PROD_IMSI");
+
+        // 3단계 검증 -> 판매량이 1이면 통과
+        assertEquals(1, productDao.select("PROD_IMSI").getTotalSales());
+    }
+
 
 //    // 가격 오름차순 정렬 테스트
 //    @Test

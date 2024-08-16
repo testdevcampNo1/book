@@ -32,4 +32,6 @@ public interface ProductDao {
     int idChk(String prodId) throws Exception;
 
     String createId() throws  Exception;
+
+    int plusSales (String prodId) throws Exception;
 }

@@ -21,47 +21,109 @@
         }
 
         function addToCart() {
-            document.getElementById("cartItemQty").value = countValue;
-
-            var prodId = document.getElementById("");
-            var itemQty = document.getElementById("");
+            var prodId = document.getElementById("prodId").value;
+            var itemQty = countValue;
+            var custId = document.getElementById("custId").value;
 
             var params = {
-                prodId : prodId,
-                itemQty : itemQty
-            }
+                prodId: prodId,
+                itemQty: itemQty
+            };
 
             // 서버에 AJAX 요청 보내기
             $.ajax({
-                url: '/cart/add',  // 서버의 API 엔드포인트
+                url: '/cart/add',
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(params),
                 success: function(response) {
-                    // reponse( status : success, fail)
-                    if(response.status == "success"){
-                        // 성공
-                        // 이동할건지
-                        alert("성공!");
-                    }else{
-                        // 실패
-                        alert("실패")
+                    if (response.status === "success") {
+                        var userChoice = confirm("상품이 장바구니에 추가되었습니다. 장바구니로 이동하시겠습니까?");
+                        if (userChoice) {
+                            window.location.href = "/cart/list?custId=" + custId;
+                        } else {
+                            alert("상품이 장바구니에 추가되었습니다. 계속 쇼핑을 하세요.");
+                        }
+                    } else {
+                        alert("장바구니 추가에 실패했습니다: " + response.message);
                     }
                 },
                 error: function() {
                     alert('장바구니 담기에 실패했습니다.');
                 }
             });
-
-
         }
+
         function goToOrder() {
-            document.getElementById("orderItemQty").value = countValue;
+            var prodId = document.getElementById("prodId").value;
+            var itemQty = countValue;
+            var ordChkCode = document.getElementById("ordChkCode").value;
+            var isEbook = document.getElementById("isEbook").value;
+            var dawnDeliChk = document.getElementById("dawnDeliChk").value;
+            var prodName = document.getElementById("prodName").value;
+            var prodBasePrice = document.getElementById("prodBasePrice").value;
+            var salePrice = document.getElementById("salePrice").value;
+
+            var params = {
+                prodId: prodId,
+                ordChkCode: ordChkCode,
+                isEbook: isEbook,
+                dawnDeliChk: dawnDeliChk,
+                prodName: prodName,
+                ordQty: itemQty,
+                prodBasePrice: prodBasePrice,
+                salePrice: salePrice
+            };
+
+            // order로 주문 정보 보내기
+            $.ajax({
+                url: '/order',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(params),
+                success: function() {
+                    alert('주문 창으로 이동합니다.');
+                },
+                error: function() {
+                    alert('주문에 실패했습니다.');
+                }
+            });
+
+
+            // $.ajax({
+            //     url: '/order',
+            //     method: 'POST',
+            //     contentType: 'application/json',
+            //     data: JSON.stringify(params),
+            //     success: function() {
+            //         alert('주문 창으로 이동합니다.');
+            //     },
+            //     error: function() {
+            //         alert('주문에 실패했습니다.');
+            //     }
+            // });
         }
+
+        window.onload = function() { // window.onload -> 화면이 로드되면 자동으로 실행
+            var ordChkCode = document.getElementById("ordChkCode").value;
+            var addToCartBtn = document.getElementById("addToCartBtn");
+            var goToOrderBtn = document.getElementById("goToOrderBtn");
+
+            if (ordChkCode === 'OSTK') {
+                addToCartBtn.textContent = "장바구니 담기 (일시 품절)";
+                goToOrderBtn.textContent = "바로 구매 (일시 품절)";
+                goToOrderBtn.disabled = true;
+            } else if (ordChkCode === 'STOP') {
+                addToCartBtn.textContent = "장바구니 담기 (판매 중지)";
+                addToCartBtn.disabled = true;
+                goToOrderBtn.textContent = "바로 구매 (판매 중지)";
+                goToOrderBtn.disabled = true;
+            }
+        };
     </script>
 </head>
 <body>
-
+<input type="hidden" id="custId" value="[[${custId}]]">
 <div class="container">
     <h3 th:text="${cateName}">카테고리 네임</h3>
 
@@ -79,27 +141,30 @@
             <input type='button' onclick='count("minus")' value='-'/>
             <div id='result'>1</div>
             <input type='button' onclick='count("plus")' value='+'/>
-            <form th:action="@{/cart/add}" method="post">
-                <input type="hidden" th:value="${pdto.prodId}">
-                <input type="hidden" id="cartItemQty">
-                <button type="submit" onclick="addToCart()">장바구니</button>
-            </form>
-            <form th:action="'주문주소'">
-                <input type="hidden" th:value="${pdto.prodId}">
-                <input type="hidden" id="orderItemQty">
-                <button type="submit" onclick="goToOrder()">바로구매</button>
-            </form>
 
+            <input type="hidden" id="prodId" th:value="${pdto.prodId}">
+            <input type="hidden" id="ordChkCode" th:value="${pdto.ordChkCode}">
+            <input type="hidden" id="isEbook" th:value="${pdto.isEbook}">
+            <input type="hidden" id="dawnDeliChk" th:value="${pdto.dawnDeliChk}">
+            <input type="hidden" id="prodName" th:value="${pdto.prodName}">
+            <input type="hidden" id="prodBasePrice" th:value="${pdto.prodBasePrice}">
+            <input type="hidden" id="salePrice" th:value="${pdto.salePrice}">
+
+            <!-- 장바구니 추가 버튼 -->
+            <button type="button" id="addToCartBtn" onclick="addToCart()">장바구니 담기</button>
+
+            <!-- 바로 구매 버튼 -->
+            <button type="button" id="goToOrderBtn" onclick="goToOrder()">바로구매</button>
         </div>
+
         <div class="rating">
-            <p></p>
             <p th:text="${pdto.starAvg} ? '구매자 별점 : ' + ${pdto.starAvg} : '별점 없음'">별점</p>
         </div>
         <div class="sales">
             <p th:text="${pdto.totalSales} ? '판매량 : ' + ${pdto.totalSales} + ' 부': '판매량 없음'">판매량</p>
         </div>
         <div class="delivery-check" th:if="${pdto.dawnDeliChk} == null or ${pdto.dawnDeliChk} == 'N'">
-            <p th:text="'새벽 배송 불가 샹품'">새벽 배송 가능 여부</p>
+            <p th:text="'새벽 배송 불가 상품'">새벽 배송 가능 여부</p>
         </div>
         <div class="delivery-check" th:if="${pdto.dawnDeliChk} != null">
             <p th:text="'새벽 배송 가능 상품'">새벽 배송 가능 여부</p>
@@ -113,11 +178,6 @@
         <h3>요약</h3>
         <p th:text="${pdto.smry}">요약 내용</p>
     </div>
-
-    <!--    <div class="author-section">-->
-    <!--        <h3 th:text="${adto.authorName} ? '저자 ' + ${adto.authorName} : '저자 정보 없음'">저자 이름</h3>-->
-    <!--        <p th:text="${adto.authorBio} ?  ${adto.authorBio} : ''">저자 소개</p>-->
-    <!--    </div>-->
 
     <div class="author-section" th:if="${adto != null}">
         <h3 th:text="${'저자 ' + adto.authorName}">저자 이름</h3>
@@ -141,7 +201,7 @@
         <p th:text="${pdto.pblshDate}">발행일자 내용</p>
 
         <h3>쪽 수</h3>
-        <p th:text="${pdto.totalPages}">쪽 수 내용</p>
+        <p th:text="${pdto.totalP∫ages}">쪽 수 내용</p>
 
         <h3>총 권수</h3>
         <p th:text="${pdto.totalBooks}">총 권수 내용</p>

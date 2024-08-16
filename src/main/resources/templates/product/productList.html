@@ -35,57 +35,57 @@
 </div>
 
 <div class="content">
-<form th:action="@{/product/list}" method="get">
-    <!--    <input type="hidden" name="cateKey" th:value="${param.cateKey}" />-->
-    <input type="hidden" name="cateKey" th:value="${cateKey}"/>
+    <form th:action="@{/product/list}" method="get">
+        <!--    <input type="hidden" name="cateKey" th:value="${param.cateKey}" />-->
+        <input type="hidden" name="cateKey" th:value="${cateKey}"/>
 
-    <select name="sortKey" th:value="*{sortKey}">
-        <option value="date" th:selected="${sortKey == 'date'}">등록 날짜</option>
-        <option value="sales" th:selected="${sortKey == 'sales'}">판매량</option>
-        <option value="price" th:selected="${sortKey == 'price'}">가격</option>
-    </select>
-    <select name="sortOrder" th:value="*{sortOrder}">
-        <option value="desc" th:selected="${sortOrder == 'desc'}">↓</option>
-        <option value="asc" th:selected="${sortOrder == 'asc'}">↑</option>
-    </select>
-    <button type="submit">정렬</button>
-</form>
-<br>
+        <select name="sortKey" th:value="*{sortKey}"> <!-- *{sortKey}로 두면 sortKey를 변수로 서버 혹은 타임리프 내 다른 곳에서도 사용할 수 있음 (페이지 네비게이션바에서 사용중)-->
+            <option value="date" th:selected="${sortKey == 'date'}">등록 날짜</option>
+            <option value="sales" th:selected="${sortKey == 'sales'}">판매량</option>
+            <option value="price" th:selected="${sortKey == 'price'}">가격</option>
+        </select>
+        <select name="sortOrder" th:value="*{sortOrder}">
+            <option value="desc" th:selected="${sortOrder == 'desc'}">↓</option>
+            <option value="asc" th:selected="${sortOrder == 'asc'}">↑</option>
+        </select>
+        <button type="submit">정렬</button>
+    </form>
+    <br>
 
-<script th:inline="javascript">
-    var sortKey = /*[[${sortKey}]]*/ 'default';
-    console.log("sortKey:", sortKey);
-</script>
+    <script th:inline="javascript">
+        var sortKey = /*[[${sortKey}]]*/ 'default';
+        console.log("sortKey:", sortKey);
+    </script>
 
-<table border="1">
-    <tr>
-        <th>책 제목</th>
-        <th>이미지</th>
-        <th>내용</th>
-        <th>상품 가격</th>
-        <th>할인율</th>
-        <th>할인 금액</th>
-        <th>주문 금액</th>
-        <th>판매량</th>
-        <th>별점</th>
-        <th>상품 등록일</th>
-    </tr>
-    <tr th:each="product : ${prodList}">
-        <td><a th:href="@{/product/detail(prodId=${product.prodId})}" th:text="${product.prodName}"></a></td>
-        <td><img th:src="@{/images/product/imsi.png}" alt="상품 이미지" style="width: 100px; height: 150px;"></td>
-        <td th:text="${product.smry}"></td>
-        <td th:text="${product.prodBasePrice}">상품 가격</td>
-        <td th:text="${product.discRate}">할인율</td>
-        <td th:text="${product.discPrice}">할인 금액</td>
-        <td th:text="${product.salePrice}">주문 금액</td>
-        <td th:text="${product.totalSales}">판매량</td>
-        <td th:text="${product.starAvg}">별점</td>
-        <td th:text="${product.regDate}">상품 등록일</td>
-    </tr>
-</table>
+    <table border="1">
+        <tr>
+            <th>이미지</th>
+            <th>책 제목</th>
+            <th>내용</th>
+            <th>상품 가격</th>
+            <th>할인율</th>
+            <th>할인 금액</th>
+            <th>주문 금액</th>
+            <th>판매량</th>
+            <th>별점</th>
+            <th>상품 등록일</th>
+        </tr>
+        <tr th:each="product : ${prodList}">
+            <td><img th:src="@{/images/product/imsi.png}" alt="상품 이미지" style="width: 100px; height: 150px;"></td>
+            <td><a th:href="@{/product/detail(prodId=${product.prodId})}" th:text="${product.prodName}"></a></td>
+            <td th:text="${product.smry}"></td>
+            <td th:text="${product.prodBasePrice}">상품 가격</td>
+            <td th:text="${product.discRate}">할인율</td>
+            <td th:text="${product.discPrice}">할인 금액</td>
+            <td th:text="${product.salePrice}">주문 금액</td>
+            <td th:text="${product.totalSales}">판매량</td>
+            <td th:text="${product.starAvg}">별점</td>
+            <td th:text="${product.regDate}">상품 등록일</td>
+        </tr>
+    </table>
 </div>
 <br>
-<div style="float: right;">
+<div th:if="${admin}=='admin'" style="float: right;">
     <a th:href="@{/product/manage}">manage</a>
 </div>
 <br>
@@ -95,10 +95,18 @@
             <span th:text="'<'"></span>
         </a>
     </span>
-    <span th:each="i : ${#numbers.sequence(ph.beginPage, ph.endPage)}">
-        <a th:href="@{/product/list( cateKey=${cateKey},  sortKey=${sortKey}, sortOrder=${sortOrder}, page=${i}, pageSize=${ph.pageSize})}"
-           th:text="${i}"></a>
+
+    <span th:if="${ph.totalCnt > 0}" style="display: inline;">
+        <span th:each="i : ${#numbers.sequence(ph.beginPage, ph.endPage)}" style="display: inline;">
+            <a th:href="@{/product/list( cateKey=${cateKey},  sortKey=${sortKey}, sortOrder=${sortOrder}, page=${i}, pageSize=${ph.pageSize})}"
+               th:text="${i}"></a>
+        </span>
     </span>
+
+    <span th:if="${ph.totalCnt == 0}" style="display: inline;">
+        <p style="display: inline;">No products found.</p>
+    </span>
+
     <span th:if="${ph.showNext}">
         <a th:href="@{/product/list(cateKey=${cateKey}, sortKey=${sortKey}, sortOrder=${sortOrder}, page=${ph.endPage+1}, pageSize=${ph.pageSize})}">
             <span th:text="'>'"></span>

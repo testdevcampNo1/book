@@ -89,6 +89,16 @@ public class ProductServiceImpl implements ProductService {
         return productDao.idChk(prodId);
     }
 
+    @Override
+    public ProductDto select(String prodId) throws Exception {
+        return productDao.select(prodId);
+    }
+
+    @Override
+    public int plusSales(String prodId) throws Exception {
+        return productDao.plusSales(prodId);
+    }
+
 
 //    @Override
 //    public List<ProductDto> getSortedPage(Map map) throws Exception {

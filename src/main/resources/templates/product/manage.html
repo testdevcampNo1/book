@@ -41,7 +41,7 @@
 <!--상품 추가-->
     <div class="form-container">
         <h2>상품 등록</h2>
-        <form th:action="@{/product/add}" method="post" id="addForm">
+        <form th:action="@{/product/manage/add}" method="post" id="addForm">
             <div class="form-group">
                 <div style="display: flex; align-items: center;">
                     <input type="hidden" id="prod_id" name="prodId" value="1">
@@ -130,7 +130,7 @@
 <!--            </div>-->
             <div class="form-group">
                 <label for="auth_option">저자</label>
-                <select id="auth_option" name="authorInfoCode">
+                <select id="auth_option" name="authorInfoId">
                     <option value="" disabled selected>저자 선택</option>
                     <option th:each="option : ${authList}" th:value="${option.authorInfoId}" th:text="${option.authorName}+'('+${option.authorInfoId}+')'"></option>
                 </select>
@@ -149,35 +149,95 @@
         </form>
     </div>
 
-<!--상품관리-->
+    <!-- 상품 조회, 수정, 삭제 -->
     <div class="form-container">
         <h2>상품 수정, 삭제</h2>
-        <form th:action="@{/product/manage}" method="post">
+        <form id="manageForm">
             <div class="form-group">
                 <label for="search_prod_id">상품 ID</label>
-                <input type="text" id="search_prod_id" name="search_prod_id">
-                <button type="button" formaction="@{/product/view}">조회</button>
+                <input type="text" id="search_prod_id" name="prodId">
+                <button type="button" onclick="viewProduct()">조회</button>
             </div>
-            <!-- 동일한 필드가 오른쪽에도 복사됨 -->
-        <div th:if="${pdto != null}">
+            <div id="product-info">
                 <div class="form-group">
                     <label for="prod_name">상품 이름</label>
-                    <input type="text" id="prod_name" name="prod_name" th:value="${pdto.prodName}">
+                    <input type="text" id="prod_name_" name="prodName">
                 </div>
-                <!-- 추가 필드들... -->
                 <div class="form-group">
                     <label for="prod_base_price">기본 가격</label>
-                    <input type="number" id="prod_base_price" name="prod_base_price" th:value="${pdto.prodBasePrice}">
+                    <input type="number" id="prod_base_price_" name="prodBasePrice">
                 </div>
                 <div class="form-group">
                     <label for="disc_rate">할인율</label>
-                    <input type="number" id="disc_rate" name="disc_rate" th:value="${pdto.discRate}">
+                    <input type="number" id="disc_rate_" name="discRate">
                 </div>
-                <!-- 나머지 필드들도 동일하게 처리 -->
-                <div class="btn-group">
-                    <button type="submit" formaction="@{/product/update}">수정</button>
-                    <button type="submit" formaction="@{/product/delete}">삭제</button>
+                <div class="form-group">
+                    <label for="table_of_content">목차</label>
+                    <textarea id="table_of_content_" name="tableOfContent"></textarea>
                 </div>
+                <div class="form-group">
+                    <label for="smry">요약</label>
+                    <textarea id="smry_" name="smry"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="pblcr">출판사</label>
+                    <input type="text" id="pblcr_" name="pblcr">
+                </div>
+                <div class="form-group">
+                    <label for="pblcr_review">출판사 서평</label>
+                    <textarea id="pblcr_review_" name="pblcrReview"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="isbn">ISBN</label>
+                    <input type="text" id="isbn_" name="isbn">
+                </div>
+                <div class="form-group">
+                    <label for="pblsh_date">출판 날짜</label>
+                    <input type="date" id="pblsh_date_" name="pblshDate">
+                </div>
+                <div class="form-group">
+                    <label for="total_pages">총 페이지 수</label>
+                    <input type="number" id="total_pages_" name="totalPages">
+                </div>
+                <div class="form-group">
+                    <label for="total_books">총 권 수</label>
+                    <input type="number" id="total_books_" name="totalBooks">
+                </div>
+                <div class="form-group">
+                    <label for="trlr">번역가</label>
+                    <input type="text" id="trlr_" name="trlr">
+                </div>
+                <div class="form-group">
+                    <!--                <input type="hidden" name="dawnDeliChk" value="N">-->
+                    <label for="dawn_deli_chk">새벽 배송 여부</label>
+                    <input type="checkbox" id="dawn_deli_chk_" value="Y" name="dawnDeliChk">
+                </div>
+                <div class="form-group">
+                    <label for="cate_option_">카테고리</label>
+                    <select id="cate_option_" name="cateCode">
+                        <option value="" selected disabled>카테고리 선택</option>
+                        <option th:each="option : ${cateList}" th:value="${option.cateCode}" th:text="${option.cateName}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="auth_option">저자</label>
+                    <select id="auth_option_" name="authorInfoId">
+                        <option value="" disabled selected>저자 선택</option>
+                        <option th:each="option : ${authList}" th:value="${option.authorInfoId}" th:text="${option.authorName}+'('+${option.authorInfoId}+')'"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ord_chk_code">주문 상태 코드</label>
+                    <select id="ord_chk_code_" name="ordChkCode">
+                        <option value="AVBL">AVBL (주문 가능)</option>
+                        <option value="OSTK">OSTK (일시 품절)</option>
+                        <option value="STOP">STOP (판매 중지)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button type="button" onclick="updateProduct()">수정</button>
+                <button type="button" onclick="deleteProduct()">삭제</button>
             </div>
         </form>
     </div>
@@ -246,6 +306,73 @@
             event.preventDefault(); // 폼 제출을 막음
         }
     });
+</script>
+<script>
+    function viewProduct() {
+        var prodId = document.getElementById("search_prod_id").value;
+
+        $.ajax({
+            url: '/product/manage/view',
+            method: 'POST',
+            contentType: 'application/x-www-form-urlencoded',   // 키:밸류로 되어있는 데이터를 URL 인코딩된 문자열로 바꾸는 방식
+            data: { prodId: prodId },
+            success: function(response) {
+                document.getElementById("prod_name_").value = response.prodName;
+                document.getElementById("prod_base_price_").value = response.prodBasePrice;
+                document.getElementById("disc_rate_").value = response.discRate;
+                document.getElementById("table_of_content_").value = response.tableOfContent;
+                document.getElementById("smry_").value = response.smry;
+                document.getElementById("pblcr_").value = response.pblcr;
+                document.getElementById("pblcr_review_").value = response.pblcrReview;
+                document.getElementById("isbn_").value = response.isbn;
+                document.getElementById("pblsh_date_").value = response.pblshDate;
+                document.getElementById("total_pages_").value = response.totalPages;
+                document.getElementById("total_books_").value = response.totalBooks;
+                document.getElementById("trlr_").value = response.trlr;
+                document.getElementById("dawn_deli_chk_").checked = response.dawnDeliChk === 'Y';
+                document.getElementById("ord_chk_code_").value = response.ordChkCode;
+                document.getElementById("auth_option_").value = response.authorInfoId;
+                document.getElementById("cate_option_").value = response.cateCode;
+            },
+            error: function() {
+                alert('상품 조회에 실패했습니다.');
+            }
+        });
+    }
+
+    function updateProduct() {
+        var formData = $('#manageForm').serialize();
+
+        $.ajax({
+            url: '/product/manage/update',
+            method: 'POST',
+            contentType: 'application/x-www-form-urlencoded',
+            data: formData,
+            success: function() {
+                alert('상품이 성공적으로 수정되었습니다.');
+            },
+            error: function() {
+                alert('상품 수정에 실패했습니다.');
+            }
+        });
+    }
+
+    function deleteProduct() {
+        var prodId = document.getElementById("search_prod_id").value;
+
+        $.ajax({
+            url: '/product/manage/delete',
+            method: 'POST',
+            contentType: 'application/x-www-form-urlencoded',
+            data: { prodId: prodId },
+            success: function() {
+                alert('상품이 성공적으로 삭제되었습니다.');
+            },
+            error: function() {
+                alert('상품 삭제에 실패했습니다.');
+            }
+        });
+    }
 </script>
 </body>
 </html>
