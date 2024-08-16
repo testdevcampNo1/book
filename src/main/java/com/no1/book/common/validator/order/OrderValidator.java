@@ -13,7 +13,7 @@ public class OrderValidator {
     // 필수입력정보 검증시 공통으로 사용
     private void validateNotEmpty(String value, String errorMessage) {
         if(value == null || value.isEmpty()) {
-            throw new MissingRequiredOrderInfoException(errorMessage);
+            throw new InvalidOrderException(errorMessage);
         }
     }
 
@@ -48,15 +48,15 @@ public class OrderValidator {
     // 금액 검증
     private void validateOrderPrice(OrderFormDto orderFormDto) {
         if(orderFormDto.getTotalProdBasePrice() < 0 || orderFormDto.getTotalDiscPrice() < 0 || orderFormDto.getTotalPayPrice() < 0 || orderFormDto.getDlvPrice() < 0) {
-            throw new InvalidAmountException(OrderValidatorErrorMessage.NEGATIVE_AMOUNT.getMessage());
+            throw new InvalidOrderException(OrderValidatorErrorMessage.NEGATIVE_AMOUNT.getMessage());
         }
 
         if(orderFormDto.getTotalProdBasePrice() < orderFormDto.getTotalPayPrice()) {
-            throw new InvalidAmountException(OrderValidatorErrorMessage.SALE_PRICE_EXCEEDS_BASE_PRICE.getMessage());
+            throw new InvalidOrderException(OrderValidatorErrorMessage.SALE_PRICE_EXCEEDS_BASE_PRICE.getMessage());
         }
 
         if(orderFormDto.getTotalProdBasePrice() < orderFormDto.getTotalDiscPrice()) {
-            throw new InvalidAmountException(OrderValidatorErrorMessage.DISCOUNT_PRICE_EXCEEDS_SALE_PRICE.getMessage());
+            throw new InvalidOrderException(OrderValidatorErrorMessage.DISCOUNT_PRICE_EXCEEDS_SALE_PRICE.getMessage());
         }
     }
 
@@ -64,38 +64,38 @@ public class OrderValidator {
     private void validateOrderProduct(List<OrderProductDto> orderProductDtoList) {
         // 주문 상품 리스트 검증
         if (orderProductDtoList == null || orderProductDtoList.isEmpty()) {
-            throw new ProductNotOrderableException(OrderValidatorErrorMessage.EMPTY_PRODUCT_LIST.getMessage());
+            throw new InvalidProductException(OrderValidatorErrorMessage.EMPTY_PRODUCT_LIST.getMessage());
         }
 
         // 각 주문 상품 검증
         for (OrderProductDto product : orderProductDtoList) {
             // 상품id 검증
             if (product.getProdId() == null || product.getProdId().isEmpty()) {
-                throw new InvalidProductIdException(OrderValidatorErrorMessage.MISSING_PRODUCT_ID.getMessage());
+                throw new InvalidProductException(OrderValidatorErrorMessage.MISSING_PRODUCT_ID.getMessage());
             }
 
             // 상품 상태 검증
             // 상품 상태 DB에서 실시간으로 조회 필요
             if (product.getOrdChkCode() == null || product.getOrdChkCode().isEmpty() || !product.getOrdChkCode().equals("AVBL") || product.getCodeType() == null || product.getCodeType().isEmpty()) {
-                throw new ProductNotOrderableException(OrderValidatorErrorMessage.INVALID_PRODUCT_STATUS.getMessage());
+                throw new InvalidProductException(OrderValidatorErrorMessage.INVALID_PRODUCT_STATUS.getMessage());
             }
 
             // 0개 이하인 주문 수량 검증
             if (product.getOrdQty() <= 0) {
-                throw new ProductNotOrderableException(OrderValidatorErrorMessage.ZERO_OR_NEGATIVE_QUANTITY.getMessage());
+                throw new InvalidProductException(OrderValidatorErrorMessage.ZERO_OR_NEGATIVE_QUANTITY.getMessage());
             }
 
             // 상품 금액 검증
             if (product.getProdBasePrice() < 0 || product.getDiscPrice() < 0 || product.getTotalPayPrice() < 0) {
-                throw new InvalidAmountException(OrderValidatorErrorMessage.NEGATIVE_AMOUNT.getMessage());
+                throw new InvalidProductException(OrderValidatorErrorMessage.NEGATIVE_AMOUNT.getMessage());
             }
 
             if (product.getProdBasePrice() < product.getDiscPrice()) {
-                throw new InvalidAmountException(OrderValidatorErrorMessage.SALE_PRICE_EXCEEDS_BASE_PRICE.getMessage());
+                throw new InvalidProductException(OrderValidatorErrorMessage.SALE_PRICE_EXCEEDS_BASE_PRICE.getMessage());
             }
 
             if (product.getTotalPayPrice() < product.getDiscPrice() * product.getOrdQty()) {
-                throw new InvalidAmountException(OrderValidatorErrorMessage.DISCOUNT_PRICE_EXCEEDS_SALE_PRICE.getMessage());
+                throw new InvalidProductException(OrderValidatorErrorMessage.DISCOUNT_PRICE_EXCEEDS_SALE_PRICE.getMessage());
             }
         }
     }
@@ -103,7 +103,7 @@ public class OrderValidator {
     // 결제 정보 검증
     private void validatePaymentMethod(String paymentMethod) {
         if(paymentMethod == null || paymentMethod.isEmpty()) {
-            throw new MissingRequiredOrderInfoException(OrderValidatorErrorMessage.MISSING_PAYMENT_METHOD.getMessage());
+            throw new InvalidPaymentException(OrderValidatorErrorMessage.MISSING_PAYMENT_METHOD.getMessage());
         }
     }
 

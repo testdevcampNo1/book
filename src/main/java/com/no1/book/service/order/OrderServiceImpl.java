@@ -1,8 +1,7 @@
 package com.no1.book.service.order;
 
-import com.no1.book.common.exception.order.OrderException;
+import com.no1.book.common.exception.order.InvalidOrderException;
 import com.no1.book.common.exception.order.OrderValidatorErrorMessage;
-import com.no1.book.common.exception.order.ProductNotOrderableException;
 import com.no1.book.common.exception.order.SystemException;
 import com.no1.book.common.validator.order.OrderValidator;
 import com.no1.book.dao.customer.CustomerDao;
@@ -131,7 +130,7 @@ public class OrderServiceImpl implements OrderService {
             }
 
             // 상품 상태 조회
-            if(!isProductAvailable(product.getProdId())) throw new  ProductNotOrderableException("구매 불가능한 상품입니다. " + product.getProdId());
+            if(!isProductAvailable(product.getProdId())) throw new InvalidOrderException("구매 불가능한 상품입니다. " + product.getProdId());
         }
 
         orderFormDto.setTotalProdBasePrice(totalProdBasePrice);

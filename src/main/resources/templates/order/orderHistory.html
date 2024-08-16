@@ -117,7 +117,7 @@
     <div class="order_history_list" th:each="history : ${orderHistory}">
         <div class="order_id" th:text="${history.getKey()}"></div>
         <div class="order_history" th:each="historyItem : ${history.value}">
-            <img class="product_img" th:src="@{${historyItem.getImg()}}" alt="Product Image" style="width:80px; height:auto;">
+            <img class="product_img" th:src="@{${historyItem.getImg()}}" alt="Product Image" style="width:80px; height:100px; object-fit: cover">
             <div class="product_info">
                 <div class="product_name" th:text="${historyItem.getProdName()}"></div>
                 <div class="product_quantity" th:text="'수량 : ' + ${historyItem.getOrdQty()}"></div>
