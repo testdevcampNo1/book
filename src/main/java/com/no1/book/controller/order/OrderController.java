@@ -52,49 +52,52 @@ public class OrderController {
         ProductDto productDto1 = new ProductDto();
         ProductDto productDto2 = new ProductDto();
 
+        int prod1Qty = 1;
+        int prod2Qty = 5;
+
         try {
-            productDto1 = productService.readProductDetail("PROD001");
-            productDto2 = productService.readProductDetail("PROD002");
+            productDto1 = productService.readProductDetail("PROD003");
+            productDto2 = productService.readProductDetail("PROD004");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         OrderProductDto ordProd1 = OrderProductDto.builder()
-                .ordProdId(15)
+                .ordProdId(20)
                 .prodId(productDto1.getProdId())
                 .ordChkCode(productDto1.getOrdChkCode())
                 .codeType(productDto1.getCodeType())
-                .isEbook(productDto1.getIsEbook() == "1" ? "Y" : "N")
+                .isEbook(productDto1.getIsEbook().equals("1") ? "Y" : "N")
                 .dawnDeliChk(productDto1.getDawnDeliChk())
                 .prodName(productDto1.getProdName())
                 .img("https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788994492049.jpg")
                 .prodPageLink("")
-                .ordQty(5)
+                .ordQty(prod1Qty)
                 .prodBasePrice(productDto1.getProdBasePrice())
-                .totalProdPrice(productDto1.getProdBasePrice() * 5)
+                .totalProdPrice(productDto1.getProdBasePrice() * prod1Qty)
                 .discPrice(productDto1.getDiscPrice())
-                .totalDiscPrice(productDto1.getDiscPrice() * 5)
-                .totalPayPrice(5 * productDto1.getProdBasePrice() - 5 * productDto1.getDiscPrice())
+                .totalDiscPrice(productDto1.getDiscPrice() * prod1Qty)
+                .totalPayPrice(productDto1.getProdBasePrice() * prod1Qty - productDto1.getDiscPrice() * prod1Qty)
                 .regId("1")
                 .upId("1")
                 .build();
 
         OrderProductDto ordProd2 = OrderProductDto.builder()
-                .ordProdId(18)
+                .ordProdId(21)
                 .prodId(productDto2.getProdId())
                 .ordChkCode(productDto2.getOrdChkCode())
                 .codeType(productDto2.getCodeType())
-                .isEbook(productDto2.getIsEbook())
+                .isEbook(productDto2.getIsEbook().equals("1") ? "Y" : "N")
                 .dawnDeliChk(productDto2.getDawnDeliChk())
                 .prodName(productDto2.getProdName())
                 .img("https://contents.kyobobook.co.kr/sih/fit-in/458x0/pdt/9788994492049.jpg")
                 .prodPageLink("")
-                .ordQty(3)
+                .ordQty(prod2Qty)
                 .prodBasePrice(productDto2.getProdBasePrice())
-                .totalProdPrice(productDto2.getProdBasePrice() * 3)
+                .totalProdPrice(productDto2.getProdBasePrice() * prod2Qty)
                 .discPrice(productDto2.getDiscPrice())
-                .totalDiscPrice(productDto2.getDiscPrice() * 3)
-                .totalPayPrice(5 * productDto2.getProdBasePrice() - 5 * productDto2.getDiscPrice())
+                .totalDiscPrice(productDto2.getDiscPrice() * prod2Qty)
+                .totalPayPrice(productDto2.getProdBasePrice() * prod2Qty - productDto2.getDiscPrice() * prod2Qty)
                 .regId("1")
                 .upId("1")
                 .build();

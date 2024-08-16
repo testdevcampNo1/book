@@ -160,6 +160,31 @@
             }
         }
 
+        function formatPrice(price) {
+            return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        window.onload = function () {
+            var salePrice = document.querySelectorAll('.sale_price');
+            var basePrice = document.querySelectorAll('.product_base_price');
+            var prices = document.querySelectorAll('.price');
+
+            salePrice.forEach(function (element) {
+                var price = parseInt(element.getAttribute('data-price'));
+                element.textContent = formatPrice(price) + "원";
+            });
+
+            basePrice.forEach(function (element) {
+                var price = parseInt(element.getAttribute('data-price'));
+                element.textContent = formatPrice(price) + "원";
+            });
+
+            prices.forEach(function (element) {
+                var price = parseInt(element.getAttribute('data-price'));
+                element.textContent = formatPrice(price) + "원";
+            })
+        }
+
     </script>
 
 </head>
@@ -235,8 +260,8 @@
                     <div class="product_name" th:text="${product.getProdName()}"></div>
                     <div class="product_quantity" th:text="${product.getOrdQty()} + '개'"></div>
                     <div class="product_price">
-                        <div class="sale_price" th:text="${product.getProdBasePrice() * product.getOrdQty() - product.getDiscPrice() * product.getOrdQty()} + '원'"></div>
-                        <div class="product_base_price" th:text="${product.getProdBasePrice() * product.getOrdQty()} + '원'"></div>
+                        <div class="sale_price" th:attr="data-price=${product.getTotalPayPrice()}" th:text="${product.getTotalPayPrice()} + '원'"></div>
+                        <div class="product_base_price" th:attr="data-price=${product.getTotalProdPrice()}" th:text="${product.getTotalProdPrice()} + '원'"></div>
                     </div>
                     <input type="hidden" name="email" th:value="${orderFormDto.getEmail()}">
                 </div>
@@ -261,22 +286,22 @@
             <div class="price_info_title">금액</div>
             <div class="price_info">
                 <span class="price_label">총 상품 금액</span>
-                <span class="price" th:text="${orderFormDto.getTotalProdBasePrice()} + '원'"></span>
+                <span class="price" th:attr="data-price=${orderFormDto.getTotalProdBasePrice()}"></span>
                 <input type="hidden" name="totalProdBasePrice" th:value="${orderFormDto.getTotalProdBasePrice()}">
             </div>
             <div class="price_info">
                 <span class="price_label">배송비</span>
-                <span class="price" th:text="${orderFormDto.getDlvPrice()} + '원'"></span>
+                <span class="price" th:attr="data-price=${orderFormDto.getDlvPrice()}"></span>
                 <input type="hidden" name="dlvPrice" th:value="${orderFormDto.getDlvPrice()}">
             </div>
             <div class="price_info">
                 <span class="price_label">총 할인 금액</span>
-                <span class="price" th:text="${orderFormDto.getTotalDiscPrice()} + '원'"></span>
+                <span class="price" th:attr="data-price=${orderFormDto.getTotalDiscPrice()}"></span>
                 <input type="hidden" name="totalDiscPrice" th:value="${orderFormDto.getTotalDiscPrice()}">
             </div>
             <div class="price_info">
                 <span class="price_label" style="font-weight: bold">최종 결제 금액</span>
-                <span class="price" th:text="${orderFormDto.getTotalPayPrice()} + '원'" style="font-weight: bold"></span>
+                <span class="price" th:attr="data-price=${orderFormDto.getTotalPayPrice()}" style="font-weight: bold"></span>
                 <input type="hidden" name="totalPayPrice" th:value="${orderFormDto.getTotalPayPrice()}">
             </div>
         </div>

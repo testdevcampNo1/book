@@ -6,8 +6,8 @@
 
     <!--    주문상품 추가-->
     <insert id="insertOrderProduct" parameterType="OrderProductDto">
-        INSERT INTO no1.orderProduct ( ord_id, prod_id, ord_prod_stus_code, code_type, ebook_chk, name, ord_qty, img, prod_page_link, total_prod_price, total_disc_price, total_pay_price, cancelable_date, reg_date, reg_id, up_date, up_id )
-        VALUES ( #{ordId}, #{prodId}, #{ordChkCode}, #{codeType}, #{isEbook}, #{prodName}, #{ordQty}, #{img}, #{prodPageLink}, #{prodBasePrice}, #{totalDiscPrice}, #{totalPayPrice}, DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 7 DAY), '%Y-%m-%d %H:%i:%s'), DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), #{regId}, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), #{upId} )
+        INSERT INTO no1.orderProduct ( ord_id, prod_id, ord_chk_code, code_type, is_ebook, dawn_deli_chk, prod_name, ord_qty, img, prod_page_link, total_prod_price, total_disc_price, total_pay_price, cancelable_date, reg_date, reg_id, up_date, up_id )
+        VALUES ( #{ordId}, #{prodId}, #{ordChkCode}, #{codeType}, #{isEbook}, #{dawnDeliChk}, #{prodName}, #{ordQty}, #{img}, #{prodPageLink}, #{prodBasePrice}, #{totalDiscPrice}, #{totalPayPrice}, DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 7 DAY), '%Y-%m-%d %H:%i:%s'), DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), #{regId}, DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), #{upId} )
     </insert>
 
     <!--    주문상품ID로 조회-->
@@ -21,6 +21,7 @@
         SELECT * FROM no1.orderProduct
         JOIN no1.order ON no1.orderProduct.ord_id = no1.order.ord_id
         WHERE no1.order.cust_id = #{custId}
+        ORDER BY order.reg_date DESC
     </select>
 
     <!--    한 주문의 주문상품 전체 조회-->
@@ -37,7 +38,7 @@
     <!--    주문상품 상태 업데이트-->
     <update id="updateOrderProductStatus" parameterType="map">
         UPDATE no1.orderProduct
-        SET ord_prod_stus_code = #{ordProdStusCode}, up_date = DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), up_id = #{upId}
+        SET ord_chk_code = #{ordChkCode}, up_date = DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), up_id = #{upId}
         WHERE ord_prod_id = #{ordProdId}
     </update>
 

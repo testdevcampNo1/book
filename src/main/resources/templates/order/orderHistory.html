@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>주문내역 화면</title>
+
+    <style>
+        .title_heading {
+            font-size: 24px;
+            letter-spacing: -0.01em;
+        }
+
+        .order_history {
+            display: flex;
+            align-items: center;
+        }
+
+        .product_info {
+            display: inline-block;
+            flex: 2;
+        }
+
+        .product_quantity {
+            font-size: 12px;
+            color: #595959;
+        }
+
+        .product_img {
+            display: inline-block;
+            margin-right: 12px;
+        }
+
+        .product_price {
+            display: inline-block;
+        }
+
+        .product_status {
+            display: inline-block;
+            margin: 24px;
+        }
+
+        .review_button {
+            padding: 12px;
+            background: black;
+            color: white;
+            font-size: 14px;
+            border: 1px solid #d5d5d5;
+            border-radius: 12px;
+            margin-right: 8px;
+        }
+
+        .cancel_order_button {
+            padding: 12px;
+            background: black;
+            color: white;
+            font-size: 14px;
+            border: 1px solid #d5d5d5;
+            border-radius: 12px;
+        }
+
+        .order_id {
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: -0.01em;
+            border-top: 1px solid #d5d5d5;
+            padding-top: 24px;
+            padding-bottom: 12px;
+        }
+
+        .order_history {
+            padding-bottom: 24px;
+        }
+
+        /*.product_status.cancelled {*/
+        /*    color: red;
+        /*}*/
+
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.cancel_order_button').click(function () {
+                var button = $(this);
+                var ordProdId = button.data('ord-prod-id');
+                var stusDiv = button.siblings('.product_status');
+                $.ajax({
+                   url: '/order/cancel',
+                   type: 'POST',
+                   data: {
+                       ordProdId: ordProdId
+                   },
+                    success: function (res) {
+                        if(res === 'success') {
+                            stusDiv.text('주문 취소').addClass('cancelled');
+                            button.prop('disabled', true);
+                        } else {
+                            alert('주문 취소 실패했습니다.');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('주문 취소 실패했습니다.');
+                    },
+                });
+            });
+        });
+
+    </script>
+
+</head>
+<body>
+    <p class="title_heading">주문/배송 목록</p>
+
+    <div class="order_history_list" th:each="history : ${orderHistory}">
+        <div class="order_id" th:text="${history.getKey()}"></div>
+        <div class="order_history" th:each="historyItem : ${history.value}">
+            <img class="product_img" th:src="@{${historyItem.getImg()}}" alt="Product Image" style="width:80px; height:auto;">
+            <div class="product_info">
+                <div class="product_name" th:text="${historyItem.getProdName()}"></div>
+                <div class="product_quantity" th:text="'수량 : ' + ${historyItem.getOrdQty()}"></div>
+            </div>
+            <div class="product_price" th:text="${historyItem.getTotalProdPrice()} + '원'"></div>
+            <div class="product_status" th:text="${historyItem.getOrdChkCode()}"></div>
+            <button class="review_button">리뷰 작성</button>
+            <button class="cancel_order_button" th:attr="data-ord-prod-id=${historyItem.getOrdProdId()}">주문 취소</button>
+        </div>
+    </div>
+</body>
+</html>
