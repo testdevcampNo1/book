@@ -42,6 +42,19 @@
             });
         });
 
+        function formatPrice(price) {
+            return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        window.onload = function () {
+            var productPrice = document.querySelectorAll('.product_price');
+
+            productPrice.forEach(function (element) {
+                var price = parseInt(element.getAttribute('data-price'));
+                element.textContent = formatPrice(price) + "원";
+            });
+        }
+
     </script>
 
 </head>
@@ -60,8 +73,11 @@
                 <div class="product_name" th:text="${historyItem.getProdName()}"></div>
                 <div class="product_quantity" th:text="'수량 : ' + ${historyItem.getOrdQty()}"></div>
             </div>
-            <div class="product_price" th:text="${historyItem.getTotalPayPrice()} + '원'"></div>
-            <div class="product_status" th:text="${historyItem.getOrdChkCode()}"></div>
+            <div class="product_price" th:attr="data-price=${historyItem.getTotalPayPrice()}" th:text="${historyItem.getTotalPayPrice()} + '원'"></div>
+            <div class="product_status" th:switch="${historyItem.getOrdChkCode()}">
+                <span th:case="'CNCL'" th:text="'취소주문'"></span>
+                <span th:case="*">결제완료</span>
+            </div>
             <button class="review_button">리뷰 작성</button>
             <button class="cancel_order_button" th:attr="data-ord-prod-id=${historyItem.getOrdProdId()}" th:if="${historyItem.getOrdChkCode()} != 'CNCL'">주문 취소</button>
         </div>

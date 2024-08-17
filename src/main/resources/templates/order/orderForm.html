@@ -70,25 +70,38 @@
             <table>
                 <tbody>
                 <tr class="delivery_info">
-                    <th class="delivery_info_title">배송지 정보</th>
+                    <th class="delivery_info_title">주문자 정보</th>
                     <td>
                         <!-- 배송지 이름 -->
-                        <span th:text="${orderFormDto.getAddressName()}"></span>
-                        <span th:if="${orderFormDto.getDefaultChk() == 'Y'}"> - 기본배송지</span>
+<!--                        <span th:text="${orderFormDto.getAddressName()}"></span>-->
+<!--                        <span th:if="${orderFormDto.getDefaultChk() == 'Y'}"> - 기본배송지</span>-->
                         <!-- 수령자 이름, 전화번호 -->
-                        <div th:text="${orderFormDto.getName()} + ' / ' + ${orderFormDto.getTelNum()}"></div>
-                        <input type="hidden" name="name" th:value="${orderFormDto.getName()}">
-                        <input type="hidden" name="telNum" th:value="${orderFormDto.getTelNum()}">
-                        <div class="address" th:text=" '[' + ${orderFormDto.getZipCode()} + '] ' + ${orderFormDto.getMainAddress()} + ${orderFormDto.getDetailAddress()}"></div>
-                        <input type="hidden" name="zipCode" th:value="${orderFormDto.getZipCode()}">
-                        <input type="hidden" name="mainAddress" th:value="${orderFormDto.getMainAddress()}">
-                        <input type="hidden" name="detailAddress" th:value="${orderFormDto.getDetailAddress()}">
+<!--                        <div th:text="${orderFormDto.getName()} + ' / ' + ${orderFormDto.getTelNum()}"></div>-->
+<!--                        <input type="hidden" name="name" th:value="${orderFormDto.getName()}">-->
+<!--                        <input type="hidden" name="telNum" th:value="${orderFormDto.getTelNum()}">-->
+<!--                        <div class="address" th:text=" '[' + ${orderFormDto.getZipCode()} + '] ' + ${orderFormDto.getMainAddress()} + ${orderFormDto.getDetailAddress()}"></div>-->
+<!--                        <input type="hidden" name="zipCode" th:value="${orderFormDto.getZipCode()}">-->
+<!--                        <input type="hidden" name="mainAddress" th:value="${orderFormDto.getMainAddress()}">-->
+<!--                        <input type="hidden" name="detailAddress" th:value="${orderFormDto.getDetailAddress()}">-->
+
+                        <input class="order_info" type="text" name="name" th:value="${orderFormDto.getName()}" placeholder="수령인 이름을 입력해 주세요.">
+                        <input class="order_info" type="text" name="telNum" th:value="${orderFormDto.getTelNum()}" placeholder="수령인 전화번호를 입력해 주세요.">
+                        <input class="order_info" type="text" name="zipCode" th:value="${orderFormDto.getZipCode()}" placeholder="우편번호를 입력해 주세요.">
+                        <input class="order_info" type="text" name="mainAddress" th:value="${orderFormDto.getMainAddress()}" placeholder="기본 주소를 입력해 주세요.">
+                        <input class="order_info" type="text" name="detailAddress" th:value="${orderFormDto.getDetailAddress()}" placeholder="상세 주소를 입력해 주세요.">
+                        <div th:if="${orderFormDto.getCustId()} == -1">
+                            <input class="order_info" type="text" name="pwd" placeholder="비회원 주문 조회에 사용할 비밀번호를 입력해 주세요.">
+                        </div>
+                        <input type="checkbox" id="default" name="defaultChk" style="display: inline-block">
+                        <div th:if="${orderFormDto.getCustId() != -1}" style="display: inline-block">
+                            <label for="default" style="display: inline-block">다음에도 이 주소로 받을게요</label>
+                        </div>
                     </td>
                 </tr>
                 <tr class="req_msg">
                     <th class="req_msg_title">배송요청사항</th>
                     <td>
-                        <input type="text" class="req_msg_form" name="orderRequestMessage" th:value="${orderFormDto.getOrderRequestMessage()}">
+                        <input type="text" class="req_msg_form" name="orderRequestMessage" th:value="${orderFormDto.getOrderRequestMessage()}" placeholder="배송 요청 사항을 입력해 주세요.">
                     </td>
                 </tr>
                 <tr class="entrance_type">

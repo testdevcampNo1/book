@@ -57,6 +57,17 @@ th {
     outline: none;
 }
 
+.order_info {
+    width: 100%;
+    height: 36px;
+    border: 1px solid #d5d5d5;
+    border-radius: 6px;
+    transition: border-color 0.2s;
+    margin-bottom: 12px;
+    outline: none;
+    display: block;
+}
+
 .order_product_list_title {
     font-weight: bold;
     display: inline-block;
