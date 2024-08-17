@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.Objects;
 
 @Data
-public class BoardNoticeDto {
+public class BoardNoticeDto implements BoardDto {
     Integer notcNum;
     String notcType;
 

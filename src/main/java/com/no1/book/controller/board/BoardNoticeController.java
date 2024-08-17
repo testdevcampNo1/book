@@ -254,7 +254,7 @@ public class BoardNoticeController {
 
     // 게시글 등록 예외, 중복 키 예외, 무결성 예외
     @ExceptionHandler({BoardCreationException.class, DuplicateKeyException.class, DataIntegrityViolationException.class})
-    public String boardCreationExceptionCatcher(DataIntegrityViolationException ex, RedirectAttributes rattr){
+    public String boardCreationExceptionCatcher(DataAccessException ex, RedirectAttributes rattr){
         rattr.addFlashAttribute("ex", ex);
         // 게시글 작성 실패, 중복 키, 무결성 검사 실패
         rattr.addFlashAttribute("msg", "CRT_ERR");
