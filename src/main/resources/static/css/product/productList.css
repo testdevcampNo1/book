@@ -190,6 +190,8 @@ a:hover {
     margin-top: 30px;
     position: relative; /* z-index를 적용하기 위해 relative로 설정 */
     z-index: 1100; /* 다른 요소들보다 앞에 오도록 높은 z-index 설정 */
+    margin-bottom: 30px;
+    padding-bottom: 25px;
 }
 
 .pagination a {
@@ -227,3 +229,4 @@ a:hover {
     background-color: #dc3545;
     color: white;
 }
+

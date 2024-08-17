@@ -49,7 +49,7 @@ public class ProductController {
 
         // 페이징 정보 초기값 설정
         if (page == null) page = 1;
-        if (pageSize == null) pageSize = 12;
+        if (pageSize == null) pageSize = 10;
         if (sortKey == null) sortKey = "date";
         if (sortOrder == null) sortOrder = "desc";
 
