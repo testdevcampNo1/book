@@ -10,7 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+@RequestMapping("/payment")
 @Controller
 public class PaymentController {
 
@@ -20,21 +22,21 @@ public class PaymentController {
     @Autowired
     private ProductService productService;
 
-    @PostMapping("/requestPayment")
+    @PostMapping("/request")
     public String requestPayment(OrderFormDto orderFormDto, HttpSession session, Model model) {
         session.setAttribute("orderFormDto", orderFormDto);
         model.addAttribute("orderFormDto", orderFormDto);
         return "/order/requestPayment";
     }
 
-    @GetMapping("/orderComplete")
+    @GetMapping("/complete")
     public String completePayment(Model model, HttpSession session) {
 
         OrderFormDto orderFormDto = (OrderFormDto) session.getAttribute("orderFormDto");
         orderService.requestOrder(orderFormDto);
         model.addAttribute("orderFormDto", orderFormDto);
 
-        // session.removeAttribute("orderFormDto");
+         session.removeAttribute("orderFormDto");
 
         return "/order/orderComplete";
     }

@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequestMapping("/order")
 @Controller
 public class OrderController {
     @Autowired
@@ -23,7 +24,7 @@ public class OrderController {
     private ProductService productService;
 
     // 상품상세 또는 장바구니 화면에서 진입하는 주문 화면
-    @GetMapping("/orderForm")
+    @GetMapping("/form")
     public String orderForm(Model model) {
         // TODO : 상품상세, 장바구니 화면 구현 후 실제 data 삽입 필요
         System.out.println(getOrderProductDtoList());
@@ -35,20 +36,6 @@ public class OrderController {
         return "/order/orderForm";
 
     }
-
-    // 주문왼료화면
-//    @PostMapping("/orderComplete")
-//    public String order(OrderFormDto orderFormDto, Model model) {
-//
-//        orderService.requestOrder(orderFormDto);
-//        System.out.println(orderFormDto);
-//
-//        model.addAttribute("orderFormDto", orderFormDto);
-//        model.addAttribute("productList", orderFormDto.getProductList());
-//        model.addAttribute("ordId", orderFormDto.getOrdId());
-//
-//        return "/order/orderComplete";
-//    }
 
     // test product
     List<OrderProductDto> getOrderProductDtoList() {

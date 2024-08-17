@@ -9,25 +9,27 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Map;
 
+@RequestMapping("/order")
 @Controller
 public class OrderHistoryController {
 
     @Autowired
     private OrderHistoryService orderHistoryService;
 
-    @GetMapping("/orderHistory")
+    @GetMapping("/history")
     public String orderHistoryList(Model model) {
         Map<String, List<OrderProductDto>> orderHistory = orderHistoryService.getCustomerOrderHistoryList();
         model.addAttribute("orderHistory", orderHistory);
         return "/order/orderHistory";
     }
 
-    @PostMapping("/order/cancel")
+    @PostMapping("/cancel")
     @ResponseBody
     public ResponseEntity<String> cancelOrder(int ordProdId) {
         try {

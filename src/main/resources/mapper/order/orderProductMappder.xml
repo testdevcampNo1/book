@@ -21,7 +21,6 @@
         SELECT * FROM no1.orderProduct
         JOIN no1.order ON no1.orderProduct.ord_id = no1.order.ord_id
         WHERE no1.order.cust_id = #{custId}
-        ORDER BY order.reg_date DESC
     </select>
 
     <!--    한 주문의 주문상품 전체 조회-->
