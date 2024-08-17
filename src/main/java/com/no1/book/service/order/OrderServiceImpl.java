@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -181,15 +182,7 @@ public class OrderServiceImpl implements OrderService {
 
     // 주문 번호 생성
     public synchronized String orderNumGenerator() {
-        try {
-            Thread.sleep(1);
-            LocalDateTime srcTime = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSS");
-            return srcTime.format(formatter);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
+        return UUID.randomUUID().toString();
     }
 
     public void requestOrder(OrderFormDto orderFormDto) {
