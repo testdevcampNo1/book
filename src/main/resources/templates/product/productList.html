@@ -62,7 +62,9 @@
                     <p class="product-description" th:text="${product.smry}"></p>
                     <div class="product-pricing">
                         <span class="product-base-price" th:text="${product.prodBasePrice}"></span>
-                        <span class="product-price" th:text="${product.salePrice}"></span>
+                        <span class="product-base-price" th:text="${product.discRate}+'%'"></span>
+                        <br>
+                        <span class="product-price" th:text="${'-> '+product.salePrice}+'원'"></span>
                     </div>
                     <div class="product-meta">
                         <span class="product-sales" th:text="'판매량: ' + ${product.totalSales}"></span>
@@ -88,7 +90,7 @@
 
     <span th:if="${ph.totalCnt > 0}" th:each="i : ${#numbers.sequence(ph.beginPage, ph.endPage)}">
         <a th:href="@{/product/list(cateKey=${cateKey}, sortKey=${sortKey}, sortOrder=${sortOrder}, page=${i}, pageSize=${ph.pageSize})}"
-           th:text="${i}"></a>
+           th:text="${i}" th:classappend="${ph.page == i} ? 'active' : ''"></a>
     </span>
 
     <span th:if="${ph.showNext}">
