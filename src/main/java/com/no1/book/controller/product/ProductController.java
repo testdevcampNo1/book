@@ -48,13 +48,13 @@ public class ProductController {
         validateAdmin(id, m);
 
         // 페이징 정보 초기값 설정
-        if (page==null) page=1;
-        if (pageSize==null) pageSize=10;
+        if (page == null) page = 1;
+        if (pageSize == null) pageSize = 10;
         if (sortKey == null) sortKey = "date";
         if (sortOrder == null) sortOrder = "desc";
 
         // 페이징에 정보 맵에 저장
-        Map map = new HashMap();
+        Map<String, Object> map = new HashMap<>();
         map.put("offset", (page - 1) * pageSize);
         map.put("pageSize", pageSize);
         map.put("sortKey", sortKey);
@@ -79,6 +79,9 @@ public class ProductController {
         m.addAttribute("ph", pageHandler);
         // 카테고리 키
         m.addAttribute("cateKey", cateKey);
+        // 정렬 키와 정렬 순서 모델에 추가
+        m.addAttribute("sortKey", sortKey);
+        m.addAttribute("sortOrder", sortOrder);
 
         return "product/productList";
     }

@@ -39,12 +39,12 @@
         <!--    <input type="hidden" name="cateKey" th:value="${param.cateKey}" />-->
         <input type="hidden" name="cateKey" th:value="${cateKey}"/>
 
-        <select name="sortKey" th:value="*{sortKey}"> <!-- *{sortKey}로 두면 sortKey를 변수로 서버 혹은 타임리프 내 다른 곳에서도 사용할 수 있음 (페이지 네비게이션바에서 사용중)-->
+        <select name="sortKey">
             <option value="date" th:selected="${sortKey == 'date'}">등록 날짜</option>
             <option value="sales" th:selected="${sortKey == 'sales'}">판매량</option>
             <option value="price" th:selected="${sortKey == 'price'}">가격</option>
         </select>
-        <select name="sortOrder" th:value="*{sortOrder}">
+        <select name="sortOrder">
             <option value="desc" th:selected="${sortOrder == 'desc'}">↓</option>
             <option value="asc" th:selected="${sortOrder == 'asc'}">↑</option>
         </select>
