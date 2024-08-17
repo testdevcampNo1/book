@@ -147,6 +147,13 @@
             border-radius: 12px;
         }
 
+        #tossPay {
+            margin-top: 12px;
+            border: 1px solid #386fff;
+            border-radius: 12px;
+            padding: 8px;
+        }
+
     </style>
     <script>
         // 비밀번호 on/off
@@ -195,13 +202,11 @@
                 passwordField.focus(); // 포커스 이동
             }
         }
-
     </script>
-
 </head>
 <body>
 
-<form action="/orderComplete" method="post" onsubmit="validationForm(event)">
+<form action="/requestPayment" method="post" onsubmit="validationForm(event)">
     <p class="title_heading">주문/결제</p>
 
     <div class="form_body">
@@ -266,12 +271,15 @@
                 <input type="hidden" th:name="'productList[' + ${productStat.index} + '].prodPageLink'" th:value="${product.getProdPageLink()}">
                 <input type="hidden" th:name="'productList[' + ${productStat.index} + '].dawnDeliChk'" th:value="${product.getDawnDeliChk()}">
                 <input type="hidden" th:name="'productList[' + ${productStat.index} + '].prodBasePrice'" th:value="${product.getProdBasePrice()}">
+                <input type="hidden" th:name="'productList[' + ${productStat.index} + '].totalProdPrice'" th:value="${product.getTotalProdPrice()}">
+                <input type="hidden" th:name="'productList[' + ${productStat.index} + '].totalDiscPrice'" th:value="${product.getTotalDiscPrice()}">
+                <input type="hidden" th:name="'productList[' + ${productStat.index} + '].totalPayPrice'" th:value="${product.getTotalPayPrice()}">
                 <div class="product_item">
                     <img class="product_img" th:src="@{${product.getImg()}}" alt="Product Image" style="width:80px; height:100px; object-fit: cover">
                     <div class="product_name" th:text="${product.getProdName()}"></div>
                     <div class="product_quantity" th:text="${product.getOrdQty()} + '개'"></div>
                     <div class="product_price">
-                        <div class="sale_price" th:attr="data-price=${product.getTotalPayPrice()}" th:text="${product.getTotalPayPrice()} + '원'"></div>
+                        <div class="sale_price" th:attr="data-price=${product.getTotalPayPrice()}" th:text="${product.getTotalPayPrice()} + '원'" ></div>
                         <div class="product_base_price" th:attr="data-price=${product.getTotalProdPrice()}" th:text="${product.getTotalProdPrice()} + '원'"></div>
                     </div>
                     <input type="hidden" name="email" th:value="${orderFormDto.getEmail()}">
@@ -284,12 +292,14 @@
         <div class="box_wrap" style="padding: 32px">
             <div class="payment_method_title">결제수단</div>
             <div class="payment_method_group">
-                <input type="radio" class="payment_method" id="option1" name="paymentMethod" value="신용카드" checked="true" />
-                <label for="option1" class="payment_method_label">신용카드</label>
-                <input type="radio" class="payment_method" id="option2" name="paymentMethod" value="휴대폰결제" />
-                <label for="option2" class="payment_method_label">휴대폰결제</label>
-                <input type="radio" class="payment_method" id="option3" name="paymentMethod" value="온라인결제" />
-                <label for="option3" class="payment_method_label">온라인결제</label>
+<!--                <input type="radio" class="payment_method" id="option1" name="paymentMethod" value="신용카드" checked="true" />-->
+<!--                <label for="option1" class="payment_method_label">신용카드</label>-->
+<!--                <input type="radio" class="payment_method" id="option2" name="paymentMethod" value="휴대폰결제" />-->
+<!--                <label for="option2" class="payment_method_label">휴대폰결제</label>-->
+<!--                <input type="radio" class="payment_method" id="option3" name="paymentMethod" value="온라인결제" />-->
+<!--                <label for="option3" class="payment_method_label">온라인결제</label>-->
+                <img id="tossPay" value="tossPay" style="width: 100px" src="https://contents.kyobobook.co.kr/resources/fo/images/common/ink/ico_payment_toss@2x.png" alt="">
+                <input type="hidden" name="paymentMethod" value="tossPay">
             </div>
         </div>
         <!-- 결제 수단 정보 -->

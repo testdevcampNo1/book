@@ -74,10 +74,19 @@
             padding-bottom: 24px;
         }
 
-        /*.product_status.cancelled {*/
-        /*    color: red;
-        /*}*/
+        .no_order_history {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh; /* 화면의 80% 높이 사용 */
+        }
 
+        .no_order_history_text {
+            display: block;
+            text-align: center;
+            color: #767676;
+            font-size: 18px;
+        }
     </style>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -87,24 +96,29 @@
                 var button = $(this);
                 var ordProdId = button.data('ord-prod-id');
                 var stusDiv = button.siblings('.product_status');
-                $.ajax({
-                   url: '/order/cancel',
-                   type: 'POST',
-                   data: {
-                       ordProdId: ordProdId
-                   },
-                    success: function (res) {
-                        if(res === 'success') {
-                            stusDiv.text('주문 취소').addClass('cancelled');
-                            button.prop('disabled', true);
-                        } else {
+
+                var userConfirmed = confirm("해당 상품의 주문을 취소하시겠습니까?");
+
+                if(userConfirmed) {
+                    $.ajax({
+                        url: '/order/cancel',
+                        type: 'POST',
+                        data: {
+                            ordProdId: ordProdId
+                        },
+                        success: function (res) {
+                            if(res === 'success') {
+                                stusDiv.text('CNCL').addClass('cancelled');
+                                button.remove();
+                            } else {
+                                alert('주문 취소 실패했습니다.');
+                            }
+                        },
+                        error: function (xhr, status, error) {
                             alert('주문 취소 실패했습니다.');
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        alert('주문 취소 실패했습니다.');
-                    },
-                });
+                        },
+                    });
+                }
             });
         });
 
@@ -114,6 +128,10 @@
 <body>
     <p class="title_heading">주문/배송 목록</p>
 
+    <div th:if="${orderHistory == null or orderHistory.isEmpty()}"  class="no_order_history">
+        <div class="no_order_history_text">주문 내역이 없습니다.</div>
+    </div>
+
     <div class="order_history_list" th:each="history : ${orderHistory}">
         <div class="order_id" th:text="${history.getKey()}"></div>
         <div class="order_history" th:each="historyItem : ${history.value}">
@@ -122,10 +140,10 @@
                 <div class="product_name" th:text="${historyItem.getProdName()}"></div>
                 <div class="product_quantity" th:text="'수량 : ' + ${historyItem.getOrdQty()}"></div>
             </div>
-            <div class="product_price" th:text="${historyItem.getTotalProdPrice()} + '원'"></div>
+            <div class="product_price" th:text="${historyItem.getTotalPayPrice()} + '원'"></div>
             <div class="product_status" th:text="${historyItem.getOrdChkCode()}"></div>
             <button class="review_button">리뷰 작성</button>
-            <button class="cancel_order_button" th:attr="data-ord-prod-id=${historyItem.getOrdProdId()}">주문 취소</button>
+            <button class="cancel_order_button" th:attr="data-ord-prod-id=${historyItem.getOrdProdId()}" th:if="${historyItem.getOrdChkCode()} != 'CNCL'">주문 취소</button>
         </div>
     </div>
 </body>

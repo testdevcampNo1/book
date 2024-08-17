@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,19 +33,22 @@ public class OrderController {
         model.addAttribute("productList", orderFormDto.getProductList());
 
         return "/order/orderForm";
+
     }
 
     // 주문왼료화면
-    @PostMapping("/orderComplete")
-    public String order(OrderFormDto orderFormDto, Model model) {
-        orderService.requestOrder(orderFormDto);
-
-        model.addAttribute("orderFormDto", orderFormDto);
-        model.addAttribute("productList", orderFormDto.getProductList());
-        model.addAttribute("ordId", orderFormDto.getOrdId());
-
-        return "/order/orderComplete";
-    }
+//    @PostMapping("/orderComplete")
+//    public String order(OrderFormDto orderFormDto, Model model) {
+//
+//        orderService.requestOrder(orderFormDto);
+//        System.out.println(orderFormDto);
+//
+//        model.addAttribute("orderFormDto", orderFormDto);
+//        model.addAttribute("productList", orderFormDto.getProductList());
+//        model.addAttribute("ordId", orderFormDto.getOrdId());
+//
+//        return "/order/orderComplete";
+//    }
 
     // test product
     List<OrderProductDto> getOrderProductDtoList() {

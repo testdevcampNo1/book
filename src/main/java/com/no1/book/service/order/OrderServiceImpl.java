@@ -193,8 +193,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public void requestOrder(OrderFormDto orderFormDto) {
-        String ordId = orderFormDto.getOrdId();
-
         saveOrder(orderFormDto);
         saveOrderProduct(orderFormDto.getOrdId(), orderFormDto.getProductList());
         saveOrderStatus(orderFormDto.getOrdId());
@@ -204,7 +202,6 @@ public class OrderServiceImpl implements OrderService {
 
     // 특정 주문의 regId 조회
     public String getRegId(String ordId) {
-
         return orderDao.getOrder(ordId).getRegId();
     }
 
@@ -288,10 +285,5 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public void savePayment(String ordId) {
-    }
-
-    // 결제 요청
-    boolean requestPayment() {
-        return true;
     }
 }

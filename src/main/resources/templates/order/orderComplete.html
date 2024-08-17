@@ -108,7 +108,7 @@
 </head>
 <body>
     <div class="title_heading">주문이 완료되었어요</div>
-    <div class="ord_id" th:text="'주문번호 ' + ${ordId}"></div>
+    <div class="ord_id" th:text="'주문번호 ' + ${orderFormDto.ordId}"></div>
     <!-- 주문상품 -->
     <div class="order_product">
         <div class="box_title">주문상품</div>
@@ -150,7 +150,7 @@
     <!-- 하단 버튼 -->
     <div class="bottom_buttons">
         <button class="main_button">쇼핑 계속</button>
-        <button class="order_detail_button">주문내역상세</button>
+        <button class="order_detail_button">주문내역</button>
     </div>
 </body>
 </html>
