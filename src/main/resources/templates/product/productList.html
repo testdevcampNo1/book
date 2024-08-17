@@ -1,9 +1,7 @@
-<!-- src/main/resources/templates/product/list.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Product List</title>
-<!--    <link rel="stylesheet" th:href="@{/css/product/productlist.css}">-->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/product/productList.css">
@@ -38,83 +36,65 @@
 </div>
 
 <div class="content">
-    <form th:action="@{/product/list}" method="get">
-        <!--    <input type="hidden" name="cateKey" th:value="${param.cateKey}" />-->
+    <form th:action="@{/product/list}" method="get" class="sort-form">
         <input type="hidden" name="cateKey" th:value="${cateKey}"/>
-
-        <select name="sortKey">
-            <option value="date" th:selected="${sortKey == 'date'}">등록 날짜</option>
-            <option value="sales" th:selected="${sortKey == 'sales'}">판매량</option>
-            <option value="price" th:selected="${sortKey == 'price'}">가격</option>
-        </select>
-        <select name="sortOrder">
-            <option value="desc" th:selected="${sortOrder == 'desc'}">↓</option>
-            <option value="asc" th:selected="${sortOrder == 'asc'}">↑</option>
-        </select>
-        <button type="submit">정렬</button>
+        <div class="sort-options">
+            <select name="sortKey">
+                <option value="date" th:selected="${sortKey == 'date'}">등록 날짜</option>
+                <option value="sales" th:selected="${sortKey == 'sales'}">판매량</option>
+                <option value="price" th:selected="${sortKey == 'price'}">가격</option>
+            </select>
+            <select name="sortOrder">
+                <option value="desc" th:selected="${sortOrder == 'desc'}">↓</option>
+                <option value="asc" th:selected="${sortOrder == 'asc'}">↑</option>
+            </select>
+            <button type="submit" class="btn btn-primary">정렬</button>
+        </div>
     </form>
     <br>
 
-    <script th:inline="javascript">
-        var sortKey = /*[[${sortKey}]]*/ 'default';
-        console.log("sortKey:", sortKey);
-    </script>
+    <div class="product-grid">
+        <div class="product-card" th:each="product : ${prodList}">
+            <img th:src="@{/images/product/imsi.png}" alt="상품 이미지" class="product-image">
+            <div class="product-details">
+                <a th:href="@{/product/detail(prodId=${product.prodId})}" class="product-title" th:text="${product.prodName}"></a>
+                <p class="product-description" th:text="${product.smry}"></p>
+                <div class="product-pricing">
+                    <span class="product-base-price" th:text="${product.prodBasePrice}"></span>
+                    <span class="product-price" th:text="${product.salePrice}"></span>
+                </div>
+                <div class="product-meta">
+                    <span class="product-sales" th:text="'판매량: ' + ${product.totalSales}"></span>
+                    <span class="product-rating" th:text="'별점: ' + ${product.starAvg}"></span>
+                    <span class="product-date" th:text="${product.regDate}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <table border="1">
-        <tr>
-            <th>이미지</th>
-            <th>책 제목</th>
-            <th>내용</th>
-            <th>상품 가격</th>
-            <th>할인율</th>
-            <th>할인 금액</th>
-            <th>주문 금액</th>
-            <th>판매량</th>
-            <th>별점</th>
-            <th>상품 등록일</th>
-        </tr>
-        <tr th:each="product : ${prodList}">
-            <td><img th:src="@{/images/product/imsi.png}" alt="상품 이미지" style="width: 100px; height: 150px;"></td>
-            <td><a th:href="@{/product/detail(prodId=${product.prodId})}" th:text="${product.prodName}"></a></td>
-            <td th:text="${product.smry}"></td>
-            <td th:text="${product.prodBasePrice}">상품 가격</td>
-            <td th:text="${product.discRate}">할인율</td>
-            <td th:text="${product.discPrice}">할인 금액</td>
-            <td th:text="${product.salePrice}">주문 금액</td>
-            <td th:text="${product.totalSales}">판매량</td>
-            <td th:text="${product.starAvg}">별점</td>
-            <td th:text="${product.regDate}">상품 등록일</td>
-        </tr>
-    </table>
+<div th:if="${admin}=='admin'" class="manage-link">
+    <a th:href="@{/product/manage}">Manage</a>
 </div>
-<br>
-<div th:if="${admin}=='admin'" style="float: right;">
-    <a th:href="@{/product/manage}">manage</a>
-</div>
-<br>
-<nav style="text-align: center;">
+
+<nav class="pagination">
     <span th:if="${ph.showPrev}">
         <a th:href="@{/product/list(cateKey=${cateKey}, sortKey=${sortKey}, sortOrder=${sortOrder}, page=${ph.beginPage-1}, pageSize=${ph.pageSize})}">
-            <span th:text="'<'"></span>
+            &lt;
         </a>
     </span>
 
-    <span th:if="${ph.totalCnt > 0}" style="display: inline;">
-        <span th:each="i : ${#numbers.sequence(ph.beginPage, ph.endPage)}" style="display: inline;">
-            <a th:href="@{/product/list( cateKey=${cateKey},  sortKey=${sortKey}, sortOrder=${sortOrder}, page=${i}, pageSize=${ph.pageSize})}"
-               th:text="${i}"></a>
-        </span>
-    </span>
-
-    <span th:if="${ph.totalCnt == 0}" style="display: inline;">
-        <p style="display: inline;">No products found.</p>
+    <span th:if="${ph.totalCnt > 0}" th:each="i : ${#numbers.sequence(ph.beginPage, ph.endPage)}">
+        <a th:href="@{/product/list(cateKey=${cateKey}, sortKey=${sortKey}, sortOrder=${sortOrder}, page=${i}, pageSize=${ph.pageSize})}"
+           th:text="${i}"></a>
     </span>
 
     <span th:if="${ph.showNext}">
         <a th:href="@{/product/list(cateKey=${cateKey}, sortKey=${sortKey}, sortOrder=${sortOrder}, page=${ph.endPage+1}, pageSize=${ph.pageSize})}">
-            <span th:text="'>'"></span>
+            &gt;
         </a>
     </span>
 </nav>
+
 </body>
 </html>

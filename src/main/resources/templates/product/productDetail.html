@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>상품 상세 페이지</title>
-    <link rel="stylesheet" th:href="@{/css/product/detail.css}">
+<!--    <link rel="stylesheet" th:href="@{/css/product/detail.css}">-->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
         let countValue = 1;
@@ -206,6 +207,9 @@
         <h3>총 권수</h3>
         <p th:text="${pdto.totalBooks}">총 권수 내용</p>
     </div>
+
+    <br>
+    <p th:text="${'Product ID : ' + pdto.prodId}"></p>
 </div>
 
 </body>
