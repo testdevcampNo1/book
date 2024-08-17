@@ -20,6 +20,8 @@
         writer,
         best_faq_chk,
         view_cnt,
+        faq_stus1,
+        faq_stus2,
         (select code_name
                from code
                where code_type = faq_stus1
@@ -71,12 +73,27 @@
 <!--    게시글 목록 페이징-->
     <select id="searchFAQPage" resultType="BoardFAQDto" parameterType="BoardPageHandler">
         select <include refid="selectColumn"/>
-        from boardnotice
+        from boardFAQ
         where true
         <include refid="searchKeyword"/>
         <include refid="searchCategory"/>
         order by wrt_date desc, faq_num desc
         limit #{offset}, #{pageSize}
+    </select>
+
+<!--    게시글 상세 조회-->
+    <select id="selectFAQ" resultType="int" parameterType="BoardFAQDto">
+        select <include refid="selectColumn"/>
+        from boardFAQ
+        where faq_num = #{faqNum}
+        for update
+    </select>
+
+<!--    FAQ 카테고리 목록 조회-->
+    <select id="selectCategory" resultType="CategoryFAQDto">
+        select code category_code, code_name category_name
+        from code
+        where code_type = '701'
     </select>
 
 <!--    게시글 삭제-->

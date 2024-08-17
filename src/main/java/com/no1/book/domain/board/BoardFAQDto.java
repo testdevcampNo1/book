@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.Objects;
 
 @Data
-public class BoardFAQDto {
+public class BoardFAQDto implements BoardDto{
     Integer faqNum;
     String cateNum1;
     String cateNum2;
@@ -29,16 +29,29 @@ public class BoardFAQDto {
     String faqStus2;
     String faqStus;
 
+    public BoardFAQDto() {}
+
+    // 테스트 용 생성자
+    public BoardFAQDto(String faqTitle, String faqContent, String writer) {
+        cateNum1 = "701";
+        cateNum2 = "01";
+        this.faqTitle = faqTitle;
+        this.faqContent = faqContent;
+        this.writer = writer;
+        faqStus1 = "703";
+        faqStus2 = "POST";
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BoardFAQDto that = (BoardFAQDto) o;
-        return Objects.equals(getFaqNum(), that.getFaqNum()) && Objects.equals(getCateNum1(), that.getCateNum1()) && Objects.equals(getCateNum2(), that.getCateNum2()) && Objects.equals(getFaqTitle(), that.getFaqTitle()) && Objects.equals(getFaqContent(), that.getFaqContent()) && Objects.equals(getImg(), that.getImg()) && Objects.equals(getWriter(), that.getWriter()) && Objects.equals(getFaqStus1(), that.getFaqStus1()) && Objects.equals(getFaqStus2(), that.getFaqStus2());
+        return Objects.equals(getCateNum1(), that.getCateNum1()) && Objects.equals(getCateNum2(), that.getCateNum2()) && Objects.equals(getFaqTitle(), that.getFaqTitle()) && Objects.equals(getFaqContent(), that.getFaqContent()) && Objects.equals(getWriter(), that.getWriter()) && Objects.equals(getFaqStus1(), that.getFaqStus1()) && Objects.equals(getFaqStus2(), that.getFaqStus2());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getFaqNum(), getCateNum1(), getCateNum2(), getFaqTitle(), getFaqContent(), getImg(), getWriter(), getFaqStus1(), getFaqStus2());
+        return Objects.hash(getCateNum1(), getCateNum2(), getFaqTitle(), getFaqContent(), getWriter(), getFaqStus1(), getFaqStus2());
     }
 }
