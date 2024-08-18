@@ -34,7 +34,6 @@ public class OrderController {
         model.addAttribute("productList", orderFormDto.getProductList());
 
         return "/order/orderForm";
-
     }
 
     // test product

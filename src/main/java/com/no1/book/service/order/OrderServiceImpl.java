@@ -185,6 +185,7 @@ public class OrderServiceImpl implements OrderService {
         return UUID.randomUUID().toString();
     }
 
+    // 주문 요청
     public void requestOrder(OrderFormDto orderFormDto) {
         saveOrder(orderFormDto);
         saveOrderProduct(orderFormDto.getOrdId(), orderFormDto.getProductList());
@@ -195,7 +196,14 @@ public class OrderServiceImpl implements OrderService {
 
     // 특정 주문의 regId 조회
     public String getRegId(String ordId) {
-        return orderDao.getOrder(ordId).getRegId();
+        String regId = "";
+        try {
+            regId = orderDao.getOrder(ordId).getRegId();
+        } catch (DataAccessException e) {
+            throw new SystemException(e.getMessage());
+        }
+
+        return regId;
     }
 
     @Transactional

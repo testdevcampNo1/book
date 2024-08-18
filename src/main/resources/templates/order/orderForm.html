@@ -1,14 +1,15 @@
-<!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>주문/결제 화면</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <title>정석문고 jungsukbook</title>
+    </head>
 
     <link rel="stylesheet" href="/css/order/form.css">
-<!--    <link rel="stylesheet" href="/css/style.css">-->
 
     <script>
         // 비밀번호 on/off
@@ -50,15 +51,50 @@
         function validationForm(event) {
             var passwordRadio = document.getElementById('passwordRadio');
             var passwordField = document.getElementById('password');
+            var orderInfoFields = document.querySelectorAll('.order_info');
 
             if(passwordRadio.checked && passwordField.value.trim() === '') {
                 event.preventDefault(); // 폼 제출 방지
                 alert("공동현관 비밀번호가 입력되지 않았습니다.");
                 passwordField.focus(); // 포커스 이동
             }
+
+            for (var i = 0; i < orderInfoFields.length; i++) {
+                if (orderInfoFields[i].value.trim() === '') {
+                    event.preventDefault(); // 폼 제출 방지
+                    alert("필수 입력 항목이 비어 있습니다.");
+                    orderInfoFields[i].focus(); // 포커스 이동
+                    return; // 함수 종료
+                }
+            }
         }
     </script>
 </head>
+<header class="top-bar">
+    <div class="con flex h-full">
+        <a href="/" class="logo flex items-center">
+
+            <img src="https://github.com/user-attachments/assets/d24c0e43-dc15-4df9-ba31-284d4a569caa" alt="로고"
+                 class="logo-small">
+        </a>
+        <div class="flex-grow"></div>
+
+        <ul class="menu-1 flex" style="max-width: 600px">
+            <li><a href="/" class="flex h-full items-center px-4">소개</a></li>
+            <li><a href="/customer/login" id="login-link" class="flex h-full items-center px-4">로그인</a></li>
+            <li><a href="/customer/mypage" class="flex h-full items-center px-4">마이페이지</a></li>
+            <li><a href="/cart/list" class="flex h-full items-center px-4">장바구니</a></li>
+            <li><a href="#" class="flex h-full items-center px-4">문의하기</a></li>
+
+        </ul>
+    </div>
+</header>
+<section class="section-1">
+    <div class="con">
+        <img class="w-full block" src="" alt="">
+    </div>
+</section>
+
 <body>
 
 <form action="/payment/request" method="post" onsubmit="validationForm(event)">
@@ -73,16 +109,16 @@
                     <th class="delivery_info_title">주문자 정보</th>
                     <td>
                         <!-- 배송지 이름 -->
-<!--                        <span th:text="${orderFormDto.getAddressName()}"></span>-->
-<!--                        <span th:if="${orderFormDto.getDefaultChk() == 'Y'}"> - 기본배송지</span>-->
+                        <!--                        <span th:text="${orderFormDto.getAddressName()}"></span>-->
+                        <!--                        <span th:if="${orderFormDto.getDefaultChk() == 'Y'}"> - 기본배송지</span>-->
                         <!-- 수령자 이름, 전화번호 -->
-<!--                        <div th:text="${orderFormDto.getName()} + ' / ' + ${orderFormDto.getTelNum()}"></div>-->
-<!--                        <input type="hidden" name="name" th:value="${orderFormDto.getName()}">-->
-<!--                        <input type="hidden" name="telNum" th:value="${orderFormDto.getTelNum()}">-->
-<!--                        <div class="address" th:text=" '[' + ${orderFormDto.getZipCode()} + '] ' + ${orderFormDto.getMainAddress()} + ${orderFormDto.getDetailAddress()}"></div>-->
-<!--                        <input type="hidden" name="zipCode" th:value="${orderFormDto.getZipCode()}">-->
-<!--                        <input type="hidden" name="mainAddress" th:value="${orderFormDto.getMainAddress()}">-->
-<!--                        <input type="hidden" name="detailAddress" th:value="${orderFormDto.getDetailAddress()}">-->
+                        <!--                        <div th:text="${orderFormDto.getName()} + ' / ' + ${orderFormDto.getTelNum()}"></div>-->
+                        <!--                        <input type="hidden" name="name" th:value="${orderFormDto.getName()}">-->
+                        <!--                        <input type="hidden" name="telNum" th:value="${orderFormDto.getTelNum()}">-->
+                        <!--                        <div class="address" th:text=" '[' + ${orderFormDto.getZipCode()} + '] ' + ${orderFormDto.getMainAddress()} + ${orderFormDto.getDetailAddress()}"></div>-->
+                        <!--                        <input type="hidden" name="zipCode" th:value="${orderFormDto.getZipCode()}">-->
+                        <!--                        <input type="hidden" name="mainAddress" th:value="${orderFormDto.getMainAddress()}">-->
+                        <!--                        <input type="hidden" name="detailAddress" th:value="${orderFormDto.getDetailAddress()}">-->
 
                         <input class="order_info" type="text" name="name" th:value="${orderFormDto.getName()}" placeholder="수령인 이름을 입력해 주세요.">
                         <input class="order_info" type="text" name="telNum" th:value="${orderFormDto.getTelNum()}" placeholder="수령인 전화번호를 입력해 주세요.">
@@ -160,12 +196,12 @@
         <div class="box_wrap" style="padding: 32px">
             <div class="payment_method_title">결제수단</div>
             <div class="payment_method_group">
-<!--                <input type="radio" class="payment_method" id="option1" name="paymentMethod" value="신용카드" checked="true" />-->
-<!--                <label for="option1" class="payment_method_label">신용카드</label>-->
-<!--                <input type="radio" class="payment_method" id="option2" name="paymentMethod" value="휴대폰결제" />-->
-<!--                <label for="option2" class="payment_method_label">휴대폰결제</label>-->
-<!--                <input type="radio" class="payment_method" id="option3" name="paymentMethod" value="온라인결제" />-->
-<!--                <label for="option3" class="payment_method_label">온라인결제</label>-->
+                <!--                <input type="radio" class="payment_method" id="option1" name="paymentMethod" value="신용카드" checked="true" />-->
+                <!--                <label for="option1" class="payment_method_label">신용카드</label>-->
+                <!--                <input type="radio" class="payment_method" id="option2" name="paymentMethod" value="휴대폰결제" />-->
+                <!--                <label for="option2" class="payment_method_label">휴대폰결제</label>-->
+                <!--                <input type="radio" class="payment_method" id="option3" name="paymentMethod" value="온라인결제" />-->
+                <!--                <label for="option3" class="payment_method_label">온라인결제</label>-->
                 <img id="tossPay" value="tossPay" style="width: 100px" src="https://contents.kyobobook.co.kr/resources/fo/images/common/ink/ico_payment_toss@2x.png" alt="">
                 <input type="hidden" name="paymentMethod" value="tossPay">
             </div>
