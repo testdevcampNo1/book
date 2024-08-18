@@ -1,153 +1,16 @@
-<!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>주문/결제 화면</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <title>정석문고 jungsukbook</title>
+    </head>
 
-    <style>
-        .title_heading {
-            font-size: 24px;
-            letter-spacing: -0.01em;
-        }
+    <link rel="stylesheet" href="/css/order/form.css">
 
-        .box_wrap {
-            border: solid 1px #d5d5d5;
-            border-radius: 12px;
-            padding: 16px 32px;
-            margin-bottom: 16px;
-        }
-
-        table {
-            border-spacing: 0 16px;
-        }
-
-        th {
-            vertical-align: middle;
-            padding-right: 12px;
-            text-align: left;
-        }
-
-        .delivery_info_title, .entrance_type_title {
-            vertical-align: top;
-        }
-
-        .address {
-            font-size: 14px;
-            letter-spacing: -0.01em;
-            color: #595959;
-        }
-
-        .req_msg_form {
-            width: 360px;
-            height: 36px;
-            border: 1px solid #d5d5d5;
-            border-radius: 6px;
-            transition: border-color 0.2s;
-            outline: none;
-        }
-
-        .password_field {
-            width: 360px;
-            height: 36px;
-            border: 1px solid #d5d5d5;
-            border-radius: 6px;
-            transition: border-color 0.2s;
-            margin-top: 12px;
-            outline: none;
-        }
-
-        .order_product_list_title {
-            font-weight: bold;
-            display: inline-block;
-            padding-right: 12px;
-        }
-
-        .total_order_product_number {
-            display: inline-block;
-        }
-
-        .product_list {
-            margin-top: 16px;
-        }
-
-        .product_item {
-            margin-top: 12px;
-            display: flex;
-            align-items: center;
-        }
-
-        .product_img {
-            margin-right: 12px;
-        }
-
-        .product_name {
-            flex: 2;
-        }
-
-        .product_quantity {
-            margin-right: 36px;
-        }
-
-        .product_price {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .product_base_price {
-            font-size: 12px;
-            color: #767676;
-            text-decoration: line-through;
-        }
-
-        .payment_method_title {
-            font-weight: bold;
-        }
-
-        .payment_method_label {
-            margin-top: 12px;
-            display: inline-block;
-            cursor: pointer;
-            border: 1px solid #d5d5d5;
-            border-radius: 6px;
-            padding: 24px;
-            margin-right: 12px;
-        }
-
-        .payment_method {
-            /*실제 라디오 버튼 숨기기*/
-            display: none;
-        }
-
-        .payment_method:checked + .payment_method_label {
-            border: 1px solid #386fff;
-        }
-
-        .price_info_title {
-            font-weight: bold;
-
-        }
-
-        .price_info {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 12px;
-        }
-
-        .payment_button {
-            width: 100%;
-            padding: 24px;
-            background: black;
-            color: white;
-            font-size: 18px;
-            border: 1px solid #d5d5d5;
-            border-radius: 12px;
-        }
-
-    </style>
     <script>
         // 비밀번호 on/off
         function togglePasswordField() {
@@ -159,12 +22,82 @@
                 passwordField.style.display = 'none'; // 비밀번호 필드 숨김
             }
         }
-    </script>
 
+        function formatPrice(price) {
+            return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        window.onload = function () {
+            var salePrice = document.querySelectorAll('.sale_price');
+            var basePrice = document.querySelectorAll('.product_base_price');
+            var prices = document.querySelectorAll('.price');
+
+            salePrice.forEach(function (element) {
+                var price = parseInt(element.getAttribute('data-price'));
+                element.textContent = formatPrice(price) + "원";
+            });
+
+            basePrice.forEach(function (element) {
+                var price = parseInt(element.getAttribute('data-price'));
+                element.textContent = formatPrice(price) + "원";
+            });
+
+            prices.forEach(function (element) {
+                var price = parseInt(element.getAttribute('data-price'));
+                element.textContent = formatPrice(price) + "원";
+            })
+        }
+
+        function validationForm(event) {
+            var passwordRadio = document.getElementById('passwordRadio');
+            var passwordField = document.getElementById('password');
+            var orderInfoFields = document.querySelectorAll('.order_info');
+
+            if(passwordRadio.checked && passwordField.value.trim() === '') {
+                event.preventDefault(); // 폼 제출 방지
+                alert("공동현관 비밀번호가 입력되지 않았습니다.");
+                passwordField.focus(); // 포커스 이동
+            }
+
+            for (var i = 0; i < orderInfoFields.length; i++) {
+                if (orderInfoFields[i].value.trim() === '') {
+                    event.preventDefault(); // 폼 제출 방지
+                    alert("필수 입력 항목이 비어 있습니다.");
+                    orderInfoFields[i].focus(); // 포커스 이동
+                    return; // 함수 종료
+                }
+            }
+        }
+    </script>
 </head>
+<header class="top-bar">
+    <div class="con flex h-full">
+        <a href="/" class="logo flex items-center">
+
+            <img src="https://github.com/user-attachments/assets/d24c0e43-dc15-4df9-ba31-284d4a569caa" alt="로고"
+                 class="logo-small">
+        </a>
+        <div class="flex-grow"></div>
+
+        <ul class="menu-1 flex" style="max-width: 600px">
+            <li><a href="/" class="flex h-full items-center px-4">소개</a></li>
+            <li><a href="/customer/login" id="login-link" class="flex h-full items-center px-4">로그인</a></li>
+            <li><a href="/customer/mypage" class="flex h-full items-center px-4">마이페이지</a></li>
+            <li><a href="/cart/list" class="flex h-full items-center px-4">장바구니</a></li>
+            <li><a href="#" class="flex h-full items-center px-4">문의하기</a></li>
+
+        </ul>
+    </div>
+</header>
+<section class="section-1">
+    <div class="con">
+        <img class="w-full block" src="" alt="">
+    </div>
+</section>
+
 <body>
 
-<form action="/orderComplete" method="post">
+<form action="/payment/request" method="post" onsubmit="validationForm(event)">
     <p class="title_heading">주문/결제</p>
 
     <div class="form_body">
@@ -173,25 +106,38 @@
             <table>
                 <tbody>
                 <tr class="delivery_info">
-                    <th class="delivery_info_title">배송지 정보</th>
+                    <th class="delivery_info_title">주문자 정보</th>
                     <td>
                         <!-- 배송지 이름 -->
-                        <span th:text="${orderInfo.getAddressName()}"></span>
-                        <span th:if="${orderInfo.getDefaultChk() == 'Y'}"> - 기본배송지</span>
+                        <!--                        <span th:text="${orderFormDto.getAddressName()}"></span>-->
+                        <!--                        <span th:if="${orderFormDto.getDefaultChk() == 'Y'}"> - 기본배송지</span>-->
                         <!-- 수령자 이름, 전화번호 -->
-                        <div th:text="${orderInfo.getName()} + ' / ' + ${orderInfo.getTelNum()}"></div>
-                        <input type="hidden" name="name" th:value="${orderInfo.getName()}">
-                        <input type="hidden" name="telNum" th:value="${orderInfo.getTelNum()}">
-                        <div class="address" th:text=" '[' + ${orderInfo.getZipCode()} + '] ' + ${orderInfo.getMainAddress()} + ${orderInfo.getDetailAddress()}"></div>
-                        <input type="hidden" name="zipCode" th:value="${orderInfo.getZipCode()}">
-                        <input type="hidden" name="mainAddress" th:value="${orderInfo.getMainAddress()}">
-                        <input type="hidden" name="detailAddress" th:value="${orderInfo.getDetailAddress()}">
+                        <!--                        <div th:text="${orderFormDto.getName()} + ' / ' + ${orderFormDto.getTelNum()}"></div>-->
+                        <!--                        <input type="hidden" name="name" th:value="${orderFormDto.getName()}">-->
+                        <!--                        <input type="hidden" name="telNum" th:value="${orderFormDto.getTelNum()}">-->
+                        <!--                        <div class="address" th:text=" '[' + ${orderFormDto.getZipCode()} + '] ' + ${orderFormDto.getMainAddress()} + ${orderFormDto.getDetailAddress()}"></div>-->
+                        <!--                        <input type="hidden" name="zipCode" th:value="${orderFormDto.getZipCode()}">-->
+                        <!--                        <input type="hidden" name="mainAddress" th:value="${orderFormDto.getMainAddress()}">-->
+                        <!--                        <input type="hidden" name="detailAddress" th:value="${orderFormDto.getDetailAddress()}">-->
+
+                        <input class="order_info" type="text" name="name" th:value="${orderFormDto.getName()}" placeholder="수령인 이름을 입력해 주세요.">
+                        <input class="order_info" type="text" name="telNum" th:value="${orderFormDto.getTelNum()}" placeholder="수령인 전화번호를 입력해 주세요.">
+                        <input class="order_info" type="text" name="zipCode" th:value="${orderFormDto.getZipCode()}" placeholder="우편번호를 입력해 주세요.">
+                        <input class="order_info" type="text" name="mainAddress" th:value="${orderFormDto.getMainAddress()}" placeholder="기본 주소를 입력해 주세요.">
+                        <input class="order_info" type="text" name="detailAddress" th:value="${orderFormDto.getDetailAddress()}" placeholder="상세 주소를 입력해 주세요.">
+                        <div th:if="${orderFormDto.getCustId()} == -1">
+                            <input class="order_info" type="text" name="pwd" placeholder="비회원 주문 조회에 사용할 비밀번호를 입력해 주세요.">
+                        </div>
+                        <input type="checkbox" id="default" name="defaultChk" style="display: inline-block">
+                        <div th:if="${orderFormDto.getCustId() != -1}" style="display: inline-block">
+                            <label for="default" style="display: inline-block">다음에도 이 주소로 받을게요</label>
+                        </div>
                     </td>
                 </tr>
                 <tr class="req_msg">
                     <th class="req_msg_title">배송요청사항</th>
                     <td>
-                        <input type="text" class="req_msg_form" name="orderRequestMessage" th:value="${orderInfo.getOrderRequestMessage()}">
+                        <input type="text" class="req_msg_form" name="orderRequestMessage" th:value="${orderFormDto.getOrderRequestMessage()}" placeholder="배송 요청 사항을 입력해 주세요.">
                     </td>
                 </tr>
                 <tr class="entrance_type">
@@ -216,41 +162,48 @@
         <!-- 주문 상품 정보 -->
         <div class="box_wrap" style="padding: 32px">
             <div class="order_product_list_title">주문상품</div>
-            <div class="total_order_product_number" th:text="'총 ' + ${orderInfo.getTotalOrdQty()} + '개'"></div>
-            <input type="hidden" th:name="totalOrdQty" th:value="${orderInfo.getTotalOrdQty()}">
-            <div class="product_list" th:each="product : ${productList}">
+            <div class="total_order_product_number" th:text="'총 ' + ${orderFormDto.getTotalOrdQty()} + '개'"></div>
+            <input type="hidden" th:name="totalOrdQty" th:value="${orderFormDto.getTotalOrdQty()}">
+            <div class="product_list" th:each="product : ${orderFormDto.getProductList()}">
                 <input type="hidden" th:name="'productList[' + ${productStat.index} + '].img'" th:value="${product.getImg()}">
-                <input type="hidden" th:name="'productList[' + ${productStat.index} + '].name'" th:value="${product.getName()}">
+                <input type="hidden" th:name="'productList[' + ${productStat.index} + '].prodName'" th:value="${product.getProdName()}">
                 <input type="hidden" th:name="'productList[' + ${productStat.index} + '].prodId'" th:value="${product.getProdId()}">
-                <input type="hidden" th:name="'productList[' + ${productStat.index} + '].ebookChk'" th:value="${product.getEbookChk()}">
+                <input type="hidden" th:name="'productList[' + ${productStat.index} + '].isEbook'" th:value="${product.getIsEbook()}">
                 <input type="hidden" th:name="'productList[' + ${productStat.index} + '].ordQty'" th:value="${product.getOrdQty()}">
-                <input type="hidden" th:name="'productList[' + ${productStat.index} + '].ordProdStusCode'" th:value="${product.getOrdProdStusCode()}">
+                <input type="hidden" th:name="'productList[' + ${productStat.index} + '].ordChkCode'" th:value="${product.getOrdChkCode()}">
                 <input type="hidden" th:name="'productList[' + ${productStat.index} + '].codeType'" th:value="${product.getCodeType()}">
                 <input type="hidden" th:name="'productList[' + ${productStat.index} + '].prodPageLink'" th:value="${product.getProdPageLink()}">
+                <input type="hidden" th:name="'productList[' + ${productStat.index} + '].dawnDeliChk'" th:value="${product.getDawnDeliChk()}">
+                <input type="hidden" th:name="'productList[' + ${productStat.index} + '].prodBasePrice'" th:value="${product.getProdBasePrice()}">
+                <input type="hidden" th:name="'productList[' + ${productStat.index} + '].totalProdPrice'" th:value="${product.getTotalProdPrice()}">
+                <input type="hidden" th:name="'productList[' + ${productStat.index} + '].totalDiscPrice'" th:value="${product.getTotalDiscPrice()}">
+                <input type="hidden" th:name="'productList[' + ${productStat.index} + '].totalPayPrice'" th:value="${product.getTotalPayPrice()}">
                 <div class="product_item">
-                    <img class="product_img" th:src="@{${product.getImg()}}" alt="Product Image" style="width:80px; height:auto;">
-                    <div class="product_name" th:text="${product.getName()}"></div>
+                    <img class="product_img" th:src="@{${product.getImg()}}" alt="Product Image" style="width:80px; height:100px; object-fit: cover">
+                    <div class="product_name" th:text="${product.getProdName()}"></div>
                     <div class="product_quantity" th:text="${product.getOrdQty()} + '개'"></div>
                     <div class="product_price">
-                        <div class="sale_price" th:text="${product.getTotalPayPrice()} + '원'"></div>
-                        <div class="product_base_price" th:text="${product.getTotalProdPrice()} + '원'"></div>
+                        <div class="sale_price" th:attr="data-price=${product.getTotalPayPrice()}" th:text="${product.getTotalPayPrice()} + '원'" ></div>
+                        <div class="product_base_price" th:attr="data-price=${product.getTotalProdPrice()}" th:text="${product.getTotalProdPrice()} + '원'"></div>
                     </div>
-                    <input type="hidden" name="email" th:value="${orderInfo.getEmail()}">
+                    <input type="hidden" name="email" th:value="${orderFormDto.getEmail()}">
                 </div>
             </div>
-            <div th:text="'예상 도착일 : ' + ${orderInfo.getDlvDate()}" style="margin-top: 12px"></div>
-            <input type="hidden" name="dlvDate" th:value="${orderInfo.getDlvDate()}">
+            <div th:text="'예상 도착일 : ' + ${orderFormDto.getDlvDate()}" style="margin-top: 12px"></div>
+            <input type="hidden" name="dlvDate" th:value="${orderFormDto.getDlvDate()}">
         </div>
         <!-- 결제 수단 정보 -->
         <div class="box_wrap" style="padding: 32px">
             <div class="payment_method_title">결제수단</div>
             <div class="payment_method_group">
-                <input type="radio" class="payment_method" id="option1" name="paymentMethod" value="신용카드" checked="true" />
-                <label for="option1" class="payment_method_label">신용카드</label>
-                <input type="radio" class="payment_method" id="option2" name="paymentMethod" value="휴대폰결제" />
-                <label for="option2" class="payment_method_label">휴대폰결제</label>
-                <input type="radio" class="payment_method" id="option3" name="paymentMethod" value="온라인결제" />
-                <label for="option3" class="payment_method_label">온라인결제</label>
+                <!--                <input type="radio" class="payment_method" id="option1" name="paymentMethod" value="신용카드" checked="true" />-->
+                <!--                <label for="option1" class="payment_method_label">신용카드</label>-->
+                <!--                <input type="radio" class="payment_method" id="option2" name="paymentMethod" value="휴대폰결제" />-->
+                <!--                <label for="option2" class="payment_method_label">휴대폰결제</label>-->
+                <!--                <input type="radio" class="payment_method" id="option3" name="paymentMethod" value="온라인결제" />-->
+                <!--                <label for="option3" class="payment_method_label">온라인결제</label>-->
+                <img id="tossPay" value="tossPay" style="width: 100px" src="https://contents.kyobobook.co.kr/resources/fo/images/common/ink/ico_payment_toss@2x.png" alt="">
+                <input type="hidden" name="paymentMethod" value="tossPay">
             </div>
         </div>
         <!-- 결제 수단 정보 -->
@@ -258,37 +211,30 @@
             <div class="price_info_title">금액</div>
             <div class="price_info">
                 <span class="price_label">총 상품 금액</span>
-                <span class="price" th:text="${orderInfo.getTotalProdBasePrice()} + '원'"></span>
-                <input type="hidden" name="totalProdBasePrice" th:value="${orderInfo.getTotalProdBasePrice()}">
+                <span class="price" th:attr="data-price=${orderFormDto.getTotalProdBasePrice()}"></span>
+                <input type="hidden" name="totalProdBasePrice" th:value="${orderFormDto.getTotalProdBasePrice()}">
             </div>
             <div class="price_info">
                 <span class="price_label">배송비</span>
-                <span class="price" th:text="${orderInfo.getDlvPrice()} + '원'"></span>
-                <input type="hidden" name="dlvPrice" th:value="${orderInfo.getDlvPrice()}">
+                <span class="price" th:attr="data-price=${orderFormDto.getDlvPrice()}"></span>
+                <input type="hidden" name="dlvPrice" th:value="${orderFormDto.getDlvPrice()}">
             </div>
             <div class="price_info">
                 <span class="price_label">총 할인 금액</span>
-                <span class="price" th:text="${orderInfo.getTotalDiscPrice()} + '원'"></span>
-                <input type="hidden" name="totalDiscPrice" th:value="${orderInfo.getTotalDiscPrice()}">
+                <span class="price" th:attr="data-price=${orderFormDto.getTotalDiscPrice()}"></span>
+                <input type="hidden" name="totalDiscPrice" th:value="${orderFormDto.getTotalDiscPrice()}">
             </div>
             <div class="price_info">
                 <span class="price_label" style="font-weight: bold">최종 결제 금액</span>
-                <span class="price" th:text="${orderInfo.getTotalSalePrice()} + '원'" style="font-weight: bold"></span>
-                <input type="hidden" name="totalSalePrice" th:value="${orderInfo.getTotalSalePrice()}">
+                <span class="price" th:attr="data-price=${orderFormDto.getTotalPayPrice()}" style="font-weight: bold"></span>
+                <input type="hidden" name="totalPayPrice" th:value="${orderFormDto.getTotalPayPrice()}">
             </div>
         </div>
     </div>
-<!--    <script>-->
-<!--        let orderInfo = {-->
-<!--            custId : [[${orderInfo.getCustId()}]]-->
-<!--            -->
-<!--        }-->
-<!--    </script>-->
-<!--    <input type="hidden" name="orderInfo" th:value="${orderInfo}">-->
-    <input type="hidden" name="custId" th:value="${orderInfo.getCustId()}">
-    <input type="hidden" name="pwd" th:value="${orderInfo.getPwd()}">
-    <input type="hidden" name="isAllEbook" th:value="${orderInfo.getIsAllEbook()}">
-    <input type="hidden" name="isAllDawnDelivery" th:value="${orderInfo.getIsAllDawnDelivery()}">
+    <input type="hidden" name="custId" th:value="${orderFormDto.getCustId()}">
+    <input type="hidden" name="pwd" th:value="${orderFormDto.getPwd()}">
+    <input type="hidden" name="isAllEbook" th:value="${orderFormDto.getIsAllEbook()}">
+    <input type="hidden" name="isAllDawnDelivery" th:value="${orderFormDto.getIsAllDawnDelivery()}">
     <button class="payment_button">결제하기</button>
 </form>
 

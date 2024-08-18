@@ -10,6 +10,7 @@ public class DeliveryAddressDto {
     private String mainAddr = "서울특별시 강남구 강남대로 364 (역삼동, 미왕빌딩)";
     private String detailAddr = "10C 강의장";
     private String mobileNum = "010-1234-5678";
+    private String telNum = "";
     private String defaultChk = "Y";
     private int custId = 1;
     private String regDate = "2020-01-01";

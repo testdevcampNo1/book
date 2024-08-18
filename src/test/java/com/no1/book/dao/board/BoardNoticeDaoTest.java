@@ -1,6 +1,5 @@
-package com.no1.book.mapper.board;
+package com.no1.book.dao.board;
 
-import com.no1.book.dao.board.BoardNoticeDao;
 import com.no1.book.domain.board.BoardNoticeDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

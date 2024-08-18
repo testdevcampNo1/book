@@ -12,7 +12,7 @@ public interface OrderDao {
     void createOrder(OrderDto orderDto);
 
     // read
-    OrderDto getOrder(int ordId);
+    OrderDto getOrder(String ordId);
     List<OrderDto> getCustomerOrders(int custId);
     List<OrderDto> getAllOrder();
 
