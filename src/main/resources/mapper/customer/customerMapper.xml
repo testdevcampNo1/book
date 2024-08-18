@@ -46,13 +46,11 @@
     <!--   회원정보수정     -->
     <select id="updateCustomer">
        update customer
-       set pwd = #{pwd},
-           email = #{email},
-           name = #{name},
+       SET name = #{name},
+           pwd = #{pwd},
            mobile_num = #{mobileNum},
-           gender = #{gender},
-           birth_date = #{birthDate},
-           up_date = NOW()
+           main_addr = #{mainAddr},
+           nickname = #{nickName}
         where cust_id= #{custId}
     </select>
     <!--   회원삭제     -->
@@ -61,5 +59,19 @@
        from customer
        where cust_id=#{custId}
     </delete>
+    <resultMap id="CustomerResultMap" type="CustomerDto">
+        <!-- Existing result mappings -->
+        <result column="failed_attempts" property="failedAttempts" />
+        <result column="lock_until" property="lockUntil" /></resultMap>
+
+    <select id="getCustomerById" resultMap="CustomerResultMap">
+        SELECT * FROM customers WHERE cust_id = #{custId}
+    </select>
+
+    <update id="updateFailedAttempts">
+        UPDATE customer
+        SET failed_attempts = #{failedAttempts}, lock_until = #{lockUntil}
+WHERE cust_id = #{custId}
+    </update>
 
 </mapper>

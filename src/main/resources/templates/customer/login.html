@@ -381,7 +381,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="stylesheet" th:href="@{/css/customer/style.css}">
         <title>정석문고 jungsukbook</title>
     </head>
 </head>
@@ -403,22 +403,23 @@
         </div>
     </header>
 <body class="center-area custom-body">
-<div class="container">
+<div class="container1">
     <h2>Login</h2>
     <form id="loginForm" method="POST" action="/customer/login">
-        <div class="error" id="error" style="display: none;"></div>
+        <div id="error" th:if="${errorMessage != null}" th:text="${errorMessage}" style="display: none; color: red;"></div>
+
         <div>
-            <label for="custId">아이디</label>
+            <label for="custId">아이디&nbsp;&nbsp;:</label>
             <input type="text" id="custId" name="custId" placeholder="ID"/>
         </div>
         <div>
-            <label for="pwd">비밀번호</label>
+            <label for="pwd">비밀번호:</label>
             <input type="password" id="pwd" name="pwd" placeholder="Password"/>
         </div>
         <div>
             <button type="submit">로그인</button>
         </div>
-    </form>
+    </form><br>
     <div class="link">
         <a href="/customer/signup">회원가입</a>
     </div></div>
@@ -439,7 +440,12 @@
         return true;  // Allow form submission
     };
 
-
+    window.onload = function() {
+        const errorElement = document.getElementById('error');
+        if (errorElement && errorElement.textContent.trim() !== '') {
+            alert(errorElement.textContent); // Display popup alert
+        }
+    }
 </script>
 
 </body>

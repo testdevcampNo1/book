@@ -1,0 +1,112 @@
+<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/customer/style.css}">
+    <title>정석문고 jungsukbook</title>
+    <style>
+        body {
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #ecf2f8, #eaf3f9, #ffffff);
+            position: relative; /* body를 상대 위치로 설정 */
+        }
+
+        body {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            min-height: 100vh; /* Ensures the body is at least the full height of the viewport */
+            margin: 0;
+            background: linear-gradient(to right, #ecf2f8, #eaf3f9, #ffffff);
+            font-family: 'Pretendard-Regular';
+        }
+        .profile-section .profile-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #ddd;
+            margin-bottom: 10px;
+        }
+        .profile-section .profile-info {
+            margin-bottom: 20px;
+        }
+        .profile-section .profile-info strong {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .menu-section {
+            flex: 3;
+        }
+        .menu-section h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .menu-section .menu-list {
+            display: flex;
+            justify-content: space-between;
+        }
+        .menu-section .menu-item {
+            background-color: #f5f5f5;
+            padding: 15px;
+            text-align: center;
+            border-radius: 10px;
+            width: 30%;
+        }
+        .menu-section .menu-item a {
+            text-decoration: none;
+            color: #333;
+            font-size: 18px;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .menu-section .menu-item span {
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+
+
+<header class="top-bar">
+    <div class="con flex h-full">
+        <a href="/" class="logo flex items-center">
+            <img th:src="@{/images/logo_transparent.png}" class="logo-small">
+
+        </a>
+        <div class="flex-grow"></div>
+
+        <ul class="menu-1 flex" >
+            <li><a href="/" class="flex h-full items-center px-4">소개</a></li>
+            <li><a href="/customer/logout" id="logout-link" class="flex h-full items-center px-4">로그아웃</a></li>
+            <li><a href="/customer/mypage" class="flex h-full items-center px-4">마이페이지</a></li>
+            <li><a href="#" class="flex h-full items-center px-4">문의하기</a></li>
+
+        </ul>
+    </div>
+</header>
+
+<body class="center-area custom-body">
+
+<div class="container1">
+    <h2> 정보 수정 </h2>
+    <form th:action="@{/customer/edit}" method="post">
+        <input type="hidden" name="custId" th:value="${customer.custId}"><br>
+        <label for="name">강영웅:</label>
+        <input type="text" id="name" name="name" th:value="${customer.name}" required><br>
+
+        <label for="pwd">비밀번호:</label>
+        <input type="password" id="pwd" name="pwd" th:value="${customer.pwd}" required><br>
+
+        <label for="mobileNum">휴대전화:</label>
+        <input type="text" id="mobileNum" name="mobileNum" th:value="${customer.mobileNum}" required><br>
+        <label for="mainAddr">주소:</label>
+        <input type="text" id="mainAddr" name="mainAddr" th:value="${customer.mainAddr}" required><br>
+
+        <label for="nickName">닉네임:</label>
+        <input type="text" id="nickName" name="nickName" th:value="${customer.nickName}" required><br>
+        <button type="submit">정보 수정</button>
+    </form></div>
+
+</body></html>

@@ -371,6 +371,14 @@ select[name="price-range"] option[disabled] {
     align-items: center; /* Centers content horizontally */
     margin-top: 50px; /* Adds some space from the top of the viewport */
 }
+.container1 {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 700px; /* Set a width for the container to control its size */
+}
 
 /*body {
     font-family: Arial, sans-serif;

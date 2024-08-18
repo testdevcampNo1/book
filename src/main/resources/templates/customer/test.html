@@ -1,0 +1,68 @@
+<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/customer/style.css}">
+    <title>정석문고 jungsukbook</title>
+</head>
+
+
+<header class="top-bar">
+    <div class="con flex h-full">
+        <a href="/" class="logo flex items-center">
+            <img th:src="@{/images/logo_transparent.png}" class="logo-small">
+
+        </a>
+        <div class="flex-grow"></div>
+
+        <ul class="menu-1 flex" >
+            <li><a href="/" class="flex h-full items-center px-4">소개</a></li>
+            <li><a href="/customer/logout" id="logout-link" class="flex h-full items-center px-4">로그아웃</a></li>
+            <li><a href="/customer/mypage" class="flex h-full items-center px-4">마이페이지</a></li>
+            <li><a href="#" class="flex h-full items-center px-4">문의하기</a></li>
+
+        </ul>
+    </div>
+</header>
+
+<body class="center-area custom-body">
+
+
+<!-- Display error if customer is null -->
+<div th:if="${customer == null}">
+    <p th:text="${error}"></p>
+</div>
+
+<div class="container">
+    <h1>회원 정보</h1>
+    <div class="info-box">
+        <div class="info-item">
+            <strong>아이디:</strong>
+            <span th:text="${customer.custId}">아이디</span>
+        </div>
+        <div class="info-item">
+            <strong>이름:</strong>
+            <span th:text="${customer.name}">고객 이름</span>
+        </div>
+        <div class="info-item">
+            <strong>이메일:</strong>
+            <span th:text="${customer.email}">customer@example.com</span>
+        </div>
+        <div class="info-item">
+            <strong>연락처:</strong>
+            <span th:text="${customer.mobileNum}">010-1234-5678</span>
+        </div>
+        <div class="info-item">
+            <strong>주소:</strong>
+            <span th:text="${customer.mainAddr}">서울특별시 강남구</span>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+</body></html>
+
