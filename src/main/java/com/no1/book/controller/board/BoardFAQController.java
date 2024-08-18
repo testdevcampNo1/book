@@ -13,7 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigInteger;
 import java.util.List;
+import java.util.SortedMap;
 
 @Controller
 @RequestMapping("/cscenter/faq")
@@ -66,7 +68,10 @@ public class BoardFAQController {
 
     // 등록
     @PostMapping("/write")
-    public String register(BoardFAQDto boardFAQDto) {
+    public String register(@SessionAttribute(name = "id", required = false) String id, BoardFAQDto boardFAQDto) {
+        //세션의 아이디 저장
+        id = "asdf";
+        boardFAQDto.setWriter(id);
         // 게시글 저장
         int result = boardFAQService.addFAQ(boardFAQDto);
 
@@ -97,7 +102,7 @@ public class BoardFAQController {
 
     // 삭제
     @GetMapping("/remove")
-    public String remove(@SessionAttribute(name = "auth") String auth, Integer faqNum) {
+    public String remove(@SessionAttribute(name = "auth", required = false) String auth, Integer faqNum) {
         // 관리자가 아닌가
         if (!isAdmin(auth))
             // 권한 없음 예외 발생
@@ -112,7 +117,7 @@ public class BoardFAQController {
             throw new BoardDeletionException("DEL_ERR");
 
         // 삭제 성공 시 게시글 목록으로 이동
-        return "redirct:/cscenter/faq/list";
+        return "redirect:/cscenter/faq/list";
     }
 
     public boolean isAdmin(String auth) {
@@ -121,8 +126,8 @@ public class BoardFAQController {
     }
 
     // db 및 서버 에러
-    @ExceptionHandler({DataAccessException.class})
-    public String exceptionCatcher(DataAccessException ex, RedirectAttributes rattr) {
+    @ExceptionHandler({Exception.class})
+    public String exceptionCatcher(Exception ex, RedirectAttributes rattr) {
         rattr.addFlashAttribute("msg", "DB_ERR");
         return "redirect:/cscenter/faq/list";
     }

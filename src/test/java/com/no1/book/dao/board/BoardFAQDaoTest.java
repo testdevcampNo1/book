@@ -3,6 +3,7 @@ package com.no1.book.dao.board;
 import com.no1.book.common.exception.order.DuplicateKeyException;
 import com.no1.book.common.util.board.BoardSearchCondition;
 import com.no1.book.domain.board.BoardFAQDto;
+import com.no1.book.domain.board.BoardNoticeDto;
 import com.no1.book.domain.board.CategoryFAQDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -237,7 +239,7 @@ class BoardFAQDaoTest {
         assertTrue(boardFAQDao.count() == 2);
 
         // 게시글 1개 삭제
-        int faqNum = boardFAQDao.selectFAQAll().get(0).getFaqNum();
+        Integer faqNum = boardFAQDao.selectFAQAll().get(0).getFaqNum();
         assertTrue(boardFAQDao.deleteFAQ(faqNum) == 1);
         assertTrue(boardFAQDao.count() == 1);
     }
@@ -274,6 +276,22 @@ class BoardFAQDaoTest {
         for (CategoryFAQDto dto : list) {
 
             System.out.println(dto);
+        }
+    }
+
+    @Test
+    public void dummyDataInsert(){
+        BoardFAQDto dto = new BoardFAQDto();
+        for(int i=1; i<=200; i++){
+            dto.setCateNum1("701");
+            dto.setCateNum2("0" + (((int)(Math.random() * 2)) + 1));
+            dto.setFaqTitle("자주 묻는 질문 제목 " + i);
+            dto.setFaqContent("자주 묻는 질문 내용 자주 묻는 질문 내용 자주 묻는 질문 내용 자주 묻는 질문 내용 " + i);
+            dto.setWriter("작성자" + i);
+            dto.setViewCnt(i);
+            dto.setFaqStus1("703");
+            dto.setFaqStus2("POST");
+            boardFAQDao.insertFAQ(dto);
         }
     }
 }

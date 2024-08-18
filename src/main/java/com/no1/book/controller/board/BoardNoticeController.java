@@ -68,6 +68,11 @@ public class BoardNoticeController {
         this.noticeService = noticeService;
     }
 
+    // 고객 센터로 이동
+    @RequestMapping("")
+    public String csCenter(){
+        return "/board/cscenter";
+    }
     // 공지 목록 조회
     @GetMapping("/notice/list")
     public String getNoticePage(BoardSearchCondition sc, Model m) {
@@ -113,7 +118,7 @@ public class BoardNoticeController {
         m.addAttribute("notice", noticeDto);
 
         // 게시글 상세로 이동
-        return "board/notice";
+        return "board/noticeForm";
     }
 
     // 공지 등록 폼 이동
@@ -134,7 +139,7 @@ public class BoardNoticeController {
         m.addAttribute("mode", "new");
 
         // 게시글 등록 폼으로 이동
-        return "board/notice";
+        return "board/noticeForm";
     }
 
     // 공지 등록
@@ -259,7 +264,7 @@ public class BoardNoticeController {
         // 게시글 작성 실패, 중복 키, 무결성 검사 실패
         rattr.addFlashAttribute("msg", "CRT_ERR");
         // 작성 중인 게시물 담기
-        return "redirect:/cscenter/notice";
+        return "redirect:/cscenter/noticeForm";
     }
 
     // DB 관련 모든 예외

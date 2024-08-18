@@ -6,6 +6,7 @@ import com.no1.book.domain.board.BoardFAQDto;
 import com.no1.book.domain.board.CategoryFAQDto;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @Mapper

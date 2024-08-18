@@ -86,7 +86,6 @@
         select <include refid="selectColumn"/>
         from boardFAQ
         where faq_num = #{faqNum}
-        for update
     </select>
 
 <!--    FAQ 카테고리 목록 조회-->

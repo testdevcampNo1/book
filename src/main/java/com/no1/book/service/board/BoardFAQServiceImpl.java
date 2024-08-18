@@ -11,6 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @Service
@@ -47,7 +48,7 @@ public class BoardFAQServiceImpl implements BoardFAQService {
 
     // 게시물 수정
     @Override
-    @Transactional      // select for update
+//    @Transactional      // select for update
     public int modifyFAQ(BoardFAQDto boardFAQDto) {
         // 게시글 수정 대상 조회
         BoardFAQDto updateDto = boardFAQDao.selectFAQ(boardFAQDto.getFaqNum());

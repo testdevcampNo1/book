@@ -5,6 +5,7 @@ import com.no1.book.common.util.board.BoardSearchCondition;
 import com.no1.book.domain.board.BoardFAQDto;
 import com.no1.book.domain.board.CategoryFAQDto;
 
+import java.math.BigInteger;
 import java.util.List;
 
 public interface BoardFAQService {
