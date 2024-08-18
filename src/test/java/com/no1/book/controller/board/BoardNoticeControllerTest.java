@@ -1,6 +1,6 @@
 package com.no1.book.controller.board;
 
-import com.no1.book.common.util.board.SearchCondition;
+import com.no1.book.common.util.board.BoardSearchCondition;
 import com.no1.book.domain.board.BoardNoticeDto;
 import com.no1.book.dao.board.BoardNoticeDao;
 import com.no1.book.service.board.BoardNoticeService;
@@ -84,7 +84,7 @@ public class BoardNoticeControllerTest {
                 // 응답 성공
                 .andExpect(status().isOk())
                 // 모델에 담겼는지 확인
-                .andExpect(model().attribute("searchCondition", new SearchCondition(1, 10)))
+                .andExpect(model().attribute("searchCondition", new BoardSearchCondition(1, 10)))
                 // 빈 리스트인지 확인
                 .andExpect(model().attribute("noticeList", new ArrayList<>()))
                 // 문구가 생성 됐는지 확인
@@ -123,7 +123,7 @@ public class BoardNoticeControllerTest {
 //                // 응답 성공
 //                .andExpect(status().isOk())
 //                // 모델에 담겼는지 확인
-//                .andExpect(model().attribute("searchCondition", new SearchCondition(1, 10)))
+//                .andExpect(model().attribute("searchCondition", new BoardSearchCondition(1, 10)))
 //                // 빈 리스트인지 확인
 //                .andExpect(model().attribute("noticeList", new ArrayList<>()))
 //                // 문구가 생성 됐는지 확인
@@ -152,7 +152,7 @@ public class BoardNoticeControllerTest {
 //                // 응답 성공
 //                .andExpect(status().isOk())
 //                // 모델에 담겼는지 확인
-//                .andExpect(model().attribute("searchCondition", new SearchCondition(1, 10)))
+//                .andExpect(model().attribute("searchCondition", new BoardSearchCondition(1, 10)))
 //                // 빈 리스트인지 확인
 //                .andExpect(model().attribute("noticeList", new ArrayList<>()))
 //                // 문구가 생성 됐는지 확인

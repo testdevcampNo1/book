@@ -1,7 +1,7 @@
 package com.no1.book.service.board;
 
 import com.no1.book.common.util.board.BoardPageHandler;
-import com.no1.book.common.util.board.SearchCondition;
+import com.no1.book.common.util.board.BoardSearchCondition;
 import com.no1.book.domain.board.BoardNoticeDto;
 import com.no1.book.dao.board.BoardNoticeDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class BoardNoticeServiceImpl implements BoardNoticeService {
 
     // 검색 결과 개수
     @Override
-    public int countNoticeSearch(SearchCondition sc) {
+    public int countNoticeSearch(BoardSearchCondition sc) {
         return noticeDao.countNoticeSearch(sc);
     }
 
