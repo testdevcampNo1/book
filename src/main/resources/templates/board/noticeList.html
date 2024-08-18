@@ -339,20 +339,6 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function(){
-        $('.faq-question').on('click', function() {
-            var isActive = $(this).parent('.faq-item').hasClass('open');
-
-            $('.faq-answer').slideUp();
-            $('.faq-item').removeClass('open');
-
-            if(!isActive) {
-                $(this).next('.faq-answer').slideDown();
-                $(this).parent('.faq-item').addClass('open');
-            }
-        });
-    });
-
 </script>
 </body>
 </html>

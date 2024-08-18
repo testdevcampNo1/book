@@ -129,12 +129,12 @@
     </div>
 </header>
 <div class="intro_text">
-    <h2><br>게시판</h2>
+    <h2><br>공지 게시판</h2>
 </div><br/>
 <div class="main_text0">
     <div class="contents1">
         <div class="container">
-            <h2 class="writing-header">게시판</h2>
+            <h2 class="writing-header">공지 등록</h2>
             <form id="form" class="frm" action="" method="post">
                 <input type="hidden" name="notcNum" th:value="${notice?.notcNum}">
                 <input type="hidden" name="notcType" th:value="${notice?.notcType ?:'01'}">
@@ -177,27 +177,27 @@
         var pageUrl = "?page=" + [[${param.page}]] + "&pageSize=" + [[${param.pageSize}]];
         let formCheck = function() {
             let form = document.getElementById("form");
-            if(form.faqTitle.value=="") {
+            if(form.notcTitle.value=="") {
                 alert("제목을 입력해 주세요.");
-                form.faqTitle.focus();
+                form.notcTitle.focus();
                 return false;
             }
 
-            if(form.faqContent.value=="") {
+            if(form.notcContent.value=="") {
                 alert("내용을 입력해 주세요.");
-                form.faqContent.focus();
+                form.notcContent.focus();
                 return false;
             }
             return true;
         }
 
         $("#writeNewBtn").on("click", function(){
-            location.href="/cscenter/faq" + pageUrl;
+            location.href="/cscenter/notice" + pageUrl;
         });
 
         $("#writeBtn").on("click", function(){
             let form = $("#form");
-            form.attr("action", "/cscenter/faq");
+            form.attr("action", "/cscenter/notice");
             form.attr("method", "post");
 
             if(formCheck())
@@ -206,12 +206,12 @@
 
         $("#modifyBtn").on("click", function(){
             let form = $("#form");
-            let isReadonly = $("input[name=faqTitle]").attr('readonly');
+            let isReadonly = $("input[name=notcTitle]").attr('readonly');
 
             // 1. 읽기 상태이면, 수정 상태로 변경
             if(isReadonly=='readonly') {
-                $(".writing-header").html("게시판 수정");
-                $("input[name=faqTitle]").attr('readonly', false);
+                $(".writing-header").html("공지 수정");
+                $("input[name=notcTitle]").attr('readonly', false);
                 $("textarea").attr('readonly', false);
                 $("#modifyBtn").html("<i class='fa fa-pencil'></i> 등록");
                 $('.checkbox-container').show();
@@ -219,7 +219,7 @@
             }
 
             // 2. 수정 상태이면, 수정된 내용을 서버로 전송
-            form.attr("action", "/cscenter/faq/modify");
+            form.attr("action", "/cscenter/notice/modify");
             form.attr("method", "post");
             if(formCheck())
                 form.submit();
@@ -229,7 +229,7 @@
             if(!confirm("정말로 삭제하시겠습니까?")) return;
 
             let form = $("#form");
-            form.attr("action", "/cscenter/faq/remove/[[${faq?.faqNum}]]");
+            form.attr("action", "/cscenter/notice/remove/[[${notice?.notcNum}]]");
             form.attr("method", "get");
             form.submit();
         });
@@ -248,15 +248,15 @@
             }
         });
 
-        $('#faq').on({click: isSpecial});
+        $('#notice').on({click: isSpecial});
 
         function isSpecial(){
-            isChecked = $('#faq')[0].checked;
+            isChecked = $('#notice')[0].checked;
 
             if (isChecked){
-                $('#faq').val("Y");
+                $('#notice').val("Y");
             } else {
-                $('#faq').val("N");
+                $('#notice').val("N");
             }
         }
     });

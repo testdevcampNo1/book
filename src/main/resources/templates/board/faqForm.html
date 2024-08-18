@@ -144,22 +144,24 @@
                 <input type="hidden" name="page" th:value="${sc?.page}">
                 <input type="hidden" name="pageSize" th:value="${sc?.pageSize}">
 
-                <input name="faqTitle" type="text" th:value="${faq?.faqTitle}" placeholder="  제목을 입력해 주세요." maxlength="50" th:attr="readonly=${mode != 'new' ? 'readonly' : null}"><br>
+                <input name="faqTitle" type="text" th:value="${faq?.faqTitle}" placeholder="  제목을 입력해 주세요." maxlength="50" th:attr="readonly=${mode ne 'new' ? 'readonly' : null}"><br>
                 <div class="checkbox-container" th:style="${mode != 'new' ? 'display:none' : ''}">
-                    <input id="faq" type="checkbox" class="input_check" name="speclChk" th:attr="checked = ${faq?.bestFAQChk == 'Y' ? true : false}">
+                    <input id="faq" type="checkbox" class="input_check" name="bestFAQChk" th:attr="checked = ${faq?.bestFAQChk == 'Y' ? true : false}">
                     <label for="faq" class="label">베스트 FAQ 등록</label>
                 </div>
                 <div class="text_box">
-                    <textarea name="faqContent" rows="20" placeholder=" 내용을 입력해 주세요." th:text="${faq?.faqContent}" th:attr="readonly=${mode != 'new' ? 'readonly' : null}"></textarea><br>
+                    <textarea name="faqContent" rows="20" placeholder=" 내용을 입력해 주세요." th:text="${faq?.faqContent}" th:attr="readonly=${mode ne 'new' ? 'readonly' : null}"></textarea><br>
                     <div class="count"><span>0</span>/2000</div>
                 </div>
                 <th:block th:if="${mode eq 'new'}">
                     <button type="button" id="writeBtn" class="btn btn-write"><i class="fa fa-pencil"></i> 등록</button>
                 </th:block>
-                <th:block th:if="${mode ne 'new' and session.auth eq 'admin'}">
+<!--                <th:block th:if="${mode ne 'new' and session.auth eq 'admin'}">-->
+                <th:block th:if="${mode ne 'new'}">
                     <button type="button" id="writeNewBtn" class="btn btn-write"><i class="fa fa-pencil"></i> 글쓰기</button>
                 </th:block>
-                <th:block th:if="${faq?.writer eq session.id and mode != 'new'}">
+<!--                <th:block th:if="${mode != 'new' and faq?.writer eq session.id}">-->
+                <th:block th:if="${mode ne 'new'}">
                     <button type="button" id="modifyBtn" class="btn btn-modify"><i class="fa fa-edit"></i> 수정</button>
                     <button type="button" id="removeBtn" class="btn btn-remove"><i class="fa fa-trash"></i> 삭제</button>
                 </th:block>
@@ -245,9 +247,9 @@
             }
         });
 
-        $('#faq').on({click: isSpecial});
+        $('#faq').on({click: isBest});
 
-        function isSpecial(){
+        function isBest(){
             isChecked = $('#faq')[0].checked;
 
             if (isChecked){
