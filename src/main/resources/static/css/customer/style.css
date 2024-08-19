@@ -303,7 +303,7 @@ select[name="price-range"] option[disabled] {
 
 /* 첫 번째와 마지막 아이템 조정 */
 .item:nth-child(4n + 1) {
-    margin-left: 10; /* 각 줄의 첫 번째 아이템은 왼쪽 여백을 없앰 */
+    margin-left: 10px; /* 각 줄의 첫 번째 아이템은 왼쪽 여백을 없앰 */
 }
 
 .item:nth-child(4n) {
@@ -372,6 +372,14 @@ select[name="price-range"] option[disabled] {
     justify-content: center; /* Centers content vertically */
     align-items: center; /* Centers content horizontally */
     margin-top: 50px; /* Adds some space from the top of the viewport */
+}
+.container1 {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 700px; /* Set a width for the container to control its size */
 }
 
 /*body {

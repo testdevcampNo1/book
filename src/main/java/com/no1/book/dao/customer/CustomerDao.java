@@ -24,7 +24,8 @@ public interface CustomerDao {
     public void updateCustomer(CustomerDto customerDto);
 
     public void deleteCustomer(String custId);
-
+    public CustomerDto getCustomerById(String custId);
+    public void updateFailedAttempts(CustomerDto customerDto);
 
 }
 
