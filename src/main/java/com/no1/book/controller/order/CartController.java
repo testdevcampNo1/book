@@ -25,93 +25,89 @@ public class CartController {
     CartService cartService;
 
     @GetMapping("/list")
-    public String read(Integer custId, Model m, HttpServletRequest request, HttpServletResponse response) throws Exception{
+    public String read(Model m, HttpServletRequest request, HttpServletResponse response) throws Exception{
+
+        HttpSession session = request.getSession();
+        session.setAttribute("isUser","Y");
+        // session.setAttribute("isUser","N");
 
         // 세션에서 회원 여부 조회
+        if(session.getAttribute("isUser") == "Y"){ // 회원일 경우 - DB조회
 
-        // 회원이면
-        // DB에서 조회
+            Integer custId = 1;
 
-        // 회원이 아니면
-        // 세션에서 조회
+            try{
+                List<CartProdDto> cartProducts  = cartService.read(custId);
 
-        // 모델에 담기
+                m.addAttribute("custId",custId);
+                m.addAttribute("cartProdDto", cartProducts);
 
-        // cart View 리턴
-        HttpSession session = request.getSession();
-        //System.out.println("session = " + session);
+            } catch(Exception e){
+                e.printStackTrace();
+            }
 
-//        if(!loginCheck(request))
-//            return "redirect:/login/login?toURL="+request.getRequestURL();  // 로그인을 안했으면 로그인 화면으로 이동
+        }else{ // 비회원일 경우 - 세션 조회
 
-        try{
-            List<CartProdDto> cartProducts  = cartService.read(custId);
-            //System.out.println("cartProduct = " + cartProducts.toString());
+            try{
 
-            session.setAttribute("cartLists",cartProducts);
+                System.out.println("비회원 session = " + session.getId());
+                System.out.println("session.getAttributeNames = " + session.getAttributeNames());
+                System.out.println("session.getAttribute(\"cartLists\") = " + session.getAttribute("cartLists"));
 
-            m.addAttribute("custId",custId);
-            m.addAttribute("cartProdDto", cartProducts);
-        } catch(Exception e){
-            e.printStackTrace();
+                m.addAttribute("sessionId",session.getId());
+                m.addAttribute("cartProdDto", session.getAttribute("cartLists"));
+
+            } catch(Exception e){
+                e.printStackTrace();
+            }
         }
 
-        //System.out.println("session.getAttributeNames = " + session.getAttributeNames());
-        //System.out.println("session.getAttribute(\"cartLists\") = " + session.getAttribute("cartLists"));
 
         return "cart";
     }
-//    @GetMapping("/list")
-//    public String read(Integer custId, Model m, HttpServletRequest request, HttpServletResponse response) throws Exception{
-//
-//        HttpSession session = request.getSession();
-//        System.out.println("session = " + session.getId());
-//
-//
-////        if(!loginCheck(request))
-////            return "redirect:/login/login?toURL="+request.getRequestURL();  // 로그인을 안했으면 로그인 화면으로 이동
-//
-//        try{
-//            List<CartProdDto> cartProducts  = cartService.read(custId);
-//            System.out.println("cartProduct = " + cartProducts.size());
-//
-//            session.setAttribute("cartLists",cartProducts);
-//
-//            m.addAttribute("custId",custId);
-//            m.addAttribute("cartProdDto", cartProducts);
-//        } catch(Exception e){
-//            e.printStackTrace();
-//        }
-//
-//        System.out.println("session.getAttributeNames = " + session.getAttributeNames());
-//        System.out.println("session.getAttribute(\"cartLists\") = " + session.getAttribute("cartLists"));
-//
-//        return "cart";
-//    }
+
 
     @GetMapping("/remove")
-    public String remove(String prodId,  Model m, HttpSession session, RedirectAttributes rattr, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String remove(String prodId,  Model m, RedirectAttributes rattr, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        HttpSession session = request.getSession();
+        session.setAttribute("isUser","Y");
+        // session.setAttribute("isUser","N");
 
         Integer custId = (Integer)session.getAttribute("custId");
                 custId = 1; // 임의로 아이디값 설정
 
-        System.out.println("remove prodId : " + prodId);
+        if(session.getAttribute("isUser") == "Y") { // 회원일 경우 - DB조회
+            try{
+                Map map = new HashMap();
+                map.put("custId", custId);
+                map.put("prodId", prodId);
 
-        try{
-            Map map = new HashMap();
-            map.put("custId", custId);
-            map.put("prodId", prodId);
+                int rowCnt = cartService.remove(map);
+                if( rowCnt != 1 ) { throw new Exception("cart item remove error"); }
 
-            int rowCnt = cartService.remove(map);
-            if( rowCnt != 1 ) { throw new Exception("cart item remove error"); }
+                rattr.addAttribute("custId", custId);
+                rattr.addAttribute("msg","DEL_OK");
 
-            rattr.addAttribute("custId", custId);
-            rattr.addAttribute("msg","DEL_OK");
+            }catch(Exception e){
+                e.printStackTrace();
+                rattr.addAttribute("msg","DEL_ERR");
+            }
+        }else{
+            try{
+                List<CartProdDto> cartProducts = (List<CartProdDto>) session.getAttribute("cartLists");
+                cartProducts.removeIf(obj -> obj.getProdId() == prodId);
+                session.setAttribute("cartLists", cartProducts);
 
-        }catch(Exception e){
-            e.printStackTrace();
-            rattr.addAttribute("msg","DEL_ERR");
+                rattr.addAttribute("custId", session.getId());
+                rattr.addAttribute("msg","DEL_OK");
+
+            }catch(Exception e){
+                e.printStackTrace();
+                rattr.addAttribute("msg","DEL_ERR");
+            }
         }
+
 
         return "redirect:/cart/list";
     }
@@ -121,88 +117,115 @@ public class CartController {
     public  Map<String, Object> addItem(@RequestBody CartDto reqDto, HttpServletRequest request, HttpServletResponse response) throws Exception{
 
         Map map = new HashMap();
-        // 객체에 prodId와 itemQty가 담겼는지 확인하기
-
-        // 회원일 경우 - DB에서
-
         HttpSession session = request.getSession();
-//        Integer custId  = (Integer)session.getAttribute("custId");
-        Integer custId  = 1; // 임의로 아이디값 설정
+        session.setAttribute("isUser","Y");
+        // session.setAttribute("isUser","N");
 
-        CartDto dto = reqDto;
-                dto.setCustId(custId);
+        if(session.getAttribute("isUser") == "Y"){
 
-        System.out.println("dto = " + dto.toString());
+            // Integer custId  = (Integer)session.getAttribute("custId");
+            Integer custId  = 1; // 임의로 아이디값 설정
 
-        List<CartProdDto> cartProducts  = cartService.read(custId);
-        boolean hasItem  = false;
+            CartDto dto = reqDto;
+            dto.setCustId(custId);
 
-        String dtoProd = dto.getProdId();
+            List<CartProdDto> cartProducts  = cartService.read(custId);
+            boolean hasItem  = false;
 
-        for(CartProdDto product : cartProducts){
-            if (product.getProdId().equals(dtoProd)) {
-                hasItem   = true;
-                dto.setItemQty(product.getItemQty()+dto.getItemQty());
-                break;
+            String dtoProd = dto.getProdId();
+
+            for(CartProdDto product : cartProducts){
+                if (product.getProdId().equals(dtoProd)) {
+                    hasItem   = true;
+                    dto.setItemQty(product.getItemQty()+dto.getItemQty());
+                    break;
+                }
             }
+
+            // 장바구니에 상품이 존재하면 수량만 업데이트, 존재하지 않으면 상품 추가
+            int ret;
+
+            if(hasItem == true) { ret = cartService.updateItemQty(dto); }
+            else                { ret = cartService.insertItem(dto); }
+
+            if(ret == 1) { map.put("status", "success"); }
+            else         { map.put("status", "fail"); }
+
+        }else{   // 비회원일 경우 - 세션 상품목록에서
+
+            List<CartProdDto> cartProducts = (List<CartProdDto>) session.getAttribute("cartLists");
+
+            // 장바구니에 추가할 상품 객체 생성
+            CartProdDto newProduct = new CartProdDto();
+            newProduct.setProdId(reqDto.getProdId());
+            newProduct.setItemQty(reqDto.getItemQty());
+
+
+            // 장바구니에 상품 추가
+            boolean productExists = false;
+            for (CartProdDto product : cartProducts) {
+                if (product.getProdId().equals(newProduct.getProdId())) {
+                    product.setItemQty(product.getItemQty() + newProduct.getItemQty());
+                    productExists = true;
+                    break;
+                }
+            }
+
+            if (!productExists) { cartProducts.add(newProduct); }
+
+            session.setAttribute("cartLists", cartProducts);
+            map.put("status","success");
         }
-
-
-        // 장바구니에 상품이 존재하면 수량만 업데이트, 존재하지 않으면 상품 추가
-        int ret;
-
-        if(hasItem == true) { ret = cartService.updateItemQty(dto); }
-        else                { ret = cartService.insertItem(dto); }
-
-        if(ret == 1) { map.put("status", "success"); }
-        else         { map.put("status", "fail"); }
-
-
-        // 비회원일 경우 - 세션 상품목록에서
-
-
-
 
         return map;  // status : successs, fail
     }
-
 
 
     @PostMapping("/update")
     @ResponseBody
     public Map<String, Object> updateQuantity(@RequestBody CartDto dto,HttpServletRequest request, HttpServletResponse response) throws Exception{
 
-        //System.out.println("dto.toString() = " + dto.toString());
+        Map map = new HashMap();
+        HttpSession session = request.getSession();
+        session.setAttribute("isUser","Y");
+        // session.setAttribute("isUser","N");
 
-        Integer custId = 1; // 임의로 지정
-
-        int updateOk = cartService.updateItemQty(dto);
-        if( updateOk != 1 ) { throw new Exception("cart item quantity update error"); }
-
-        // 결과 반환
         Map<String, Object> updateResult = new HashMap<>();
-        updateResult.put("itemQty", dto.getItemQty());
+
+        if(session.getAttribute("isUser") == "Y") {
+            Integer custId = 1; // 임의로 지정
+
+            int updateOk = cartService.updateItemQty(dto);
+            if( updateOk != 1 ) { throw new Exception("cart item quantity update error"); }
+
+            // 결과 반환
+            updateResult.put("itemQty", dto.getItemQty());
+
+        }else{ // 비회원일때 수량 처리
+
+            List<CartProdDto> cartProducts = (List<CartProdDto>) session.getAttribute("cartLists");
+
+            // 장바구니에 추가할 상품 객체 생성
+            CartProdDto newProduct = new CartProdDto();
+            newProduct.setProdId(dto.getProdId());
+            newProduct.setItemQty(dto.getItemQty());
 
 
-        // 비회원일때 수량 처리
+            // 장바구니에 상품 추가
+            boolean productExists = false;
+            for (CartProdDto product : cartProducts) {
+                if (product.getProdId().equals(newProduct.getProdId())) {
+                    product.setItemQty(product.getItemQty() + newProduct.getItemQty());
+                    break;
+                }
+            }
+
+            session.setAttribute("cartLists", cartProducts);
+            updateResult.put("itemQty", newProduct.getItemQty());
+        }
 
         return updateResult;
     }
-
-//    @PostMapping("/order")
-//    public String order(@RequestParam List<CartProdDto> dto, Model model) {
-//        // 선택된 상품 IDs를 처리합니다. 실제 애플리케이션에서는 DB에서 상품 정보를 가져올 수 있습니다.
-//
-//        // 예시: 상품 ID를 기반으로 상품 목록을 조회하는 로직
-//        // List<Product> selectedProducts = productService.findProductsByIds(productIds);
-//
-//        // model.addAttribute("productList", productIds);
-//        return "orderForm"; // 주문 요약 페이지로 이동
-//    }
-
-
-
-
 
 
     private boolean loginCheck(HttpServletRequest request) {
@@ -211,7 +234,6 @@ public class CartController {
         // 2. 세션에 id가 있는지 확인, 있으면 true를 반환
         return session.getAttribute("custId")!=null;
     }
-
 
 }
 
