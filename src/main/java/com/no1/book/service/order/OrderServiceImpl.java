@@ -1,6 +1,7 @@
 package com.no1.book.service.order;
 
 import com.no1.book.common.exception.order.InvalidOrderException;
+import com.no1.book.common.exception.order.InvalidProductException;
 import com.no1.book.common.exception.order.OrderValidatorErrorMessage;
 import com.no1.book.common.exception.order.SystemException;
 import com.no1.book.common.validator.order.OrderValidator;
@@ -58,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
 
     // 주문 화면 진입시 노출할 정보
     @Override
-    public OrderFormDto initOrderInfo(int custId, List<OrderProductDto> productList) {
+    public OrderFormDto initOrderInfo(int custId, List<OrderProductDto> productList) throws Exception {
         OrderFormDto orderFormDto = new OrderFormDto();
         orderFormDto.setCustId(custId);
 
@@ -90,7 +91,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     // 기본배송지 정보 DB 조회
-    void getAddressInfo(int custId, OrderFormDto orderFormDto) {
+    int getAddressInfo(int custId, OrderFormDto orderFormDto) {
         try {
             DeliveryAddressDto deliveryAddressDto = deliveryAddressDao.getDefaultAddress(custId);
 
@@ -100,13 +101,35 @@ public class OrderServiceImpl implements OrderService {
             orderFormDto.setMainAddress(deliveryAddressDto.getMainAddr()); // 기본주소
             orderFormDto.setDetailAddress(deliveryAddressDto.getDetailAddr()); // 상세주소
             orderFormDto.setDefaultChk(deliveryAddressDto.getDefaultChk()); // 기본배송지 여부
+
+            return deliveryAddressDto.getDlvId();
         } catch (DataAccessException e) {
-            throw new SystemException("기본배송지 정보 조회 실패했습니다.");
+            throw new SystemException(OrderValidatorErrorMessage.ACCESS_DATABASE_FAILED.getMessage());
+        }
+    }
+
+    // 기본배송지 갱신
+    void updateDefaultAddress(OrderFormDto orderFormDto) {
+        int dlvId = getAddressInfo(orderFormDto.getCustId(), orderFormDto);
+
+        DeliveryAddressDto deliveryAddressDto = DeliveryAddressDto.builder()
+                .dlvId(dlvId)
+                .zpcd(orderFormDto.getZipCode())
+                .mainAddr(orderFormDto.getMainAddress())
+                .detailAddr(orderFormDto.getDetailAddress())
+                .mobileNum(orderFormDto.getTelNum())
+                .upId(String.valueOf(orderFormDto.getCustId()))
+                .build();
+
+        try {
+            deliveryAddressDao.updateDefaultAddress(deliveryAddressDto);
+        } catch (DataAccessException e) {
+            throw new SystemException(OrderValidatorErrorMessage.ACCESS_DATABASE_FAILED.getMessage());
         }
     }
 
     // 상품 정보 저장
-    void setProductInfo(OrderFormDto orderFormDto) {
+    void setProductInfo(OrderFormDto orderFormDto) throws Exception {
         int totalProdBasePrice = 0;
         int totalDiscPrice = 0;
         int totalOrderQuantity = 0;
@@ -132,6 +155,9 @@ public class OrderServiceImpl implements OrderService {
 
             // 상품 상태 조회
             if(!isProductAvailable(product.getProdId())) throw new InvalidOrderException("구매 불가능한 상품입니다. " + product.getProdId());
+
+            // 상품 금액 변동 여부 조회
+            if(isChangeProductPrice(product.getProdId(), product.getProdBasePrice())) throw new InvalidOrderException("구매 불가능한 상품입니다. " + product.getProdId());
         }
 
         orderFormDto.setTotalProdBasePrice(totalProdBasePrice);
@@ -167,17 +193,42 @@ public class OrderServiceImpl implements OrderService {
     }
 
     // 상품 상태 검증
-    boolean isProductAvailable(String prodId) {
+    @Transactional
+    boolean isProductAvailable(String prodId) throws Exception {
         ProductDto productDto = new ProductDto();
 
-        // 상품 table 조회
+        // 상품 상태 조회
         try {
-            productDto = productDao.select(prodId);
-        } catch (Exception e) {
-            throw new SystemException("상품 정보 조회 실패했습니다.");
+            productDto.setOrdChkCode(productDao.select(prodId).getOrdChkCode());
+        } catch (DataAccessException e) {
+            throw new SystemException(OrderValidatorErrorMessage.ACCESS_DATABASE_FAILED.getMessage());
         }
 
-         return productDto.getOrdChkCode().equals("AVBL");
+        // 구매 가능 상태 검증
+        if(!productDto.getOrdChkCode().equals("AVBL")) {
+            throw new InvalidProductException(OrderValidatorErrorMessage.INVALID_PRODUCT_STATUS.getMessage());
+        }
+
+         return true;
+    }
+
+    // 상품 금액 변동 여부 검증
+    boolean isChangeProductPrice(String prodId, int prodBasePrice) throws Exception {
+        ProductDto productDto = new ProductDto();
+
+        // 상품 금액 조회
+        try {
+            productDto.setProdBasePrice(productDao.select(prodId).getProdBasePrice());
+        } catch (DataAccessException e) {
+            throw new SystemException(OrderValidatorErrorMessage.ACCESS_DATABASE_FAILED.getMessage());
+        }
+
+        // 상품 가격 변동 여부 검증
+        if(productDto.getProdBasePrice() != prodBasePrice) {
+            throw new InvalidProductException(OrderValidatorErrorMessage.CHANGE_PRODUCT_PRICE.getMessage());
+        }
+
+        return false;
     }
 
     // 주문 번호 생성
@@ -192,6 +243,10 @@ public class OrderServiceImpl implements OrderService {
         saveOrderStatus(orderFormDto.getOrdId());
         saveDelivery(orderFormDto.getOrdId());
         savePayment(orderFormDto.getOrdId());
+
+        if(orderFormDto.getCustId() != -1 && orderFormDto.getDefaultChk().equals("Y")) {
+            updateDefaultAddress(orderFormDto);
+        }
     }
 
     // 특정 주문의 regId 조회
@@ -240,7 +295,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             orderDao.createOrder(orderDto);
         } catch (DataAccessException e) { // DB 접근 중 발생하는 예외
-            throw new SystemException(OrderValidatorErrorMessage.SAVE_DATABASE_FAILED.getMessage());
+            throw new SystemException(OrderValidatorErrorMessage.ACCESS_DATABASE_FAILED.getMessage());
         }
     }
 
@@ -258,7 +313,7 @@ public class OrderServiceImpl implements OrderService {
                 orderProductDao.insertOrderProduct(product);
             }
         } catch (DataAccessException e) { // DB 접근 중 발생하는 예외
-            throw new SystemException(OrderValidatorErrorMessage.SAVE_DATABASE_FAILED.getMessage());
+            throw new SystemException(OrderValidatorErrorMessage.ACCESS_DATABASE_FAILED.getMessage());
         }
     }
 
@@ -272,7 +327,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             orderStatusHistoryDao.createOrderStatusHistory(orderStatusHistoryDto);
         } catch (DataAccessException e) { // DB 접근 중 발생하는 예외
-            throw new SystemException(OrderValidatorErrorMessage.SAVE_DATABASE_FAILED.getMessage());
+            throw new SystemException(OrderValidatorErrorMessage.ACCESS_DATABASE_FAILED.getMessage());
         }
     }
 

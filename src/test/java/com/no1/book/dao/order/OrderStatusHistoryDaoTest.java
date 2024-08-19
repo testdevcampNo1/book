@@ -140,7 +140,6 @@ class OrderStatusHistoryDaoTest {
         return orderDao.getAllOrder().size();
     }
 
-
     // 주문 번호 생성
     public synchronized String orderNumGenerator() {
         try {

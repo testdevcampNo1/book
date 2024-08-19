@@ -25,7 +25,7 @@ public class OrderController {
 
     // 상품상세 또는 장바구니 화면에서 진입하는 주문 화면
     @GetMapping("/form")
-    public String orderForm(Model model) {
+    public String orderForm(Model model) throws Exception {
         // TODO : 상품상세, 장바구니 화면 구현 후 실제 data 삽입 필요
         System.out.println(getOrderProductDtoList());
         OrderFormDto orderFormDto = orderService.initOrderInfo(1, getOrderProductDtoList());

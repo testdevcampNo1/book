@@ -6,7 +6,7 @@ import com.no1.book.domain.order.OrderProductDto;
 import java.util.List;
 
 public interface OrderService {
-    OrderFormDto initOrderInfo(int custId, List<OrderProductDto> productList);
+    OrderFormDto initOrderInfo(int custId, List<OrderProductDto> productList) throws Exception;
     void requestOrder(OrderFormDto orderFormDto);
     void saveOrder(OrderFormDto orderInfo);
     void saveOrderProduct(String ordId, List<OrderProductDto> productList);

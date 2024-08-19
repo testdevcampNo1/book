@@ -1,5 +1,6 @@
 package com.no1.book.domain.order;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
@@ -17,4 +18,21 @@ public class DeliveryAddressDto {
     private String regId = "1";
     private String upDate = "2020-01-01";
     private String upId = "1";
+
+    @Builder
+    public DeliveryAddressDto(int dlvId, String name, String zpcd, String mainAddr, String detailAddr, String mobileNum, String telNum, String defaultChk, int custId, String regId, String upId) {
+        this.dlvId = dlvId;
+        this.name = name;
+        this.zpcd = zpcd;
+        this.mainAddr = mainAddr;
+        this.detailAddr = detailAddr;
+        this.mobileNum = mobileNum;
+        this.telNum = telNum;
+        this.defaultChk = defaultChk;
+        this.custId = custId;
+        this.regDate = regDate;
+        this.regId = regId;
+        this.upDate = upDate;
+        this.upId = upId;
+    }
 }

@@ -7,4 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface DeliveryAddressDao {
     // read
     DeliveryAddressDto getDefaultAddress(int custId);
+
+    // update
+    void updateDefaultAddress(DeliveryAddressDto deliveryAddressDto);
 }

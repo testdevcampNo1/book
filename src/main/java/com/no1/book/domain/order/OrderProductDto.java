@@ -6,7 +6,7 @@ import lombok.*;
 @NoArgsConstructor
 @Data
 public class OrderProductDto {
-    private int ordProdId;
+    private int ordProdId; // auto increment
     private String ordId;
     private String prodId;
     private String ordChkCode;
