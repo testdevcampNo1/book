@@ -1,6 +1,7 @@
 package com.no1.book.dao.customer;
 
 import com.no1.book.dao.customer.CustomerDao;
+import com.no1.book.domain.customer.CustomerDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;

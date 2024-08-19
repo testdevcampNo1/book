@@ -1,110 +1,130 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>장바구니</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/cart/style.css}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script>
-        // 전체 선택 기능을 위한 JavaScript 함수
-        function toggleSelectAll(selectAllCheckbox) {
-            var checkboxes = document.querySelectorAll('input[name="selectedProducts"]');
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/cart/style.css}">
 
-            checkboxes.forEach(function(checkbox) {
-                checkbox.checked = selectAllCheckbox.checked;
-            });
-            calculateTotal();
-        }
+        <title>정석문고 jungsukbook</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script>
+            // 전체 선택 기능을 위한 JavaScript 함수
+            function toggleSelectAll(selectAllCheckbox) {
+                var checkboxes = document.querySelectorAll('input[name="selectedProducts"]');
 
-        // 선택된 상품의 가격 합계를 계산하는 함수
-        function calculateTotal() {
-            var total = 0;
-            var checkboxes = document.querySelectorAll('input[name="selectedProducts"]:checked');
-            console.log("checkboxs", checkboxes);
-
-            checkboxes.forEach(function(checkbox) {
-                var row = checkbox.closest('tr'); //
-                var price = row.querySelector('td.itemTotalPrice').textContent;
-
-                total += parseInt(price);
-
-                console.log("row",row);
-                console.log("price", price);
-                console.log("typeof total : "+ typeof total);
-                console.log("total : "+ total);
-            });
-            document.getElementById('totalPrice').textContent = total.toLocaleString();
-        }
-        function confirmDelete() {
-            return confirm("선택한 상품을 삭제하시겠습니까?");
-        }
-
-        // 장바구니 상품 수량 증감
-        function updateQuantity(action, prodId){
-            var quantityInput = document.getElementById(`quantity-input-${prodId}`);
-            var currentValue  = parseInt(quantityInput.value);
-            var itemPrice     = document.getElementById(`priceSpan-${prodId}`).innerText;
-            var custId        = 1;
-
-            console.log("quantityInput = ", quantityInput);
-            console.log("currentValue = ", currentValue);
-            console.log("itemPrice = ", itemPrice);
-
-            if (action === 'increment') {
-                currentValue += 1;
-            } else if (action === 'decrement' && currentValue > 1) {
-                currentValue -= 1;
-            } else {
-                return;  // 감소할 때 수량이 1 이하로 내려가지 않도록
+                checkboxes.forEach(function(checkbox) {
+                    checkbox.checked = selectAllCheckbox.checked;
+                });
+                calculateTotal();
             }
 
-            const params = {
-                custId  : custId,
-                prodId  : prodId,
-                itemQty : currentValue
+            // 선택된 상품의 가격 합계를 계산하는 함수
+            function calculateTotal() {
+                var total = 0;
+                var checkboxes = document.querySelectorAll('input[name="selectedProducts"]:checked');
+                console.log("checkboxs", checkboxes);
+
+                checkboxes.forEach(function(checkbox) {
+                    var row = checkbox.closest('tr'); // getElement 이걸로 수정하기
+                    var price = row.querySelector('td.itemTotalPrice').textContent;
+
+                    total += parseInt(price);
+
+                    // console.log("row",row);
+                    // console.log("price", price);
+                    // console.log("typeof total : "+ typeof total);
+                    // console.log("total : "+ total);
+                });
+                document.getElementById('totalPrice').textContent = total.toLocaleString();
+            }
+            function confirmDelete() {
+                return confirm("선택한 상품을 삭제하시겠습니까?");
             }
 
-            // 서버에 AJAX 요청 보내기
-            $.ajax({
-                url: '/cart/update',  // 서버의 API 엔드포인트
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(params),
-                success: function(response) {
-                    // 서버로부터 새로운 총 가격을 받아서 화면에 업데이트
-                    var ttlPrice = parseInt(itemPrice) * response.itemQty;
-                    console.log("response.itemQty ", response.itemQty);
-                    console.log("ttlPrice ", ttlPrice);
+            // 장바구니 상품 수량 증감
+            function updateQuantity(action, prodId){
+                var quantityInput = document.getElementById(`quantity-input-${prodId}`);
+                var currentValue  = parseInt(quantityInput.value);
+                var itemPrice     = document.getElementById(`priceSpan-${prodId}`).innerText;
+                var custId        = 1;
 
-                    // 받아온 값 지정
-                    // alert('수량이 수정되었습니다.');
-                    // var aa = "quantity-input-".concat(prodId);
+                console.log("quantityInput = ", quantityInput);
+                console.log("currentValue = ", currentValue);
+                console.log("itemPrice = ", itemPrice);
 
-                    // 고유한 ID를 사용하여 특정 상품의 요소 선택
-                    //const quantityInput = document.getElementById(`quantity-input-${prodId}`);
-                    quantityInput.value = currentValue;
-
-                    // 특정 상품에 해당하는 가격 업데이트 (필요에 따라 클래스 이름도 동적으로 생성 가능)
-                    const itemTotalPrice = document.getElementById(`itemTotalPrice-${prodId}`);
-                    itemTotalPrice.textContent = ttlPrice;
-
-                    // document.getElementById('quantity-input').value = currentValue;
-                    // document.getElementsByClassName('itemTotalPrice')[0].textContent = ttlPrice;
-                    calculateTotal();
-                },
-                error: function() {
-                    alert('수량 업데이트에 실패했습니다.');
+                if (action === 'increment') {
+                    currentValue += 1;
+                } else if (action === 'decrement' && currentValue > 1) {
+                    currentValue -= 1;
+                } else {
+                    return;  // 감소할 때 수량이 1 이하로 내려가지 않도록
                 }
-            });
-        }
-    </script>
+
+                const params = {
+                    custId  : custId,
+                    prodId  : prodId,
+                    itemQty : currentValue
+                }
+
+                // 서버에 AJAX 요청 보내기
+                $.ajax({
+                    url: '/cart/update',  // 서버의 API 엔드포인트
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(params),
+                    success: function(response) {
+                        // 서버로부터 새로운 총 가격을 받아서 화면에 업데이트
+                        var ttlPrice = parseInt(itemPrice) * response.itemQty;
+                        // console.log("response.itemQty ", response.itemQty);
+                        // console.log("ttlPrice ", ttlPrice);
+
+                        // alert('수량이 수정되었습니다.');
+                        quantityInput.value = currentValue;
+
+                        // 특정 상품에 해당하는 가격 업데이트 (필요에 따라 클래스 이름도 동적으로 생성 가능)
+                        const itemTotalPrice = document.getElementById(`itemTotalPrice-${prodId}`);
+                        itemTotalPrice.textContent = ttlPrice;
+
+                        calculateTotal();
+                    },
+                    error: function() {
+                        alert('수량 업데이트에 실패했습니다.');
+                    }
+                });
+            }
+        </script>
+
+    </head>
 </head>
-<body>
+<header class="top-bar">
+    <div class="con flex h-full">
+        <a href="/" class="logo flex items-center">
 
-<h1>Shopping Cart</h1>
+            <img src="https://github.com/user-attachments/assets/d24c0e43-dc15-4df9-ba31-284d4a569caa" alt="로고"
+                 class="logo-small">
+        </a>
+        <div class="flex-grow"></div>
 
-<h2 th:text="${custId}+'회원의 장바구니 상품 목록'">[]회원의 장바구니 상품 목록</h2>
+        <ul class="menu-1 flex" style="max-width: 600px">
+            <li><a href="/" class="flex h-full items-center px-4">소개</a></li>
+            <li><a href="/customer/login" id="login-link" class="flex h-full items-center px-4">로그인</a></li>
+            <li><a href="/customer/mypage" class="flex h-full items-center px-4">마이페이지</a></li>
+            <li><a href="/cart/list" class="flex h-full items-center px-4">장바구니</a></li>
+            <li><a href="#" class="flex h-full items-center px-4">문의하기</a></li>
+
+        </ul>
+    </div>
+</header>
+<section class="section-1">
+    <div class="con">
+        <img class="w-full block" src="" alt="">
+    </div>
+</section>
+
+<body class="center-area custom-body">
 
 <script>
     let msg = "${msg}"
@@ -112,38 +132,54 @@
     if (msg == "DEL_ERR") alert("삭제에 실패했습니다.");
 </script>
 
+<h3>장바구니</h3>
+
 <div th:if="${cartProdDto != null and !cartProdDto.isEmpty()}" class="container">
 
     <!-- 체크박스 전체 여부 -->
     <div class="all_check_input_div">
-        <input type="checkbox" onclick="toggleSelectAll(this)" ><span class="all_chcek_span" >전체선택</span>
+        <input type="checkbox" onclick="toggleSelectAll(this)" ><span class="all_check_span">전체선택</span>
     </div>
 
     <table>
         <thead>
         <tr>
             <th></th>
-            <th>Product Name</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Total</th>
-            <th>Actions</th>
+            <th>상품명</th>
+            <th></th>
+            <th>가격</th>
+            <th>수량</th>
+            <th>합계</th>
+            <th></th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="product : ${cartProdDto}">
-            <td><input type="checkbox" name="selectedProducts" th:value="${product.prodId}" onclick="calculateTotal()" /></td>
-            <td th:text="${product.prodName}">Product Name</td>
-            <td th:id="'priceSpan-'+ ${product.prodId}" th:text="${product.salePrice}">Price</td>
+        <tr th:each="product : ${cartProdDto}" th:id="ordAbStusCode">
+            <td><input type="checkbox" name="selectedProducts"  th:disabled="${product.ordAbStusCode != '202' ? 'disabled' : null}" onclick="calculateTotal()" /></td>
+            <td class="product-id" th:text="${product.prodName}" th:name="${product.prodId}">Product Name</td>
+            <td class="original-price" th:id="'originPriceSpan-'+ ${product.prodId}" th:text="${product.prodBasePrice}">originPrice</td>
+            <td class="sale-price" th:id="'priceSpan-'+ ${product.prodId}" th:text="${product.salePrice}">salePrice</td>
             <td th:id="qtySpan" class="quantity-wrapper">
                 <button type="button" th:name="${product.prodId}" th:onclick="updateQuantity('decrement', this.getAttribute('name'))">&#8722;</button>
-                <input type="text"  th:value="${product.itemQty}" th:id="'quantity-input-' + ${product.prodId}" readonly />
+                <input type="text" th:class="prodQty" th:value="${product.itemQty}" th:id="'quantity-input-' + ${product.prodId}" readonly />
                 <button type="button" th:name="${product.prodId}" th:onclick="updateQuantity('increment', this.getAttribute('name'))">&#43;</button>
             </td>
             <td th:class="itemTotalPrice" th:id="'itemTotalPrice-' + ${product.prodId}" th:text="${product.salePrice * product.itemQty}">Total Price</td>
             <td>
+                <div class="product-info">
+                    <!-- 조건에 따라 텍스트가 보이도록 설정 -->
+                    <div class="product-text" th:id="d" th:name="${product.dawnDeliCk}"
+                         th:if="${product.dawnDeliCk} == 'Y'">새벽배송</div>
+                    <div class="product-text" th:id="e" th:name="${product.isEBook}"
+                         th:if="${product.isEBook} == 0">종이책</div>
+                    <div class="product-text"
+                         th:if="${product.isEBook} == 1">e-book</div>
+                </div>
+            </td>
+            <td class="rmvBtn">
                 <form action="/cart/remove" method="get" id="removeBtn" onsubmit="return confirmDelete()">
-                    <input type="submit" value="삭제">
+                    <input type="submit" value="X" >
                     <input type="hidden" name="prodId" th:value="${product.prodId}">
                 </form>
             </td>
@@ -166,11 +202,84 @@
 <script>
     // 주문하기 버튼 누른 후
     function order() {
-        var totalAmount = document.getElementById('totalPrice').textContent;
-        alert('총 ' + totalAmount + ' 금액의 주문이 완료되었습니다.');
-        // 여기에 실제 주문 처리를 위한 추가 로직을 구현할 수 있습니다.
-        // 주문완료되면 장바구니에서 상품 삭제
+
+        var price = document.getElementById('totalPrice').textContent;
+        if(price == '0') {
+            alert('주문할 상품을 선택해주세요.');
+            return;
+        }
+
+        // 선택된 상품 정보 가져오기 -prodId,ordChkCode, isEbook, dawnDeliChk, prodName, ordQty, prodBasePrice, salePrice
+        var prodCnt = 0;
+        var checkboxes = document.querySelectorAll('input[name="selectedProducts"]:checked');
+        var prodList = [];
+
+
+        checkboxes.forEach(function(checkbox) {
+            var products = {};
+            var row = checkbox.closest('tr'); // getElement 이걸로 수정하기
+            products.prodId = $('.product-id').attr('name'); //row.querySelector('td.product-id').textContent;
+            products.prodName = row.querySelector('td.product-id').textContent;
+            products.dawnDeliChk = $('#d').attr('name'); //ow.querySelector('td.product-dawn').textContent;
+            products.isEbook = $('#e').attr('name'); //row.querySelector('td.product-dawn').textContent;
+            products.ordQty = row.querySelector('.prodQty').value; // row.querySelector('td.quantity-wrapper').textContent;
+            products.originPrice = row.querySelector('td.original-price').textContent;
+            products.salePrice = row.querySelector('td.sale-price').textContent;
+
+
+            // console.log("prodId",products.prodId);
+            // console.log("prodName",products.prodName);
+            // console.log("dawnDeliChk",products.dawnDeliChk);
+            // console.log("isEbook",products.isEbook);
+            // console.log("ordQty",products.ordQty);
+            // console.log("originPrice",products.originPrice);
+            // console.log("salePrice",products.salePrice);
+
+
+            prodCnt += 1;
+            prodList.push(products);
+
+        });
+
+
+        if(confirm('총 ' + prodCnt+'개 상품을 주문하시겠습니까?')){
+            submitCart(prodList);
+        }else{
+            return;
+        }
     }
+
+    function submitCart(prodList) {
+        // JSON으로 변환할 데이터 객체
+
+        // Fetch API를 사용하여 POST 요청 보내기
+        fetch('/order/form', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', // JSON 형식으로 데이터 전송
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(prodList) // 객체를 JSON 문자열로 변환
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json(); // JSON 응답으로 변환
+            })
+            .then(data => {
+                // 성공 시 처리
+                console.log('Success:', data);
+                // 예를 들어, 주문 완료 페이지로 이동
+                window.location.href = '/order-success'; // 주문 성공 페이지로 이동
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
 </script>
+
+
 </body>
 </html>
