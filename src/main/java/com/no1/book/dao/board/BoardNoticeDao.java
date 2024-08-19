@@ -1,7 +1,7 @@
 package com.no1.book.dao.board;
 
 import com.no1.book.common.util.board.BoardPageHandler;
-import com.no1.book.common.util.board.SearchCondition;
+import com.no1.book.common.util.board.BoardSearchCondition;
 import com.no1.book.domain.board.BoardNoticeDto;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public interface BoardNoticeDao {
     // 게시물 개수 조회
     int count();
-    int countNoticeSearch(SearchCondition sc);
+    int countNoticeSearch(BoardSearchCondition sc);
 
     // 전체 조회
     List<BoardNoticeDto> selectNoticeAll();

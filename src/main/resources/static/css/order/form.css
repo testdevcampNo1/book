@@ -1,0 +1,167 @@
+body {
+    height: auto;
+    margin: 0;
+    background: linear-gradient(to right, #ecf2f8, #eaf3f9, #ffffff);
+    position: relative; /* body를 상대 위치로 설정 */
+    padding-top: 80px;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-bottom: 120px;
+}
+
+.title_heading {
+    font-size: 24px;
+    letter-spacing: -0.01em;
+}
+
+.box_wrap {
+    border: solid 1px #d5d5d5;
+    border-radius: 12px;
+    padding: 16px 32px;
+    margin-bottom: 16px;
+}
+
+table {
+    border-spacing: 0 16px;
+}
+
+th {
+    vertical-align: middle;
+    padding-right: 12px;
+    text-align: left;
+}
+
+.delivery_info_title, .entrance_type_title {
+    vertical-align: top;
+}
+
+.address {
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    color: #595959;
+}
+
+.req_msg_form {
+    width: 360px;
+    height: 36px;
+    border: 1px solid #d5d5d5;
+    border-radius: 6px;
+    transition: border-color 0.2s;
+    outline: none;
+}
+
+.password_field {
+    width: 360px;
+    height: 36px;
+    border: 1px solid #d5d5d5;
+    border-radius: 6px;
+    transition: border-color 0.2s;
+    margin-top: 12px;
+    outline: none;
+}
+
+.order_info {
+    width: 100%;
+    height: 36px;
+    border: 1px solid #d5d5d5;
+    border-radius: 6px;
+    transition: border-color 0.2s;
+    margin-bottom: 12px;
+    outline: none;
+    display: block;
+}
+
+.order_product_list_title {
+    font-weight: bold;
+    display: inline-block;
+    padding-right: 12px;
+}
+
+.total_order_product_number {
+    display: inline-block;
+}
+
+.product_list {
+    margin-top: 16px;
+}
+
+.product_item {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.product_img {
+    margin-right: 12px;
+}
+
+.product_name {
+    flex: 2;
+}
+
+.product_quantity {
+    margin-right: 36px;
+}
+
+.product_price {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.product_base_price {
+    font-size: 12px;
+    color: #767676;
+    text-decoration: line-through;
+}
+
+.payment_method_title {
+    font-weight: bold;
+}
+
+.payment_method_label {
+    margin-top: 12px;
+    display: inline-block;
+    cursor: pointer;
+    border: 1px solid #d5d5d5;
+    border-radius: 6px;
+    padding: 24px;
+    margin-right: 12px;
+}
+
+.payment_method {
+    /*실제 라디오 버튼 숨기기*/
+    display: none;
+}
+
+.payment_method:checked + .payment_method_label {
+    border: 1px solid #386fff;
+}
+
+.price_info_title {
+    font-weight: bold;
+
+}
+
+.price_info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+}
+
+.payment_button {
+    width: 100%;
+    padding: 24px;
+    background: black;
+    color: white;
+    font-size: 18px;
+    border: 1px solid #d5d5d5;
+    border-radius: 12px;
+}
+
+#tossPay {
+    margin-top: 12px;
+    border: 1px solid #386fff;
+    border-radius: 12px;
+    padding: 8px;
+}

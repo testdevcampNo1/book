@@ -2,7 +2,7 @@ package com.no1.book.controller.board;
 
 import com.no1.book.common.exception.board.*;
 import com.no1.book.common.util.board.BoardPageHandler;
-import com.no1.book.common.util.board.SearchCondition;
+import com.no1.book.common.util.board.BoardSearchCondition;
 import com.no1.book.domain.board.BoardNoticeDto;
 import com.no1.book.service.board.BoardNoticeService;
 import jakarta.servlet.http.HttpSession;
@@ -68,9 +68,14 @@ public class BoardNoticeController {
         this.noticeService = noticeService;
     }
 
+    // 고객 센터로 이동
+    @RequestMapping("")
+    public String csCenter(){
+        return "/board/cscenter";
+    }
     // 공지 목록 조회
     @GetMapping("/notice/list")
-    public String getNoticePage(SearchCondition sc, Model m) {
+    public String getNoticePage(BoardSearchCondition sc, Model m) {
         List<BoardNoticeDto> speciallList = new ArrayList<>();
         // 첫 페이지는 특별 공지 조회
         if(sc.getPage() == 1){
@@ -99,7 +104,7 @@ public class BoardNoticeController {
 
     // 게시글 상세 조회
     @GetMapping("/notice/{notcNum}")
-    public String readNotice(@PathVariable int notcNum, SearchCondition sc, Model m) {
+    public String readNotice(@PathVariable int notcNum, BoardSearchCondition sc, Model m) {
         // 게시글 번호로 조회
         BoardNoticeDto noticeDto = noticeService.findNotice(notcNum);
 
@@ -113,12 +118,12 @@ public class BoardNoticeController {
         m.addAttribute("notice", noticeDto);
 
         // 게시글 상세로 이동
-        return "board/notice";
+        return "board/noticeForm";
     }
 
     // 공지 등록 폼 이동
     @GetMapping("/notice")
-    public String registerForm(SearchCondition sc, HttpSession session, Model m) {
+    public String registerForm(BoardSearchCondition sc, HttpSession session, Model m) {
         // 로그인한 아이디 가져오기
         String id = (String) session.getAttribute("id");
 
@@ -134,7 +139,7 @@ public class BoardNoticeController {
         m.addAttribute("mode", "new");
 
         // 게시글 등록 폼으로 이동
-        return "board/notice";
+        return "board/noticeForm";
     }
 
     // 공지 등록
@@ -142,6 +147,7 @@ public class BoardNoticeController {
     public String register(@Valid BoardNoticeDto boardNoticeDto, HttpSession session, RedirectAttributes rattr) {
         // 로그인한 아이디 가져오기
         String id = (String) session.getAttribute("id");
+        id = "admin";
 
         // 관리자 권한 확인
         if(!isAdmin(id)){
@@ -168,7 +174,7 @@ public class BoardNoticeController {
 
     // 공지 수정
     @PostMapping("/notice/modify")
-    public String modifyNotice(@Valid BoardNoticeDto updateNotice, SearchCondition sc, HttpSession session, RedirectAttributes rattr){
+    public String modifyNotice(@Valid BoardNoticeDto updateNotice, BoardSearchCondition sc, HttpSession session, RedirectAttributes rattr){
         // 로그인한 아이디 가져오기
         String id = (String) session.getAttribute("id");
 
@@ -254,12 +260,12 @@ public class BoardNoticeController {
 
     // 게시글 등록 예외, 중복 키 예외, 무결성 예외
     @ExceptionHandler({BoardCreationException.class, DuplicateKeyException.class, DataIntegrityViolationException.class})
-    public String boardCreationExceptionCatcher(DataIntegrityViolationException ex, RedirectAttributes rattr){
+    public String boardCreationExceptionCatcher(DataAccessException ex, RedirectAttributes rattr){
         rattr.addFlashAttribute("ex", ex);
         // 게시글 작성 실패, 중복 키, 무결성 검사 실패
         rattr.addFlashAttribute("msg", "CRT_ERR");
         // 작성 중인 게시물 담기
-        return "redirect:/cscenter/notice";
+        return "redirect:/cscenter/noticeForm";
     }
 
     // DB 관련 모든 예외

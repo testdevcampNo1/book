@@ -7,12 +7,12 @@ import java.util.List;
 
 public interface OrderService {
     OrderFormDto initOrderInfo(int custId, List<OrderProductDto> productList);
+    void requestOrder(OrderFormDto orderFormDto);
     void saveOrder(OrderFormDto orderInfo);
-    int getOrderId();
-    void saveOrderProduct(List<OrderProductDto> productList);
-    void saveOrderStatus();
-    void saveDelivery();
-    void savePayment();
+    void saveOrderProduct(String ordId, List<OrderProductDto> productList);
+    void saveOrderStatus(String ordId);
+    void saveDelivery(String ordId);
+    void savePayment(String ordId);
 
 //    void order();
 //    void insertCustInfo();
