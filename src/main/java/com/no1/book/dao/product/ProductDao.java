@@ -34,4 +34,8 @@ public interface ProductDao {
     String createId() throws  Exception;
 
     int plusSales (String prodId) throws Exception;
+
+    List<ProductDto> getPage(Map<String, Object> map) throws Exception;
+
+    int getPageSize(Map map) throws Exception;
 }

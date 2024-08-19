@@ -412,8 +412,20 @@ class ProductDaoTest {
         // 3단계 검증 -> 판매량이 1이면 통과
         assertEquals(1, productDao.select("PROD_IMSI").getTotalSales());
 
-//        productDao.delete("PROD_IMSI");
+        productDao.delete("PROD_IMSI");
     }
+
+//    @Test
+//    void getPageTest() throws Exception {
+//        Map map = new HashMap();
+//        map.put("sortKey", "price");
+//        map.put("sortOrder", "asc");
+//        map.put("cateKey", 010101);
+//        map.put("keyword", "가");
+//
+//        System.out.println(productDao.getPage(map));
+//
+//    }
 
 
 //    // 가격 오름차순 정렬 테스트
