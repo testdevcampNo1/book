@@ -174,8 +174,11 @@ button:disabled {
     text-decoration: line-through; /* 기본가에 취소선 추가 */
 }
 
-.product-price h3 {
-    display: none; /* 할인율 항목을 숨김 */
+.product-price h3 { /* 상품 할인율 */
+    font-size: 1.4em;
+    color: #323539;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 .product-price h4 {

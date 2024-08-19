@@ -62,7 +62,7 @@
                     <p class="product-description" th:text="${product.smry}"></p>
                     <div class="product-pricing">
                         <span class="product-base-price" th:text="${product.prodBasePrice}"></span>
-                        <span class="product-base-price" th:text="${product.discRate}+'%'"></span>
+                        <span class="product-disc-rate" th:text="${product.discRate}+'%'"></span>
                         <br>
                         <span class="product-price" th:text="${'-> '+product.salePrice}+'원'"></span>
                     </div>
