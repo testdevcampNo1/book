@@ -1,0 +1,194 @@
+/* productList.css */
+
+/* 사이드바 스타일 */
+.sidebar {
+    width: 250px;
+    background-color: #f8f9fa;
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 1200; /* 네비게이션 바보다 더 큰 z-index 값을 설정 */
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding-left: 0; /* 기본 padding 제거 */
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li ul {
+    padding-left: 15px; /* 서브 카테고리에 대해 들여쓰기 적용 */
+}
+
+.sidebar ul li ul li ul {
+    padding-left: 15px; /* 서브-서브 카테고리에 대해 더 깊은 들여쓰기 적용 */
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar ul li a:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* 콘텐츠 영역 스타일 */
+.content {
+    margin-left: 270px; /* 사이드바 너비만큼 여백 */
+    padding: 20px;
+    position: relative;
+    z-index: 900; /* 콘텐츠 영역이 네비게이션 바 아래에 위치하도록 설정 */
+}
+
+/* 상품 리스트 스타일 */
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+/* 개별 상품 카드 */
+.product-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-10px); /* 카드에 호버 시 약간 위로 올라가는 효과 */
+}
+
+/* 상품 이미지 */
+.product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+/* 상품 정보 섹션 */
+.product-info {
+    padding: 15px;
+    text-align: center;
+}
+
+.product-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.product-title:hover {
+    color: #007bff;
+}
+
+.product-summary {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 10px;
+    height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-price {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+
+.original-price {
+    text-decoration: line-through;
+    color: #999;
+    margin-right: 10px;
+}
+
+.sale-price {
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 1.4em;
+}
+
+.product-discount,
+.product-sales,
+.product-rating {
+    font-size: 0.9em;
+    color: #555;
+    margin-top: 5px;
+}
+
+/* 네비게이션 바 스타일 */
+.nav-container {
+    display: flex;
+    justify-content: space-between; /* 네비게이션 바와 manage 버튼 사이의 공간 확보 */
+    align-items: center;
+    margin-top: 20px;
+    background-color: #fff;
+    padding: 10px 0;
+    z-index: 1100; /* z-index를 사이드바보다 낮게 설정 */
+    position: relative;
+    visibility: visible;
+}
+
+/* 페이지 링크 스타일 */
+nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+nav a {
+    margin: 0 5px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    text-decoration: none;
+    color: #007bff; /* 숫자 링크를 파란색으로 변경 */
+}
+
+nav a:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+/* span 요소의 기본 마진 */
+nav span {
+    margin: 0 5px;
+}
+
+/* manage 버튼 스타일 */
+.nav-container a {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    text-decoration: none;
+    color: #dc3545;
+    margin-left: auto; /* 오른쪽 끝으로 이동 */
+    position: relative;
+    z-index: 2000; /* 높은 z-index로 다른 요소들 위에 배치 */
+}
+
+.nav-container a:hover {
+    background-color: #dc3545;
+    color: white;
+}

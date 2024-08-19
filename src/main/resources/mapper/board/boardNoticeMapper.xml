@@ -52,7 +52,7 @@
     </select>
 
 <!--    ##### 페이징, 검색 처리 예정-->
-    <select id="selectNoticePage" resultType="BoardNoticeDto" parameterType="PageHandler">
+    <select id="selectNoticePage" resultType="BoardNoticeDto" parameterType="BoardPageHandler">
         select <include refid="selectColumn"/>
         from boardnotice
         order by notc_num desc
@@ -64,7 +64,7 @@
 -->
 
 <!--    검색 결과 페이징-->
-    <select id="selectNoticeSearch" resultType="BoardNoticeDto" parameterType="PageHandler">
+    <select id="selectNoticeSearch" resultType="BoardNoticeDto" parameterType="BoardPageHandler">
         select <include refid="selectColumn"/>
         from boardnotice
         where true
@@ -74,7 +74,7 @@
     </select>
 
 <!--    검색 조건에 해당 하는 게시글 개수-->
-    <select id="countNoticeSearch" resultType="int" parameterType="SearchCondition">
+    <select id="countNoticeSearch" resultType="int" parameterType="BoardSearchCondition">
         select count(*)
         from boardnotice
         where true
