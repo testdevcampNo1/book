@@ -65,5 +65,10 @@
         WHERE P.prod_id = #{prodId};
     </select>
 
+    <select id="getAllAuthorOrderedByName" resultType="com.no1.book.domain.product.AuthorDto">
+        select * from authorInfo
+        order by length(author_name) DESC, author_name asc
+    </select>
+
 
 </mapper>

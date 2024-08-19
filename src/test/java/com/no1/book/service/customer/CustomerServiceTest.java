@@ -119,7 +119,7 @@ public class CustomerServiceTest {
         // Update other necessary fields
 
         // When
-        customerService.editInfo(custId);
+        customerService.editInfo(updatedCustomer);
 
         // Then
         CustomerDto modifiedCustomer = customerService.getCustomerById(custId);

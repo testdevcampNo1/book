@@ -23,4 +23,6 @@ public interface AuthorDao {
     int deleteAll();
 
     AuthorDto getAuthorInfo(String prodId);
+
+    List<AuthorDto> getAllAuthorOrderedByName();
 }

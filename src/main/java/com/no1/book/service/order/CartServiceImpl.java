@@ -27,12 +27,12 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public int insertItem(CartDto cartDto) throws Exception{
+    public Integer insertItem(CartDto cartDto) throws Exception{
         return cartDao.insertItem(cartDto);
     }
 
     @Override
-    public int updateItemQty(CartDto cartDto) throws Exception{
+    public Integer updateItemQty(CartDto cartDto) throws Exception{
         return cartDao.updateItemQty(cartDto);
     }
 

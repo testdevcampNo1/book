@@ -1,14 +1,14 @@
 package com.no1.book.service.board;
 
 import com.no1.book.common.util.board.BoardPageHandler;
-import com.no1.book.common.util.board.SearchCondition;
+import com.no1.book.common.util.board.BoardSearchCondition;
 import com.no1.book.domain.board.BoardNoticeDto;
 
 import java.util.List;
 
 public interface BoardNoticeService {
     int count();
-    int countNoticeSearch(SearchCondition sc);
+    int countNoticeSearch(BoardSearchCondition sc);
     // 공지 목록 조회
     List<BoardNoticeDto> findNoticeList();
     // 특별 공지 목록 조회

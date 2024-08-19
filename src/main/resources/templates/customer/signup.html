@@ -354,13 +354,13 @@
             color:white;
             margin-left: 50px;
         }
-        .container {
+        .container1 {
             background-color: white;
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
-            width: 300px; /* Set a width for the container to control its size */
+            width: 700px; /* Set a width for the container to control its size */
         }
         form input[type="text"],
         form input[type="password"],
@@ -368,7 +368,7 @@
         form input[type="tel"],
         form input[type="email"],
         form select {
-            width: 100%;
+            width: 50%;
             padding: 10px;
             margin: 5px 0;
             box-sizing: border-box;
@@ -381,7 +381,7 @@
         }
 
         form button {
-            width: 100%;
+            width: 50%;
             padding: 10px;
             background-color: #2a7de1;
             color: white;
@@ -406,7 +406,7 @@
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="stylesheet" th:href="@{/css/style.css}">
+            <link rel="stylesheet" th:href="@{/css/customer/style.css}">
             <title>정석문고 jungsukbook</title>
         </head>
     </head>
@@ -431,9 +431,9 @@
 
 
 
-<<body class="center-area custom-body">
+<body class="center-area custom-body">
 
-<div class="container">
+<div class="container1">
     <h2>회원가입</h2>
     <div class="error" id="registerError"></div>
     <div class="success" id="registerSuccess"></div>
@@ -447,8 +447,9 @@
 
         <input type="password" name="confirmPwd" id="registerConfirmPassword" placeholder="Confirm Password" onblur="checkPasswordMatch()">
         <div id="passwordMatchCheck" style="font-size: 12px; color: red; text-align: center;"></div>
-        <input type="text" name="name" id="registerName" placeholder="Name">
-        <input type="date" name="birthDate" id="registerBirthDate" placeholder="Birth Date">
+        <input type="text" name="name" id="registerName" placeholder="Name"><br>
+            <label for="registerBirthDate">생년월일</label><br>
+            <input type="date" name="birthDate" id="registerBirthDate" placeholder="Birth Date">
             <input type="hidden" name="date" id="registrationDate">
         <input type="tel" name="mobileNum" id="registerMobile" placeholder="Mobile Number">
         <input type="text" name="mainAddr" id="registerMainAddr" placeholder="Main Address">
@@ -459,14 +460,20 @@
             <option value="Other">Other</option>
         </select>
         <input type="email" name="email" id="registerEmail" placeholder="Email">
-        <input type="checkbox" name="adultChk" id="registerAdultChk" value="Y"> 이벤트 수신 동의
-        <input type="checkbox" name="withdChk" id="registerWithdChk" value="Y"> Agree to Terms
+            <button type="button" onclick="sendVerificationEmail()">이메일 인증 보내기</button><br>
+            <label for="verificationCode">인증코드 입력:</label><br>
+            <input type="text" id="verificationCode" name="verificationCode" required>
+            <button type="button" onclick="verifyCode()">인증코드 확인</button><br>
+            <p id="verificationResult"></p>
+
+
+
+            <input type="checkbox" name="adultChk" id="registerAdultChk" value="Y"> 이벤트 수신 동의<br>
+        <input type="checkbox" name="withdChk" id="registerWithdChk" value="Y"> Agree to Terms<br>
 
         <button type="submit" >회원가입</button>
     </form>
-    <div class="link">
-        <a href="/customer/login">Go to Login</a>
-    </div></div>
+   </div>
 
 <script>
     function checkIdAvailability() {
@@ -580,6 +587,64 @@
     function validateEmail(email) {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(email);
+    }
+
+    //이메일 인증코드 전송
+    function sendVerificationEmail() {
+        var email = document.getElementById('registerEmail').value;
+
+        fetch('/customer/sendMail', {
+
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: email })
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();  // Handle the response as plain text
+                } else {
+                    throw new Error("Failed to send verification code");
+                }
+            })
+            .then(data => {
+                alert(data);  // Alert the success message from the server
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message);  // Show error message in case of failure
+            });
+    }
+
+
+    //이메일 인증코드 확인
+    function verifyCode() {
+        const userCode = document.getElementById('verificationCode').value;
+
+        fetch('/customer/mailCheck?userNumber=' + encodeURIComponent(userCode))
+            .then(response => {
+                // Check if the response is OK (status code 200-299)
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.text(); // Expecting a text response now
+            })
+            .then(data => {
+                // Update the verification result based on the server's response
+                const verificationResultElement = document.getElementById('verificationResult');
+                if (data === "Verification successful!") {
+                    verificationResultElement.innerText = "Verification successful!";
+                    verificationResultElement.style.color = "green"; // Optional: Make the text green on success
+                } else {
+                    verificationResultElement.innerText = "Incorrect code. Please try again.";
+                    verificationResultElement.style.color = "red"; // Optional: Make the text red on failure
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('verificationResult').innerText = "An error occurred during verification. Please try again later.";
+            });
     }
 </script>
 

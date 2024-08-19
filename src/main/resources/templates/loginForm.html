@@ -1,9 +1,10 @@
-<html xmlns:th="http://www.w3.org/1999/html">
+<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>fastcampus</title>
-    <link rel="stylesheet" href="/css/board/menu.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/customer/style.css}">
+    <title>정석문고 jungsukbook</title>
+</head>
     <style>
         * { box-sizing:border-box; }
         a { text-decoration: none; }
@@ -50,10 +51,9 @@
             margin-bottom: 20px;
         }
     </style>
-</head>
 <body>
 <th:block th:replace="~{fragments/head :: headFragment}"/>
-
+<div class="container1">
 <!--<form action="<c:url value="/login/login"/>" method="post" onsubmit="return formCheck(this);">-->
 <form th:action="@{/login}" method="post" onsubmit="return formCheck(this);">
     <h3 id="title">Login</h3>
@@ -74,6 +74,7 @@
         <a href="">회원가입</a>
     </div>
 </form>
+</div>
 <script>
     function formCheck(frm) {
         let msg ='';

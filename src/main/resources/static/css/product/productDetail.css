@@ -1,0 +1,254 @@
+/* Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    color: #343a40;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+h1, h2, h3, h4 {
+    color: #343a40;
+    margin-bottom: 15px;
+}
+
+h1 {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 1.5em;
+    color: #007bff;
+}
+
+h3 {
+    font-size: 1.3em;
+    color: #495057;
+}
+
+h4 {
+    font-size: 1.1em;
+    color: #dc3545;
+}
+
+p {
+    font-size: 1em;
+    line-height: 1.6;
+    color: #6c757d;
+}
+
+/* Product Image */
+.product-image {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    display: block;
+    margin: 0 auto 20px auto;
+}
+
+/* Product Info */
+.product-info {
+    text-align: center;
+}
+
+.product-price h2 {
+    font-size: 1.8em;
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.product-price h3 {
+    font-size: 1.4em;
+    text-decoration: line-through;
+    color: #999;
+}
+
+.product-price h4 {
+    font-size: 1.6em;
+    color: #007bff;
+    font-weight: bold;
+}
+
+/* Cart and Order */
+.cart-and-order {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.cart-and-order input[type='button'] {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+.cart-and-order button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+.cart-and-order button:hover {
+    background-color: #218838;
+}
+
+/* Product Details */
+.product-details {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Author Section */
+.author-section {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #e9ecef;
+    border-radius: 10px;
+}
+
+/* Publisher Section */
+.publisher-section {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+}
+
+/* Additional Info */
+.additional-info {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #e9ecef;
+    border-radius: 10px;
+}
+
+/* Rating and Sales */
+.rating, .sales {
+    margin-top: 10px;
+    font-size: 1.1em;
+    color: #6c757d;
+}
+
+/* Delivery Check */
+.delivery-check {
+    margin-top: 10px;
+    font-size: 1.1em;
+    color: #17a2b8;
+}
+
+/* 비활성화된 버튼 스타일 */
+button:disabled {
+    background-color: #d6d8db; /* 비활성화된 버튼을 회색으로 설정 */
+    color: #a6a8ab; /* 텍스트 색상도 회색으로 변경 */
+    cursor: not-allowed; /* 마우스 커서를 'not-allowed'로 변경 */
+    opacity: 0.6; /* 비활성화 상태를 명확히 보이도록 흐리게 처리 */
+}
+
+/* 상품 가격 스타일 */
+.product-price h2 {
+    font-size: 1.2em;
+    color: #999;
+    font-weight: normal;
+    text-decoration: line-through; /* 기본가에 취소선 추가 */
+}
+
+.product-price h3 { /* 상품 할인율 */
+    font-size: 1.4em;
+    color: #323539;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.product-price h4 {
+    font-size: 2em;
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+/* Cart and Order */
+.cart-and-order input[type='button'] {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+.cart-and-order button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+.cart-and-order button:hover {
+    background-color: #218838;
+}
+
+/* Product Title */
+h1 {
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center; /* 제목을 가운데 정렬 */
+    margin-bottom: 15px;
+    color: #343a40;
+}
+
+
+/* Product Card Link */
+.product-card {
+    position: relative;
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-card-link {
+    display: block; /* a 태그를 블록 레벨로 설정 */
+    height: 100%; /* 부모인 product-card의 전체 높이를 차지하도록 설정 */
+    color: inherit; /* 텍스트 색상을 상속받도록 설정 */
+    text-decoration: none; /* 링크의 기본 밑줄을 제거 */
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure the image and text are not underlined when hovered */
+.product-card-link:hover .product-title,
+.product-card-link:hover .product-description {
+    text-decoration: none;
+}

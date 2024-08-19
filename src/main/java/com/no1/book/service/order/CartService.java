@@ -9,9 +9,9 @@ import java.util.Map;
 public interface CartService {
     List<CartProdDto> read(Integer custId) throws Exception;
 
-    int insertItem(CartDto cartDto) throws Exception;
+    Integer insertItem(CartDto cartDto) throws Exception;
 
-    int updateItemQty(CartDto cartDto) throws Exception;
+    Integer updateItemQty(CartDto cartDto) throws Exception;
 
     Integer remove(Map map) throws Exception;
 }

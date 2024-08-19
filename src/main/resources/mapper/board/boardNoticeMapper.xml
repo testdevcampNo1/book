@@ -74,7 +74,7 @@
     </select>
 
 <!--    검색 조건에 해당 하는 게시글 개수-->
-    <select id="countNoticeSearch" resultType="int" parameterType="SearchCondition">
+    <select id="countNoticeSearch" resultType="int" parameterType="BoardSearchCondition">
         select count(*)
         from boardnotice
         where true

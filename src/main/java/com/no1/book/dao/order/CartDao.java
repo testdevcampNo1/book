@@ -9,9 +9,9 @@ import java.util.*;
 public interface CartDao {
 
     List<CartDto> selectCart(Integer custId) throws Exception;
-
-    int insertItem(CartDto cartDto) throws Exception;
-    int updateItemQty(CartDto cartDto) throws Exception;
+    Integer insertItem(CartDto cartDto) throws Exception;
+    Integer updateItemQty(CartDto cartDto) throws Exception;
     Integer deleteItem(Map map) throws Exception;
-    int deleteAll() throws Exception;
-   }
+    Integer deleteAll() throws Exception;
+
+}

@@ -1,7 +1,11 @@
 package com.no1.book.controller.customer;
 
+import com.no1.book.dao.customer.CustomerDao;
 import com.no1.book.domain.customer.CustomerDto;
 import com.no1.book.service.customer.CustomerService;
+import com.no1.book.service.customer.EmailService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,6 +18,8 @@ import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
 
 @Slf4j
 @Controller
@@ -21,10 +27,28 @@ import java.util.Map;
 public class CustomerController {
 
     private final CustomerService customerService;
+    private String number;
 
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
+    @GetMapping("/")
+    public String home(HttpServletResponse response) {
+        // Create a cookie with name "userSessionId" and a random value
+        Cookie cookie = new Cookie("userSessionId", UUID.randomUUID().toString());
+        cookie.setMaxAge(7 * 24 * 60 * 60); // 7일동안 유효
+        cookie.setPath("/"); // Make the cookie available to the entire site
+        cookie.setHttpOnly(true); // Prevent client-side scripts from accessing the cookie
+
+        // Add the cookie to the response
+        response.addCookie(cookie);
+
+        log.info("Cookie created with name: {} and value: {}", cookie.getName(), cookie.getValue());
+
+        // Return the homepage view
+        return "/"; // Replace with your actual homepage view name
+    }
+
 
     //로그인
     @GetMapping("/login")
@@ -41,8 +65,9 @@ public class CustomerController {
         return customerDto;
     }
     @PostMapping("/login")
-    public String login(@RequestParam("custId") String custId, String pwd, HttpSession session) {
+    public String login(@RequestParam("custId") String custId, String pwd, HttpSession session,Model model) {
         CustomerDto customerDto = customerService.login(custId, pwd);
+
         log.info("==========loginMember={}", customerDto);
         if (customerDto != null) {
             session.setAttribute("custId", customerDto.getCustId());
@@ -52,6 +77,16 @@ public class CustomerController {
             session.setAttribute("address", customerDto.getMainAddr());
             session.setAttribute("mobileNum", customerDto.getMobileNum());
             return "redirect:/customer/mypage";
+        }
+        else if(customerDto == null){
+            CustomerDto customerDto1 = customerService.getCustomerById(custId);
+            if(customerService.handleFailedAttempt(customerDto1).equals("Incorrect password. ")){
+                model.addAttribute("errorMessage","Incorrect password. ");
+            }
+            else if (customerService.handleFailedAttempt(customerDto1).equals("Account locked due to too many failed login attempts.")){
+                model.addAttribute("errorMessage","Account locked due to too many failed login attempts.");
+            }
+            return "customer/login";
         }
         session.setAttribute("custId", customerDto.getCustId());
         session.setAttribute("nickname", customerDto.getNickName());
@@ -84,7 +119,8 @@ public class CustomerController {
         return "customer/signup";
     }
 
-    // Handle signup process
+
+    // 회원가입
     @PostMapping("/signup")
     public String signUp(@ModelAttribute("customer") CustomerDto customerDto, Model model) {
         try {
@@ -123,38 +159,39 @@ public class CustomerController {
         // Return the Thymeleaf template name
         return "customer/mypage";
     }
+    @GetMapping("/edit")
+    public String showEditForm(@RequestParam("custId") String custId, Model model) {
+        CustomerDto customerDto = customerService.getCustomerById(custId);
+        model.addAttribute("customer", customerDto);
+        return "customer/edit";
+    }
+
+    // Handle the form submission to update customer information
+    @PostMapping("/edit")public String updateCustomerInfo(@RequestParam("custId") String custId,
+                                                          @RequestParam("name") String name,
+                                                          @RequestParam("pwd") String pwd,
+                                                          @RequestParam("mobileNum") String mobileNum,
+                                                          @RequestParam("nickName") String nickName,
+                                                          @RequestParam("mainAddr") String mainAddr,
+                                                          Model model) {
+        CustomerDto customerDto = customerService.getCustomerById(custId);
+        customerDto.setName(name);
+        customerDto.setPwd(pwd);
+        customerDto.setMobileNum(mobileNum);
+        customerDto.setNickName(nickName);
+        customerDto.setMainAddr(mainAddr);
+
+        customerService.editInfo(customerDto);
+
+        model.addAttribute("message", "Customer information updated successfully");
+        return "redirect:/customer/mypage";
+    }
+
     @GetMapping("/pagetemplate")
     public String showTemplate() {
         return "customer/pagetemplate";
     }
-    /*@GetMapping("/customer/mypage")
-    public String myPage(HttpSession session, Model model) {
-        String custId = (String) session.getAttribute("custId");
 
-        if (custId != null) {
-            CustomerDto customerDto = customerService.getCustomerById(custId);
-            model.addAttribute("customer", customerDto);
-        }
-
-        return "customer/mypage";
-    }
-
-     */
-
-   /* @GetMapping("/customer/mypage")public String getCustomerPage(@RequestParam("custId") String custId, Model model) {
-        CustomerDto customer = customerService.getCustomerById(custId); // Fetch customer
-
-        if (customer == null) {
-            // Initialize a default customer object to avoid null references in the template
-            customer = new CustomerDto();
-            customer.setName("Default Name");
-            // Optionally set other default fields here
-        }
-
-        model.addAttribute("customer", customer);
-        return "customer/mypage";
-    }
-    */
 
     // Fetch list of customers
     @GetMapping
@@ -184,15 +221,53 @@ public class CustomerController {
         }
     }
 
-    // Update customer information
+    /* Update customer information
     @PutMapping("/{custId}")
     public ResponseEntity<String> editInfo(@PathVariable String custId, @RequestBody CustomerDto customerDto) {
         try {
-            customerService.editInfo(custId);
+            customerService.editInfo();
             return new ResponseEntity<>("Customer information updated successfully", HttpStatus.OK);
         } catch (Exception e) {
             log.error("Error updating customer information", e);
             return new ResponseEntity<>("Error updating customer information", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }*/
+    @PostMapping("/sendMail")
+    public ResponseEntity<String> sendVerificationCode(@RequestBody Map<String, String> requestBody,HttpSession session) {
+        String email = requestBody.get("email");
+        log.info("이메일 이거임1", email);
+        // 이메일로 인증 번호 전송
+        try {
+            String verificationCode = customerService.sendMail(email);
+            session.setAttribute("verificationCode", verificationCode);
+            log.info("이메일 이거임2", email);
+
+
+            return ResponseEntity.ok("Verification code sent successfully to " + email);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to send verification code to " + email);
+        }
     }
+    // 인증번호 일치여부 확인
+    @GetMapping("/mailCheck")
+    public ResponseEntity<String> mailCheck(@RequestParam String userNumber, HttpSession session) {
+        log.info("Verifying user code: {}", userNumber);
+        String storedCode = (String) session.getAttribute("verificationCode");
+
+        //코드 일치 여부 확인
+        boolean isMatch = userNumber.equals(storedCode);
+
+        if (isMatch) {
+            log.info("Verification successful!");
+            return ResponseEntity.ok("Verification successful!");
+        } else {
+            log.info("Verification failed. Provided code: {}, Expected code: {}", userNumber, storedCode);
+        }
+        return ResponseEntity.ok("Verification failed");
+    }
+
+
+
+
 }
