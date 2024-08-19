@@ -182,14 +182,14 @@
         where prod_id = #{prodId};
     </update>
 
-    <select id="getPage" parameterType="map" resultType="com.no1.book.domain.product.ProductDto">
+    <select id="getPage" parameterType="com.no1.book.domain.product.SearchCondition" resultType="com.no1.book.domain.product.ProductDto">
         SELECT *
         FROM product
         WHERE 1=1
         <if test="cateKey != null and cateKey != ''">
             AND cate_code LIKE CONCAT(#{cateKey}, '%')
         </if>
-            AND title like concat('%', #{keyword}, '%')
+            AND product.prod_name like concat('%', #{keyword}, '%')
         ORDER BY
         <choose>
             <when test="sortKey == 'price'">
@@ -214,13 +214,13 @@
         LIMIT #{offset}, #{pageSize}
     </select>
 
-    <select id="getPageSize" parameterType="map" resultType="int">
+    <select id="getPageSize" parameterType="com.no1.book.domain.product.SearchCondition" resultType="int">
         SELECT count(*)
         FROM product
         WHERE 1=1
         <if test="cateKey != null and cateKey != ''">
             AND cate_code LIKE CONCAT(#{cateKey}, '%')
         </if>
-        AND title like concat('%', #{keyword}, '%')
+        AND prod_name like concat('%', #{keyword}, '%')
     </select>
 </mapper>

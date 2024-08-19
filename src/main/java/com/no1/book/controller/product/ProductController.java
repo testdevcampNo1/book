@@ -4,12 +4,14 @@ import com.no1.book.domain.product.AuthorDto;
 import com.no1.book.domain.product.CategoryDto;
 import com.no1.book.domain.product.PageHandler;
 import com.no1.book.domain.product.ProductDto;
+import com.no1.book.domain.product.SearchCondition;
 import com.no1.book.service.product.AuthorService;
 import com.no1.book.service.product.CategoryService;
 import com.no1.book.service.product.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,7 +43,7 @@ public class ProductController {
     AuthorService authorService;
 
     @GetMapping("/list")
-    public String list(HttpSession session, Integer page, Integer pageSize, String sortKey, String sortOrder, String cateKey, Model m) throws Exception {
+    public String list(HttpSession session, Integer page, String keyword, Integer pageSize, String sortKey, String sortOrder, String cateKey, Model m) throws Exception {
 
         // 권한이 있는 id인지 확인 후 권한이 있으면 모델에 넘기기 (관리자 페이지 용도)
         String id = (String) session.getAttribute("id");
@@ -52,6 +54,7 @@ public class ProductController {
         if (pageSize == null) pageSize = 12;
         if (sortKey == null) sortKey = "date";
         if (sortOrder == null) sortOrder = "desc";
+        if (keyword == null) keyword = "";
 
         // 페이징에 정보 맵에 저장
         Map<String, Object> map = new HashMap<>();
@@ -60,13 +63,18 @@ public class ProductController {
         map.put("sortKey", sortKey);
         map.put("sortOrder", sortOrder);
         map.put("cateKey", cateKey);
+        map.put("keyword", keyword);
+
+        SearchCondition sc = new SearchCondition(map);
 
         // 한 페이지 정보 가져오기
-        List<ProductDto> prodList = productService.getSortedPage(map);
+        List<ProductDto> prodList = productService.getPage(sc);
 
         // 카테고리화된 상품의 크기 반환 후 페이지 핸들러에 전달
-        int filteredTotalCnt = productService.getFilteredAndSortedTotalSize(map);
-        PageHandler pageHandler = new PageHandler(filteredTotalCnt, page, pageSize);
+//        int filteredTotalCnt = productService.getFilteredAndSortedTotalSize(map);
+        int getPageSize = productService.listSize(sc);
+        PageHandler pageHandler = new PageHandler(getPageSize, page, pageSize);
+
 
         // 모든 카테고리 정보 가져오기 (카테고리 선택 버튼)
         List<CategoryDto> cateList = categoryService.getAllCategories();
@@ -82,6 +90,8 @@ public class ProductController {
         // 정렬 키와 정렬 순서 모델에 추가
         m.addAttribute("sortKey", sortKey);
         m.addAttribute("sortOrder", sortOrder);
+        // 키워드
+        m.addAttribute("keyword", keyword);
 
         return "product/productList";
     }

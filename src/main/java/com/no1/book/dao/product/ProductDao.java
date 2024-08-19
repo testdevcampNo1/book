@@ -2,6 +2,7 @@ package com.no1.book.dao.product;
 
 import com.no1.book.domain.product.CategoryDto;
 import com.no1.book.domain.product.ProductDto;
+import com.no1.book.domain.product.SearchCondition;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public interface ProductDao {
 
     int plusSales (String prodId) throws Exception;
 
-    List<ProductDto> getPage(Map<String, Object> map) throws Exception;
+    List<ProductDto> getPage(SearchCondition sc) throws Exception;
 
-    int getPageSize(Map map) throws Exception;
+    int getPageSize(SearchCondition sc) throws Exception;
 }

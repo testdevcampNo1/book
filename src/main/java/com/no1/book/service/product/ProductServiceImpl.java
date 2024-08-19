@@ -22,6 +22,7 @@ import com.no1.book.dao.product.AuthorDao;
 import com.no1.book.domain.product.AuthorDto;
 import com.no1.book.domain.product.ProductDto;
 import com.no1.book.dao.product.ProductDao;
+import com.no1.book.domain.product.SearchCondition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -97,6 +98,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public int plusSales(String prodId) throws Exception {
         return productDao.plusSales(prodId);
+    }
+
+    @Override
+    public List<ProductDto> getPage(SearchCondition sc) throws Exception {
+        return productDao.getPage(sc);
+    }
+
+    @Override
+    public int listSize(SearchCondition sc) throws Exception {
+        return productDao.getPageSize(sc);
     }
 
 

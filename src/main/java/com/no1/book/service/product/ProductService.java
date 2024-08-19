@@ -2,6 +2,7 @@ package com.no1.book.service.product;
 
 import com.no1.book.domain.product.AuthorDto;
 import com.no1.book.domain.product.ProductDto;
+import com.no1.book.domain.product.SearchCondition;
 
 import java.util.List;
 import java.util.Map;
@@ -51,4 +52,8 @@ public interface ProductService {
     ProductDto select(String prodId) throws Exception;
 
     int plusSales(String prodId) throws Exception;
+
+    List<ProductDto> getPage(SearchCondition sc) throws Exception;
+
+    int listSize(SearchCondition sc) throws Exception;
 }
