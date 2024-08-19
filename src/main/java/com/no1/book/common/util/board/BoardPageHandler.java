@@ -9,7 +9,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Setter
 @ToString
 public class BoardPageHandler {
-    private SearchCondition sc;
+    private BoardSearchCondition sc;
     // 한 페이지 당 게시물 갯수
 //    private int pageSize;
     // 현재 페이지
@@ -32,14 +32,14 @@ public class BoardPageHandler {
     public BoardPageHandler(){}
 
     public BoardPageHandler(int totalCnt, Integer page) {
-        this(totalCnt, new SearchCondition(page, 10));
+        this(totalCnt, new BoardSearchCondition(page, 10));
     }
 
     public BoardPageHandler(int totalCnt, Integer page, Integer pageSize) {
-        this(totalCnt, new SearchCondition(page, pageSize));
+        this(totalCnt, new BoardSearchCondition(page, pageSize));
     }
 
-    public BoardPageHandler(int totalCnt, SearchCondition sc) {
+    public BoardPageHandler(int totalCnt, BoardSearchCondition sc) {
         this.totalCnt = totalCnt;
         this.sc = sc;
 
@@ -47,7 +47,7 @@ public class BoardPageHandler {
     }
 
 
-    private void doPaging(int totalCnt, SearchCondition sc) {
+    private void doPaging(int totalCnt, BoardSearchCondition sc) {
         this.totalPage = totalCnt / sc.getPageSize() + (totalCnt % sc.getPageSize()==0? 0:1);
         this.sc.setPage(Math.max(Math.min(sc.getPage(), totalPage), 1));  // page가 totalPage보다 크지 않게
         this.startPage = (this.sc.getPage() - 1) / navSize * navSize + 1; // 11 -> 11, 10 -> 1, 15->11. 따로 떼어내서 테스트

@@ -1,26 +1,25 @@
 package com.no1.book.common.util.board;
 
 import lombok.Data;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Data
-public class SearchCondition {
+public class BoardSearchCondition {
     Integer page;           // 페이지
     Integer pageSize;       // 페이지 사이즈
     String searchOption;    // 검색 옵션
     String category;        // 검색 카테고리
     String keyword;         // 검색 키워드
 
-    public SearchCondition() {
+    public BoardSearchCondition() {
         this(1, 10);
     }
 
-    public SearchCondition(Integer page, Integer pageSize) {
+    public BoardSearchCondition(Integer page, Integer pageSize) {
         this(page, pageSize, "", "", "");
     }
 
-    public SearchCondition(Integer page, Integer pageSize, String searchOption, String category, String keyword) {
+    public BoardSearchCondition(Integer page, Integer pageSize, String searchOption, String category, String keyword) {
         this.page = page;
         this.pageSize = pageSize;
         this.searchOption = searchOption;

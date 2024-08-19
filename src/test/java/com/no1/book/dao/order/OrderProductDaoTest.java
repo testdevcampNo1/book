@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +40,7 @@ class OrderProductDaoTest {
         orderProductDao.deleteAllOrderProduct();
         assertEquals(countAllOrderProduct(), 0);
 
-        OrderDto orderDto = new OrderDto(1, "주문완료", "301", "Y", "배송 메시지", 25000, 2500, 0, 22500, null, "1", "1");
+        OrderDto orderDto = getTestOrderDto(1);
         orderDao.createOrder(orderDto);
         assertEquals(countAllOrder(), 1);
     }
@@ -47,15 +49,19 @@ class OrderProductDaoTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 2, 3, 4, 5})
     void insertOrderProduct(int ordProdId) {
-        orderProductDao.insertOrderProduct(getOrderProduct(ordProdId, 1, "1"));
+        String ordId = orderDao.getAllOrder().get(0).getOrdId();
+
+        orderProductDao.insertOrderProduct(getOrderProduct(ordProdId, ordId, "1"));
         assertEquals(countAllOrderProduct(), 1);
     }
 
     @DisplayName("주문상품상태 업데이트 테스트")
     @Test
     void updateOrderProductStatus() {
+        String ordId = orderDao.getAllOrder().get(0).getOrdId();
+
         // 주문상품 추가
-        OrderProductDto orderProductDto = getOrderProduct(1, 1, "1");
+        OrderProductDto orderProductDto = getOrderProduct(1, ordId, "1");
         orderProductDao.insertOrderProduct(orderProductDto);
         assertEquals(countAllOrderProduct(), 1);
 
@@ -69,16 +75,18 @@ class OrderProductDaoTest {
 
         // 검증
         OrderProductDto updatedOrderProductDto = orderProductDao.getOrderProduct(orderProductDto.getOrdProdId());
-        assertEquals("반품접수", updatedOrderProductDto.getOrdProdStusCode());
+        assertEquals("반품접수", updatedOrderProductDto.getOrdChkCode());
     }
 
     @ParameterizedTest
     @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
     @DisplayName("주문상품 조회 테스트 - BY OrderProductId")
     void getOrderProduct(int ordProdId) {
+        String ordId = orderDao.getAllOrder().get(0).getOrdId();
+
         // 추가
         for(int i = 1; i<11; i++) {
-            OrderProductDto orderProductDto = getOrderProduct(i, 1, "1");
+            OrderProductDto orderProductDto = getOrderProduct(i, ordId, "1");
             orderProductDao.insertOrderProduct(orderProductDto);
         }
 
@@ -91,14 +99,14 @@ class OrderProductDaoTest {
     @DisplayName("회원의 주문상품 조회 테스트")
     void getCustomerOrderProducts() {
         // 회원2의 주문2 생성
-        OrderDto orderDto2 = new OrderDto(2, "주문완료", "301", "Y", "배송 메시지", 25000, 2500, 0, 22500, null, "1", "1");
+        OrderDto orderDto2 = getTestOrderDto(2);
         orderDao.createOrder(orderDto2);
         // init에서 주문1 생성했으므로 총 주문 2개
         assertEquals(countAllOrder(), 2);
 
         // 주문2에 주문상품 추가
         for(int i = 1; i<11; i++) {
-            OrderProductDto orderProductDto = getOrderProduct(i, 2, "1");
+            OrderProductDto orderProductDto = getOrderProduct(i, orderDto2.getOrdId(), "1");
             orderProductDao.insertOrderProduct(orderProductDto);
         }
 
@@ -110,19 +118,21 @@ class OrderProductDaoTest {
     @Test
     @DisplayName("한 주문의 주문상품 조회 테스트")
     void getOrderProductsByOrderId() {
+        String ordId = orderDao.getAllOrder().get(0).getOrdId();
+
         // 주문1에 주문상품 추가
         for(int i = 1; i<11; i++) {
-            OrderProductDto orderProductDto = getOrderProduct(i, 1, "1");
+            OrderProductDto orderProductDto = getOrderProduct(i, ordId, "1");
             orderProductDao.insertOrderProduct(orderProductDto);
         }
 
         // 주문1의 주문상품 조회
-        List<OrderProductDto> list = orderProductDao.getOrderProductsByOrderId(1);
+        List<OrderProductDto> list = orderProductDao.getOrderProductsByOrderId(ordId);
         assertEquals(list.size(), 10);
     }
 
     // 한 주문의 주문상품 전체 개수
-    int countOrderProductByOrderId(int orderId) {
+    int countOrderProductByOrderId(String orderId) {
         return orderProductDao.getOrderProductsByOrderId(orderId).size();
     }
 
@@ -142,8 +152,47 @@ class OrderProductDaoTest {
     }
 
     // 테스트용 OrderProductDto 반환
-    OrderProductDto getOrderProduct(int ordProdId, int ordId, String prodId) {
-        OrderProductDto orderProductDto = new OrderProductDto(ordProdId, ordId, prodId, "주문가능", "301", "N", "자바의 정석", 3, "img", "google.com", "N", 75000, 0, 75000, "1", "1");
+    OrderProductDto getOrderProduct(int ordProdId, String ordId, String prodId) {
+        OrderProductDto orderProductDto = new OrderProductDto();
         return orderProductDto;
+    }
+
+    // 주문 번호 생성
+    public synchronized String orderNumGenerator() {
+        try {
+            Thread.sleep(1);
+            LocalDateTime srcTime = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSS");
+            return srcTime.format(formatter);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    // order date
+    public String getNow() {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String date = now.format(formatter);
+        return date;
+    }
+
+    private OrderDto getTestOrderDto(int custId) {
+        return OrderDto.builder()
+                .ordId(orderNumGenerator())
+                .custId(custId)
+                .custChk("Y")
+                .pwd("")
+                .ordStusCode("RCVD")
+                .codeType("301")
+                .ordReqMsg("메세지")
+                .ordDate(getNow())
+                .totalProdPrice(25000)
+                .totalDiscPrice(2500)
+                .totalPayPrice(22500)
+                .regId("1")
+                .upId("1")
+                .build();
     }
 }
