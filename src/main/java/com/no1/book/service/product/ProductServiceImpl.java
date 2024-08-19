@@ -39,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public int addProduct(ProductDto dto) throws Exception {
-        String prodId = "PROD" + (productDao.count() + 1);
+        String prodId = "PROD" + (Integer.parseInt(productDao.createId().substring(4)) + 1);
         dto.setProdId(prodId);
         return productDao.insert(dto);
     }
@@ -87,6 +87,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public int idChk(String prodId) throws Exception {
         return productDao.idChk(prodId);
+    }
+
+    @Override
+    public ProductDto select(String prodId) throws Exception {
+        return productDao.select(prodId);
+    }
+
+    @Override
+    public int plusSales(String prodId) throws Exception {
+        return productDao.plusSales(prodId);
     }
 
 

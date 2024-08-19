@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 상세 페이지</title>
+    <link rel="stylesheet" th:href="@{/css/product/detail.css}">
+</head>
+<body>
+
+<div class="container">
+    <h3 th:text="${cateName}">카테고리 네임</h3>
+
+    <img th:src="@{/images/product/imsi.png}" alt="상품 이미지" class="product-image">
+    <h1 th:text="${pdto.prodName}">책 제목</h1>
+
+    <div class="product-info">
+        <div class="product-price">
+            <h2 th:text="${pdto.prodBasePrice}+'원'">상품 기본가</h2>
+            <h3 th:text="${pdto.discRate}+'%'">상품 할인률</h3>
+            <h4 th:text="${pdto.salePrice}+'원'">상품 주문가</h4>
+        </div>
+
+        <div class="cart-and-order" style="display: flex; justify-content: center; align-items: center;">
+            <input type='button' onclick='count("minus")' value='-'/>
+            <div id='result'>1</div>
+            <input type='button' onclick='count("plus")' value='+'/>
+            <form th:action="@{cart/add}" method="post">
+                <input type="hidden" th:value="${pdto.prodId}">
+                <input type="hidden" id="cartItemQty">
+                <button type="submit" onclick="addToCart()">장바구니</button>
+            </form>
+            <form th:action="'주문주소'">
+                <input type="hidden" th:value="${pdto.prodId}">
+                <input type="hidden" id="orderItemQty">
+                <button type="submit" onclick="goToOrder()">바로구매</button>
+            </form>
+            <script>
+                let countValue = 1;
+
+                function count(action) {
+                    if (action === "plus") {
+                        countValue++;
+                    } else if (action === "minus") {
+                        if (countValue > 1) {
+                            countValue--;
+                        }
+                    }
+                    document.getElementById("result").textContent = String(countValue);
+                }
+
+                function addToCart() {
+                    document.getElementById("cartItemQty").value = countValue;
+                }
+                function goToOrder() {
+                    document.getElementById("orderItemQty").value = countValue;
+                }
+
+                // function addToCart() {
+                //     const pricePerItem = /*[[${pdto.salePrice}]]*/ 0;
+                //     const totalPrice = countValue * pricePerItem;
+                //
+                //     const cartUrl = '/cart/custId=';
+                //     window.location.href = cartUrl;
+                // }
+                // 이건 GET이고 POST 방식으로 보내야 함
+
+            </script>
+        </div>
+        <div class="rating">
+            <p></p>
+            <p th:text="${pdto.starAvg} ? '구매자 별점 : ' + ${pdto.starAvg} : '별점 없음'">별점</p>
+        </div>
+        <div class="sales">
+            <p th:text="${pdto.totalSales} ? '판매량 : ' + ${pdto.totalSales} + ' 부': '판매량 없음'">판매량</p>
+        </div>
+        <div class="delivery-check" th:if="${pdto.dawnDeliChk} == null or ${pdto.dawnDeliChk} == 'N'">
+            <p th:text="'새벽 배송 불가 샹품'">새벽 배송 가능 여부</p>
+        </div>
+        <div class="delivery-check" th:if="${pdto.dawnDeliChk} != null">
+            <p th:text="'새벽 배송 가능 상품'">새벽 배송 가능 여부</p>
+        </div>
+    </div>
+
+    <div class="product-details">
+        <h3>목차</h3>
+        <p th:utext="${#strings.replace(pdto.tableOfContent, '\n', '<br/>')}">목차 내용</p>
+
+        <h3>요약</h3>
+        <p th:text="${pdto.smry}">요약 내용</p>
+    </div>
+
+    <!--    <div class="author-section">-->
+    <!--        <h3 th:text="${adto.authorName} ? '저자 ' + ${adto.authorName} : '저자 정보 없음'">저자 이름</h3>-->
+    <!--        <p th:text="${adto.authorBio} ?  ${adto.authorBio} : ''">저자 소개</p>-->
+    <!--    </div>-->
+
+    <div class="author-section" th:if="${adto != null}">
+        <h3 th:text="${'저자 ' + adto.authorName}">저자 이름</h3>
+        <p th:text="${adto.authorBio}">저자 소개</p>
+    </div>
+
+    <div class="author-section" th:if="${adto == null}">
+        <h3>저자 정보 없음</h3>
+    </div>
+
+    <div class="publisher-section">
+        <h3 th:text="'출판사 : ' + ${pdto.pblcr}">출판사 이름</h3>
+        <p th:text="'출판사 서평 : ' + ${pdto.pblcrReview}">출판사 서평</p>
+    </div>
+
+    <div class="additional-info">
+        <h3>ISBN</h3>
+        <p th:text="${pdto.isbn}">ISBN 내용</p>
+
+        <h3>발행일자</h3>
+        <p th:text="${pdto.pblshDate}">발행일자 내용</p>
+
+        <h3>쪽 수</h3>
+        <p th:text="${pdto.totalPages}">쪽 수 내용</p>
+
+        <h3>총 권수</h3>
+        <p th:text="${pdto.totalBooks}">총 권수 내용</p>
+    </div>
+</div>
+
+</body>
+</html>
