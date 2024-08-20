@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,7 +38,7 @@ class OrderStatusHistoryDaoTest {
         orderStatusHistoryDao.deleteAllOrderStatusHistory();
         assertEquals(countAllOrderStatusHistory(), 0);
 
-        OrderDto orderDto = new OrderDto(1, "주문완료", "301", "Y", "배송 메시지", 25000, 2500, 0, 22500, null, "1", "1");
+        OrderDto orderDto = getTestOrderDto();
         orderDao.createOrder(orderDto);
         assertEquals(countAllOrder(), 1);
     }
@@ -44,7 +46,8 @@ class OrderStatusHistoryDaoTest {
     @DisplayName("주문상태이력 추가 테스트")
     @Test
     void insertOrderStatusHistory() {
-        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(1, null, "주문완료", null, "1", "1");
+        String ordId = orderDao.getAllOrder().get(0).getOrdId();
+        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(ordId, null, "주문완료", null, "1", "1");
         orderStatusHistoryDao.createOrderStatusHistory(orderStatusHistoryDto);
         assertEquals(countAllOrderStatusHistory(), 1);
     }
@@ -52,8 +55,9 @@ class OrderStatusHistoryDaoTest {
     @DisplayName("주문상태이력 일련번호로 조회")
     @Test
     void getOrderStatusHistory() {
+        String ordId = orderDao.getAllOrder().get(0).getOrdId();
         // 주문상태이력 추가
-        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(1, null, "주문완료", null, "1", "1");
+        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(ordId, null, "주문완료", null, "1", "1");
         orderStatusHistoryDao.createOrderStatusHistory(orderStatusHistoryDto);
         assertEquals(countAllOrderStatusHistory(), 1);
 
@@ -66,13 +70,14 @@ class OrderStatusHistoryDaoTest {
     @DisplayName("주문상태이력 주문번호로 조회")
     @Test
     void getOrderStatusHistoryByOrdId() {
+        String ordId = orderDao.getAllOrder().get(0).getOrdId();
         // 주문상태이력 추가
-        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(1, null, "주문완료", null, "1", "1");
+        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(ordId, null, "주문완료", null, "1", "1");
         orderStatusHistoryDao.createOrderStatusHistory(orderStatusHistoryDto);
         assertEquals(countAllOrderStatusHistory(), 1);
 
         // 조회
-        List<OrderStatusHistoryDto> list = orderStatusHistoryDao.getOrderStatusHistoryByOrdId(1);
+        List<OrderStatusHistoryDto> list = orderStatusHistoryDao.getOrderStatusHistoryByOrdId(ordId);
         assertNotNull(list);
         assertEquals(countAllOrderStatusHistory(), 1);
     }
@@ -80,8 +85,9 @@ class OrderStatusHistoryDaoTest {
     @DisplayName("주문상태이력 회원ID로 조회")
     @Test
     void getCustomerOrderStatusHistory() {
+        String ordId = orderDao.getAllOrder().get(0).getOrdId();
         // 주문상태이력 추가
-        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(1, null, "주문완료", null, "1", "1");
+        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(ordId, null, "주문완료", null, "1", "1");
         orderStatusHistoryDao.createOrderStatusHistory(orderStatusHistoryDto);
         assertEquals(countAllOrderStatusHistory(), 1);
 
@@ -94,21 +100,23 @@ class OrderStatusHistoryDaoTest {
     @DisplayName("주문상태이력 주문ID로 삭제")
     @Test
     void deleteOrderStatusHistory() {
+        String ordId = orderDao.getAllOrder().get(0).getOrdId();
         // 주문상태이력 추가
-        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(1, null, "주문완료", null, "1", "1");
+        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(ordId, null, "주문완료", null, "1", "1");
         orderStatusHistoryDao.createOrderStatusHistory(orderStatusHistoryDto);
         assertEquals(countAllOrderStatusHistory(), 1);
 
         // 삭제
-        orderStatusHistoryDao.deleteOrderStatusHistory(1);
-        assertEquals(countOrderStatusHistory(1), 0);
+        orderStatusHistoryDao.deleteOrderStatusHistory(ordId);
+        assertEquals(countOrderStatusHistory(ordId), 0);
     }
 
     @DisplayName("주문상태이력 주문ID로 삭제")
     @Test
     void deleteAllOrderStatusHistory() {
+        String ordId = orderDao.getAllOrder().get(0).getOrdId();
         // 주문상태이력 추가
-        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(1, null, "주문완료", null, "1", "1");
+        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(ordId, null, "주문완료", null, "1", "1");
         orderStatusHistoryDao.createOrderStatusHistory(orderStatusHistoryDto);
         assertEquals(countAllOrderStatusHistory(), 1);
 
@@ -123,12 +131,52 @@ class OrderStatusHistoryDaoTest {
     }
 
     // 한 주문의 주문상태이력 개수
-    int countOrderStatusHistory(int ordId) {
+    int countOrderStatusHistory(String ordId) {
         return orderStatusHistoryDao.getOrderStatusHistoryByOrdId(ordId).size();
     }
 
     // 주문 전체 개수
     int countAllOrder() {
         return orderDao.getAllOrder().size();
+    }
+
+
+    // 주문 번호 생성
+    public synchronized String orderNumGenerator() {
+        try {
+            Thread.sleep(1);
+            LocalDateTime srcTime = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSS");
+            return srcTime.format(formatter);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    // order date
+    public String getNow() {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String date = now.format(formatter);
+        return date;
+    }
+
+    private OrderDto getTestOrderDto() {
+        return OrderDto.builder()
+                .ordId(orderNumGenerator())
+                .custId(1)
+                .custChk("Y")
+                .pwd("")
+                .ordStusCode("RCVD")
+                .codeType("301")
+                .ordReqMsg("메세지")
+                .ordDate(getNow())
+                .totalProdPrice(25000)
+                .totalDiscPrice(2500)
+                .totalPayPrice(22500)
+                .regId("1")
+                .upId("1")
+                .build();
     }
 }
