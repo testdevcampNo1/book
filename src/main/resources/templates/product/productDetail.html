@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>상품 상세 페이지</title>
-    <!--    <link rel="stylesheet" th:href="@{/css/product/detail.css}">-->
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/product/productDetail.css}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -102,8 +101,6 @@
                 error: function() {
                 }
             });
-
-
         }
 
         window.onload = function() { // window.onload -> 화면이 로드되면 자동으로 실행
@@ -121,7 +118,143 @@
                 goToOrderBtn.textContent = "바로 구매 (판매 중지)";
                 goToOrderBtn.disabled = true;
             }
+
+            loadReviews(); // 리뷰 로드 기능 호출
         };
+
+        function loadReviews() {
+            var prodId = document.getElementById("prodId").value;
+
+            $.ajax({
+                url: '/review/list',
+                method: 'GET',
+                data: { prodId: prodId },
+                success: function(reviews) {
+                    var reviewList = $('#reviewList');
+                    reviewList.empty();  // 기존 리뷰 목록 초기화
+
+                    reviews.forEach(function(review) {
+                        var reviewHtml = `
+                    <div class="review-item">
+                        <p><strong>${review.custId}</strong></p>
+                        <p>별점: ${'★'.repeat(review.starPt)}</p>
+                        <p>${review.content}</p>
+                        <button class="btn btn-sm btn-primary" onclick="editReview(${review.reviewId})">수정</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteReview(${review.reviewId})">삭제</button>
+                    </div>`;
+                        reviewList.append(reviewHtml);
+                    });
+                },
+                error: function() {
+                    alert('리뷰 목록을 가져오는 데 실패했습니다.');
+                }
+            });
+        }
+
+        function submitReview() {
+            var prodId = document.getElementById("prodId").value;
+            var custId = document.getElementById("custId").value;
+            var reviewContent = document.getElementById("reviewContent").value;
+            var reviewRating = document.getElementById("reviewRating").value;
+
+            var reviewData = {
+                prodId: prodId,
+                custId: custId,
+                content: reviewContent,
+                starPt: reviewRating
+            };
+
+            $.ajax({
+                url: '/review/add',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(reviewData),
+                success: function() {
+                    alert("리뷰가 성공적으로 작성되었습니다.");
+                    loadReviews();  // 리뷰 작성 후 리뷰 목록 새로고침
+                    document.getElementById("reviewForm").reset();
+                },
+                error: function() {
+                    alert('리뷰 작성에 실패했습니다.');
+                }
+            });
+        }
+
+        function deleteReview(reviewId) {
+            if (!confirm("정말로 이 리뷰를 삭제하시겠습니까?")) {
+                return;
+            }
+
+            $.ajax({
+                url: '/review/delete',
+                method: 'DELETE',
+                data: { reviewId: reviewId },
+                success: function() {
+                    alert("리뷰가 성공적으로 삭제되었습니다.");
+                    loadReviews();  // 리뷰 목록 새로고침
+                },
+                error: function() {
+                    alert('리뷰 삭제에 실패했습니다.');
+                }
+            });
+        }
+
+        function editReview(reviewId) {
+            $.ajax({
+                url: `/review/list`,
+                method: 'GET',
+                data: { prodId: document.getElementById("prodId").value },
+                success: function(reviews) {
+                    var review = reviews.find(r => r.reviewId === reviewId);
+                    if (review) {
+                        document.getElementById("reviewContent").value = review.content;
+                        document.getElementById("reviewRating").value = review.starPt;  // 수정된 부분
+                        document.getElementById("reviewId").value = review.reviewId;
+
+                        document.getElementById("submitReviewBtn").style.display = "none";
+                        document.getElementById("updateReviewBtn").style.display = "inline-block";
+                    }
+                },
+                error: function() {
+                    alert('리뷰 정보를 불러오는데 실패했습니다.');
+                }
+            });
+        }
+
+        function updateReview() {
+            var reviewId = document.getElementById("reviewId").value;
+            var prodId = document.getElementById("prodId").value;
+            var custId = document.getElementById("custId").value;
+            var reviewContent = document.getElementById("reviewContent").value;
+            var reviewRating = document.getElementById("reviewRating").value;
+
+            var reviewData = {
+                reviewId: reviewId,
+                prodId: prodId,
+                custId: custId,
+                content: reviewContent,
+                starPt: reviewRating  // 수정된 부분
+            };
+
+            $.ajax({
+                url: '/review/update',
+                method: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(reviewData),
+                success: function() {
+                    alert("리뷰가 성공적으로 수정되었습니다.");
+                    loadReviews();  // 리뷰 목록 새로고침
+
+                    document.getElementById("submitReviewBtn").style.display = "inline-block";
+                    document.getElementById("updateReviewBtn").style.display = "none";
+                    document.getElementById("reviewForm").reset();
+                },
+                error: function() {
+                    alert('리뷰 수정에 실패했습니다.');
+                }
+            });
+        }
+
     </script>
 </head>
 <body>
@@ -207,6 +340,45 @@
 
         <h3>총 권수</h3>
         <p th:text="${pdto.totalBooks}">총 권수 내용</p>
+    </div>
+
+    <!-- 리뷰 리스트 표시 섹션 -->
+    <div id="reviewListSection" class="review-list">
+        <h3>리뷰</h3>
+        <div id="reviewList">
+            <!-- 리뷰 목록이 여기에 표시됩니다. -->
+        </div>
+    </div>
+
+
+    <div class="review-section">
+        <!-- 리뷰 작성 폼 -->
+        <form id="reviewForm">
+            <div class="form-group">
+                <label for="reviewContent">리뷰 작성:</label>
+                <textarea id="reviewContent" class="form-control" rows="4" placeholder="리뷰를 입력하세요"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="reviewRating">별점:</label>
+                <select id="reviewRating" class="form-control">
+                    <option value="5">★★★★★ (5점)</option>
+                    <option value="4">★★★★☆ (4점)</option>
+                    <option value="3">★★★☆☆ (3점)</option>
+                    <option value="2">★★☆☆☆ (2점)</option>
+                    <option value="1">★☆☆☆☆ (1점)</option>
+                </select>
+            </div>
+
+            <input type="hidden" id="prodId" th:value="${pdto.prodId}">
+            <input type="hidden" id="custId" th:value="${custId}">
+            <input type="hidden" id="reviewId">
+
+            <!-- 리뷰 작성 버튼 -->
+            <button type="button" id="submitReviewBtn" class="btn btn-primary" onclick="submitReview()">리뷰 등록</button>
+            <!-- 리뷰 수정 완료 버튼 -->
+            <button type="button" id="updateReviewBtn" class="btn btn-success" style="display: none;" onclick="updateReview()">리뷰 수정 완료</button>
+        </form>
     </div>
 
     <br>
