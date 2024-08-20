@@ -4,76 +4,88 @@
 
 <mapper namespace="com.no1.book.dao.product.ProductDao">
     <select id="count" resultType="int">
-        select count(*) from product
+        select count(*)
+        from product
     </select>
 
     <delete id="deleteAll">
-        delete from product
+        delete
+        from product
     </delete>
 
     <delete id="delete" parameterType="string">
-        delete from product where prod_id = #{prod_id}
+        delete
+        from product
+        where prod_id = #{prod_id}
     </delete>
 
     <insert id="insert" parameterType="com.no1.book.domain.product.ProductDto">
-        INSERT INTO product (
-            prod_id, is_ebook, prod_name, prod_base_price, disc_rate, disc_price, sale_price,
-            total_sales, table_of_content, smry, pblcr, pblcr_review, image_id, isbn, pblsh_date,
-            total_pages, total_books, trlr, dawn_deli_chk, star_avg, cate_code, reg_date, reg_id, up_date, up_id,
-            author_info_id, ord_chk_code, code_type
-        ) VALUES (
-                     #{prodId}, #{isEbook}, #{prodName}, #{prodBasePrice}, #{discRate}, #{prodBasePrice} * #{discRate} / 100, #{prodBasePrice} - (#{prodBasePrice} * #{discRate} / 100),
-                     0, #{tableOfContent}, #{smry}, #{pblcr}, #{pblcrReview}, #{imageId}, #{isbn}, #{pblshDate},
-                     #{totalPages}, #{totalBooks}, #{trlr}, #{dawnDeliChk}, #{starAvg}, #{cateCode}, date(now()), 'admin', now(), 'admin',
-                      #{authorInfoId}, #{ordChkCode}, 202
-                 )
+        INSERT INTO product (prod_id, is_ebook, prod_name, prod_base_price, disc_rate, disc_price, sale_price,
+                             total_sales, table_of_content, smry, pblcr, pblcr_review, image_id, isbn, pblsh_date,
+                             total_pages, total_books, trlr, dawn_deli_chk, star_avg, cate_code, reg_date, reg_id,
+                             up_date, up_id,
+                             author_info_id, ord_chk_code, code_type)
+        VALUES (#{prodId}, #{isEbook}, #{prodName}, #{prodBasePrice}, #{discRate}, #{prodBasePrice} * #{discRate} / 100,
+                #{prodBasePrice} - (#{prodBasePrice} * #{discRate} / 100),
+                0, #{tableOfContent}, #{smry}, #{pblcr}, #{pblcrReview}, #{imageId}, #{isbn}, #{pblshDate},
+                #{totalPages}, #{totalBooks}, #{trlr}, #{dawnDeliChk}, #{starAvg}, #{cateCode}, date(now()), 'admin',
+                now(), 'admin',
+                #{authorInfoId}, #{ordChkCode}, 202)
     </insert>
 
     <select id="sortByRegDateAsc" parameterType="map" resultType="com.no1.book.domain.product.ProductDto">
-        select * from product
+        select *
+        from product
         order by reg_date
         LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="sortByRegDateDesc" parameterType="map" resultType="com.no1.book.domain.product.ProductDto">
-        select * from product
+        select *
+        from product
         order by reg_date desc
         LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="sortByPriceAsc" parameterType="map" resultType="com.no1.book.domain.product.ProductDto">
-        select * from product
+        select *
+        from product
         order by prod_base_price
         LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="sortByPriceDesc" parameterType="map" resultType="com.no1.book.domain.product.ProductDto">
-        select * from product
+        select *
+        from product
         order by prod_base_price desc
         LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="sortByTotalSalesAsc" parameterType="map" resultType="com.no1.book.domain.product.ProductDto">
-        select * from product
+        select *
+        from product
         order by total_sales
         LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="sortByTotalSalesDesc" parameterType="map" resultType="com.no1.book.domain.product.ProductDto">
-        select * from product
+        select *
+        from product
         order by total_sales desc
         LIMIT #{offset}, #{pageSize}
     </select>
 
     <select id="filterByCategory" resultType="com.no1.book.domain.product.ProductDto">
-        select p.* from product p
-        join code c on p.cate_code = c.code
+        select p.*
+        from product p
+                 join code c on p.cate_code = c.code
         where p.cate_code like #{cateKey}
     </select>
 
 
     <select id="select" parameterType="string" resultType="com.no1.book.domain.product.ProductDto">
-        select * from product
+        select *
+        from product
         where prod_id = #{prod_id}
     </select>
 
@@ -87,56 +99,24 @@
 
     <update id="update" parameterType="com.no1.book.domain.product.ProductDto">
         UPDATE product
-        SET
-            prod_base_price = #{prodBasePrice},
-            disc_rate = #{discRate},
-            total_sales = #{totalSales},
+        SET prod_base_price  = #{prodBasePrice},
+            disc_rate        = #{discRate},
             table_of_content = #{tableOfContent},
-            smry = #{smry},
-            pblcr_review = #{pblcrReview},
-            image_id = #{imageId},
-            dawn_deli_chk = #{dawnDeliChk},
-            cate_code = #{cateCode},
-            up_date = now(),
-            ord_chk_code = #{ordChkCode},
-            code_type = #{codeType},
-            disc_price = #{prodBasePrice} * #{discRate} / 100,
-            sale_price = #{prodBasePrice} - #{prodBasePrice} * #{discRate} / 100
+            author_info_id   = #{authorInfoId},
+            smry             = #{smry},
+            pblcr_review     = #{pblcrReview},
+            image_id         = #{imageId},
+            dawn_deli_chk    = #{dawnDeliChk},
+            ord_chk_code     = #{ordChkCode},
+            cate_code        = #{cateCode},
+            up_date          = now(),
+            disc_price       = #{prodBasePrice} * #{discRate} / 100,
+            sale_price       = #{prodBasePrice} - #{prodBasePrice} * #{discRate} / 100
         WHERE prod_id = #{prodId}
     </update>
 
     <select id="getFilteredAndSortedPage" parameterType="map" resultType="com.no1.book.domain.product.ProductDto">
         SELECT *
-        FROM product
-        WHERE 1=1
-        <if test="cateKey != null and cateKey != ''">
-            AND cate_code LIKE CONCAT(#{cateKey}, '%')
-        </if>
-        ORDER BY
-        <choose>
-            <when test="sortKey == 'price'">
-                prod_base_price
-            </when>
-            <when test="sortKey == 'sales'">
-                total_sales
-            </when>
-            <otherwise>
-                reg_date
-            </otherwise>
-        </choose>
-        <choose>
-            <when test="sortOrder == 'desc'">
-                    DESC
-            </when>
-            <otherwise>
-                ASC
-            </otherwise>
-        </choose>
-            LIMIT #{offset}, #{pageSize}
-    </select>
-
-    <select id="getFilteredAndSortedTotalSize" parameterType="map" resultType="int">
-        SELECT count(*)
         FROM product
         WHERE 1=1
         <if test="cateKey != null and cateKey != ''">
@@ -162,19 +142,44 @@
                 ASC
             </otherwise>
         </choose>
+        ,prod_name asc
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="getFilteredAndSortedTotalSize" parameterType="map" resultType="int">
+        SELECT count(*)
+        FROM product
+        WHERE 1=1
+        <if test="cateKey != null and cateKey != ''">
+            AND cate_code LIKE CONCAT(#{cateKey}, '%')
+        </if>
     </select>
 
     <select id="getCateName" parameterType="string" resultType="string">
-        select c.code_name from code c
-        join product p on c.code = p.cate_code
+        select c.code_name
+        from code c
+                 join product p on c.code = p.cate_code
         where p.cate_code = #{cateCode}
         limit 1;
     </select>
 
     <select id="idChk" parameterType="string" resultType="int">
-        SELECT COUNT(*) FROM product
+        SELECT COUNT(*)
+        FROM product
         WHERE prod_id = #{prodId}
     </select>
 
+    <select id="createId" resultType="string">
+        select prod_id
+        from product
+        order by prod_id desc
+        limit 1;
+    </select>
+
+    <update id="plusSales" parameterType="string">
+        update product
+        set total_sales = total_sales + 1
+        where prod_id = #{prodId};
+    </update>
 
 </mapper>

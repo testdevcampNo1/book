@@ -31,12 +31,14 @@ public class CustomerDto {
     private String regId;
     private String upDate;
     private String upId;
-
+    private int failedAttempts;
+    private LocalDateTime lockUntil;
 
 
     public CustomerDto() {}
 
-    public CustomerDto(String custId, String pwd, String name, String mainAddr, String mobileNum, String gender, String email, String birthDate, String date, String image, String nickName, String accPrice, String point, String tou, String adultChk, String withdChk, int gradeId, String regDate, String regId, String upDate, String upId) {
+    public CustomerDto(String custId, String pwd, String name, String mainAddr, String mobileNum, String gender, String email, String birthDate, String date, String image, String nickName, String accPrice, String point, String tou, String adultChk, String withdChk, int gradeId, String regDate, String regId, String upDate, String upId,
+                       int failedAttempts, LocalDateTime lockUntil) {
         this.custId = custId;
         this.pwd = pwd;
         this.name = name;
@@ -58,6 +60,8 @@ public class CustomerDto {
         this.regId = regId;
         this.upDate = upDate;
         this.upId = upId;
+        this.failedAttempts = failedAttempts;
+        this.lockUntil = lockUntil;
 
     }
 
@@ -153,5 +157,10 @@ public class CustomerDto {
 
     public String getUpId() {
         return upId;
+    }
+
+    public int getFailedAttempts() { return failedAttempts;}
+
+    public LocalDateTime getLockUntil() {return lockUntil;
     }
 }

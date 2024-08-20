@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -76,5 +78,13 @@ class AuthorDaoTest {
         // 3. 검증 -> selectedAdto의 이름이 "김저자"라면 통과
 //        System.out.println(selectedAdto);
         assertEquals("김저자", selectedAdto.getAuthorName());
+    }
+
+    @Test
+    void getAllAuthorOrderedByNameTest() {
+        List<AuthorDto> authorList =  authorDao.getAllAuthorOrderedByName();
+        for (int i = 0; i < authorList.size(); i++) {
+            System.out.println(authorList.get(i).getAuthorName() + " " + authorList.get(i).getAuthorInfoId());
+        }
     }
 }

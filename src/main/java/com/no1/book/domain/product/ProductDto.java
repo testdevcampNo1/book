@@ -48,12 +48,4 @@ public class ProductDto {
     @Builder.Default
     private String codeType = "0";
 
-//    public ProductDto (String proId, boolean isEbook, String prodName, int prodBasePrice, int totalSales,
-//                       String cateId, String authorInfoId, String ordChkCode, String codeType) {
-//        this.prodId = proId;
-//        this.isEbook = isEbook;
-//        this.prodName = prodName;
-//        this.prodBasePrice = prodBasePrice;
-//        this.cateId = cateId;
-//        this.authorInfoId = authorInfoId;
 }
