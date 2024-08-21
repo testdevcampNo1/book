@@ -6,15 +6,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,37 +16,58 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
-    @PostMapping("/add")
-    public ResponseEntity<String> addReview(@RequestBody ReviewDto reviewDto, HttpSession session) {
-//        String custId = (String) session.getAttribute("custId");
-        String custId = "CUST001";
+    @PostMapping("/add/{prodId}")
+    public ResponseEntity<String> addReview(@PathVariable String prodId, @RequestBody ReviewDto reviewDto, HttpSession session) {
+        String custId = (String) session.getAttribute("custId");
+//        String custId = "CUST001"; // 임시 하드코딩
+
+        if (custId == null) { // 세션에 id가 없으면 (로그인이 안되어있으면)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
         reviewDto.setCustId(custId);
+        reviewDto.setProdId(prodId);
 
         reviewService.addReview(reviewDto);
         return ResponseEntity.ok("리뷰가 성공적으로 작성되었습니다.");
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<String> updateReview(@RequestBody ReviewDto reviewDto, HttpSession session) {
-//        String custId = (String) session.getAttribute("custId");
-        String custId = "CUST001";
+    @PutMapping("/update/{reviewId}")
+    public ResponseEntity<String> updateReview(@PathVariable Integer reviewId, @RequestBody ReviewDto reviewDto, HttpSession session) {
+        String custId = (String) session.getAttribute("custId");
+//        String custId = "CUST001"; // 임시 하드코딩
+
+        if (custId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
         reviewDto.setCustId(custId);
+        reviewDto.setReviewId(reviewId);
 
         reviewService.updateReview(reviewDto);
         return ResponseEntity.ok("리뷰가 성공적으로 수정되었습니다.");
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteReview(@RequestParam("reviewId") Integer reviewId, HttpSession session) {
+    @DeleteMapping("/delete/{reviewId}")
+    public ResponseEntity<String> deleteReview(@PathVariable Integer reviewId, HttpSession session) {
+        String custId = (String) session.getAttribute("custId");
+//        String custId = "CUST001"; // 임시 하드코딩
 
+        if (custId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+        }
         reviewService.deleleReviewById(reviewId);
         return ResponseEntity.ok("리뷰가 성공적으로 삭제되었습니다.");
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<ReviewDto>> getReviewsByProductId(@RequestParam("prodId") String prodId) {
+    @GetMapping("/list/{prodId}")
+    public ResponseEntity<List<ReviewDto>> getReviewsByProductId(@PathVariable String prodId) {
         List<ReviewDto> reviews = reviewService.reviewsPerProduct(prodId);
         return ResponseEntity.ok(reviews);
+    }
+
+    @GetMapping("/detail/{reviewId}")
+    public ResponseEntity<ReviewDto> getReviewById(@PathVariable Integer reviewId) {
+        ReviewDto review = reviewService.findReviewById(reviewId);
+        return ResponseEntity.ok(review);
     }
 
     @ExceptionHandler(Exception.class)
