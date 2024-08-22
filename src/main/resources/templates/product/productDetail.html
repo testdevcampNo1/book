@@ -304,7 +304,7 @@
         </div>
 
         <div class="rating">
-            <p th:text="${pdto.starAvg} ? '구매자 별점 : ' + ${pdto.starAvg} : '별점 없음'">별점</p>
+            <p th:text="${pdto.starAvg} ? '구매자 별점 : ' + ${pdto.starAvg} + ' / 5' : '별점 없음'">별점</p>
         </div>
         <div class="sales">
             <p th:text="${pdto.totalSales} ? '판매량 : ' + ${pdto.totalSales} + ' 부': '판매량 없음'">판매량</p>

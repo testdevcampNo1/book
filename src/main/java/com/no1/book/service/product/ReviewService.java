@@ -1,5 +1,6 @@
 package com.no1.book.service.product;
 
+import com.no1.book.domain.product.ProductDto;
 import com.no1.book.domain.product.ReviewDto;
 import org.springframework.stereotype.Service;
 
@@ -20,4 +21,5 @@ public interface ReviewService {
 
     List<ReviewDto> reviewsPerProduct(String prodId);
 
+    void calculateAvgStar(ProductDto dto) throws Exception;
 }
