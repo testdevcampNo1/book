@@ -15,7 +15,7 @@ public interface ReviewService {
 
     ReviewDto findReviewById(Integer reviewId);
 
-    void deleleReviewById(Integer reviewId);
+    void deleteReviewById(Integer reviewId);
 
     void updateReview(ReviewDto reviewDto);
 

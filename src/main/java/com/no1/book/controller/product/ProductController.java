@@ -2,6 +2,7 @@ package com.no1.book.controller.product;
 
 import com.no1.book.domain.product.AuthorDto;
 import com.no1.book.domain.product.CategoryDto;
+import com.no1.book.domain.product.CustomerProductDto;
 import com.no1.book.domain.product.PageHandler;
 import com.no1.book.domain.product.ProductDto;
 import com.no1.book.domain.product.SearchCondition;
@@ -128,10 +129,21 @@ public class ProductController {
     }
 
     @PostMapping("/detail")
-    public void detail(@RequestBody Map map) throws Exception {
+    public void detail(@RequestBody Map<String, Object> map) throws Exception {
 
         String prodId = map.get("prodId").toString();
+        String custId = map.get("custId").toString();
         int itemQty = Integer.parseInt(map.get("itemQty").toString());
+
+        // CustomerProduct dto가 있으면 그거 유지
+        CustomerProductDto existingDto = productService.getCustomerProduct(custId, prodId);
+
+        // CustomerProduct dto가 없으면 생성
+        if (existingDto == null) {
+            CustomerProductDto newDto = new CustomerProductDto(custId, prodId);
+            productService.insertCustomerProduct(newDto);
+        }
+
 
         for (int i = 0; i < itemQty; i++) {
             productService.plusSales(prodId);

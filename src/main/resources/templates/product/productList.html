@@ -109,7 +109,7 @@
                     </div>
                     <div class="product-meta">
                         <span class="product-sales" th:text="'판매량: ' + ${product.totalSales}"></span>
-                        <span class="product-rating" th:text="'별점: ' + ${product.starAvg}"></span>
+                        <span class="product-rating" th:text="${product.starAvg} ? '별점: ' + ${product.starAvg} + ' / 5' : '별점 없음'"></span>
                         <span class="product-date" th:text="${product.regDate}"></span>
                     </div>
                 </div>

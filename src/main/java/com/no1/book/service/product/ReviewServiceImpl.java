@@ -34,7 +34,7 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
-    public void deleleReviewById(Integer reviewId) {
+    public void deleteReviewById(Integer reviewId) {
         reviewDao.delete(reviewId);
     }
 

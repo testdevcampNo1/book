@@ -1,6 +1,7 @@
 package com.no1.book.service.product;
 
 import com.no1.book.domain.product.AuthorDto;
+import com.no1.book.domain.product.CustomerProductDto;
 import com.no1.book.domain.product.ProductDto;
 import com.no1.book.domain.product.SearchCondition;
 
@@ -56,4 +57,12 @@ public interface ProductService {
     List<ProductDto> getPage(SearchCondition sc) throws Exception;
 
     int listSize(SearchCondition sc) throws Exception;
+
+    int insertCustomerProduct(CustomerProductDto dto) throws Exception;
+
+    CustomerProductDto getCustomerProduct(String custId, String prodId) throws Exception;
+
+    int plusReviewCnt(CustomerProductDto dto) throws Exception;
+
+    int minusReviewCnt(CustomerProductDto dto) throws Exception;
 }

@@ -56,6 +56,7 @@
         }
 
         function goToOrder() {
+            var custId = document.getElementById("custId").value;
             var prodId = document.getElementById("prodId").value;
             var itemQty = countValue;
             var ordChkCode = document.getElementById("ordChkCode").value;
@@ -76,31 +77,30 @@
                 salePrice: salePrice
             };
 
-
-            // order로 주문 정보 보내기
-            $.ajax({
-                url: '/order',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(params),
-                success: function() {
-                    alert('주문 창으로 이동합니다.');
-                },
-                error: function() {
-                    alert('주문에 실패했습니다.');
-                }
-            });
-
             $.ajax({
                 url: '/product/detail',
                 method: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({prodId : prodId, itemQty : itemQty}),
+                data: JSON.stringify({prodId : prodId, itemQty : itemQty, custId : custId}),
                 success: function() {
                 },
                 error: function() {
                 }
             });
+
+            // order로 주문 정보 보내기
+        //     $.ajax({
+        //         url: '/order',
+        //         method: 'POST',
+        //         contentType: 'application/json',
+        //         data: JSON.stringify(params),
+        //         success: function() {
+        //             alert('주문 창으로 이동합니다.');
+        //         },
+        //         error: function() {
+        //             alert('주문에 실패했습니다.');
+        //         }
+        //     });
         }
 
         window.onload = function() { // window.onload -> 화면이 로드되면 자동으로 실행
