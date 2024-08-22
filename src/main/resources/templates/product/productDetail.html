@@ -124,6 +124,7 @@
 
         function loadReviews() {
             var prodId = document.getElementById("prodId").value;
+            var currentUserId = document.getElementById("custId").value;  // 현재 로그인한 사용자 ID
 
             $.ajax({
                 url: '/review/list/' + prodId,
@@ -134,14 +135,22 @@
 
                     reviews.forEach(function(review) {
                         var reviewHtml = `
-                    <div class="review-item">
-                        <p><strong>${review.custId}</strong></p>
-                        <p>별점: ${'★'.repeat(review.starPt)}</p>
-                        <p>${review.content}</p>
-                        <button class="btn btn-sm btn-primary" onclick="editReview(${review.reviewId})">수정</button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteReview(${review.reviewId})">삭제</button>
-                    </div>`;
+                <div class="review-item">
+                    <p><strong>${review.custId}</strong></p>
+                    <p>별점: ${'★'.repeat(review.starPt)}</p>
+                    <p>${review.content}</p>`;
+
+                        // 현재 사용자와 리뷰 작성자가 동일한 경우에만 수정/삭제 버튼 보이도록
+                        if (review.custId === currentUserId) {
+                            reviewHtml += `
+                    <button class="btn btn-sm btn-primary" onclick="editReview(${review.reviewId})">수정</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteReview(${review.reviewId})">삭제</button>`;
+                        }
+
+                        reviewHtml += `</div>`;
                         reviewList.append(reviewHtml);
+                        console.log(reviews);
+                        console.log(currentUserId);
                     });
                 },
                 error: function() {
@@ -260,7 +269,7 @@
     </script>
 </head>
 <body>
-<input type="hidden" id="custId" value="[[${custId}]]">
+<input type="hidden" id="custId" th:value="${custId}">
 <div class="container">
     <h3 th:text="${cateName}">카테고리 네임</h3>
 

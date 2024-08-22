@@ -103,7 +103,7 @@ public class ProductController {
     }
 
     @GetMapping("/detail")
-    public String detail(HttpServletRequest request, Integer custId, String prodId, Model m) throws Exception {
+    public String detail(HttpServletRequest request, String prodId, Model m) throws Exception {
         // 클라이언트로부터 받아온 상품id로 상품 dto 읽어와서 모델에 담기 (상세 페이지에 출력 용도)
         ProductDto pdto = productService.readProductDetail(prodId);
         m.addAttribute("pdto", pdto);
@@ -117,10 +117,12 @@ public class ProductController {
         String cateName = productService.getCateName(cateCode);
         m.addAttribute("cateName", cateName);
 
-        // 세션 받아서 id 모델에 담기 (장바구니 이동 용도)
+        // 세션에서 custId 받아와서 모델에 추가
         HttpSession session = request.getSession();
-        System.out.println("session = " + session.getId());
-        m.addAttribute("custId", custId);
+        String custId = (String) session.getAttribute("custId");
+        if (custId != null) {
+            m.addAttribute("custId", custId);
+        }
 
         return "product/productDetail";
     }
