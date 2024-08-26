@@ -47,7 +47,7 @@
     <!--상품 추가-->
     <div class="form-container">
         <h2>상품 등록</h2>
-        <form th:action="@{/product/manage/add}" method="post" id="addForm">
+        <form th:action="@{/product/manage/add}" method="post" id="addForm" enctype="multipart/form-data">
             <div class="form-group">
                 <div style="display: flex; align-items: center;">
                     <input type="hidden" id="prod_id" name="prodId" value="1">
@@ -149,6 +149,11 @@
                     <option value="STOP">STOP (판매 중지)</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label for="prod_img">상품 이미지</label>
+                <input type="file" id="prod_img" name="prodImg">
+            </div>
+
             <div class="btn-group">
                 <button type="submit" id="addBtn">상품 등록</button>
             </div>
@@ -295,6 +300,13 @@
             alert("저자를 선택하시오");
             return false;
         }
+
+        let prodImg = document.getElementById("prod_img").files[0];
+
+        // if (!isUpdate && !prodImg) {
+        //     alert("상품 이미지를 선택하세요.");
+        //     return false;
+        // }
 
         return true;
     }

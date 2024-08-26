@@ -97,7 +97,11 @@
     <div class="product-grid">
         <div class="product-card" th:each="product : ${prodList}">
             <a th:href="@{/product/detail(prodId=${product.prodId})}" class="product-card-link">
-                <img th:src="@{/images/product/imsi.png}" alt="상품 이미지" class="product-image">
+<!--                <img th:src="@{/images/product/imsi.png}" alt="상품 이미지" class="product-image">-->
+                <!-- 이미지가 존재하는 경우 -->
+                <img th:if="${product.imageId != null}" th:src="@{'/images/product/' + ${product.imageId}}" alt="상품 이미지" class="product-image">
+                <!-- 이미지가 존재하지 않는 경우 기본 이미지를 표시 -->
+                <img th:unless="${product.imageId != null}" th:src="@{'/images/product/imsi.png'}" alt="기본 이미지" class="product-image">
                 <div class="product-details">
                     <h2 class="product-title" th:text="${product.prodName}"></h2>
                     <p class="product-description" th:text="${product.smry}"></p>

@@ -12,8 +12,11 @@ import com.no1.book.service.product.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,8 +28,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -164,14 +172,43 @@ public class ProductController {
         return "product/manage";
     }
 
+    private String uploadPath = System.getProperty("user.dir") + "/src/main/resources/static/images/product";
+
     @PostMapping("/manage/add")
-    public String addProduct(@ModelAttribute ProductDto productDto) throws Exception {
-        // 클라이언트로부터 받아온 상품정보를 db에 추가
+    public String addProduct(
+            @ModelAttribute ProductDto productDto,
+            @RequestParam("prodImg") MultipartFile prodImg,
+            RedirectAttributes redirectAttributes) throws Exception {
+
+        // 파일 업로드 처리
+        if (!prodImg.isEmpty()) {
+            String fileName = prodImg.getOriginalFilename();
+            System.out.println(fileName);
+
+            // 저장할 경로 지정
+            File directory = new File(uploadPath);
+            if (!directory.exists()) {
+                directory.mkdirs(); // 디렉토리 생성
+            }
+
+            File upFile = new File(uploadPath, fileName);
+            prodImg.transferTo(upFile);
+
+            // 업로드한 파일의 이름을 productDto의 imageId 필드에 설정
+            productDto.setImageId(fileName);
+        }
+
+        // 상품 정보 저장
         productService.addProduct(productDto);
-        return "redirect:/product/manage";
+
+        // 성공 메시지를 추가
+        redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 등록되었습니다.");
+
+        // product/list로 리다이렉트
+        return "redirect:/product/list";
     }
 
-    @PostMapping("/manage/view")
+    @PostMapping("/manage/view" )
     @ResponseBody
     public ProductDto viewProduct(@RequestParam("prodId") String prodId) throws Exception {
         // 클라이언트로부터 받아온 상품 id로 상품 조회
@@ -191,8 +228,6 @@ public class ProductController {
         productService.removeProduct(prodId);
         return "redirect:/product/manage";
     }
-
-
 
 
     @ExceptionHandler(DataIntegrityViolationException.class)
