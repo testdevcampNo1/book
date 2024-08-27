@@ -216,9 +216,25 @@ public class ProductController {
     }
 
     @PostMapping("/manage/update")
-    public String updateProduct(@ModelAttribute ProductDto productDto) throws Exception {
-        // 클라이언트로부터 받아온 상품정보로 업데이트
+    public String updateProduct(
+            @ModelAttribute ProductDto productDto,
+            @RequestParam(value = "prodImg", required = false) MultipartFile prodImg) throws Exception {
+
+        // 새로운 이미지 파일 저장 로직
+        if (prodImg != null && !prodImg.isEmpty()) {
+            String newFileName = prodImg.getOriginalFilename();
+
+            // 새로운 이미지 파일 저장
+            File upFile = new File(uploadPath, newFileName);
+            prodImg.transferTo(upFile);
+
+            // 새로운 이미지 파일명을 ProductDto에 지정
+            productDto.setImageId(newFileName);
+        }
+
+        // 상품 정보 업데이트
         productService.updateProduct(productDto);
+
         return "redirect:/product/manage";
     }
 
