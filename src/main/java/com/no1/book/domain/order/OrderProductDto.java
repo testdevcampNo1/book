@@ -1,26 +1,26 @@
 package com.no1.book.domain.order;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class OrderProductDto {
+
     private int ordProdId;
     private String ordId;
     private String prodId;
-    private String ordProdStusCode;
+    private String ordChkCode;
     private String codeType;
-    private String ebookChk;
-    private String isDawnDelivery;
-    private String name;
-    private int ordQty;
+    private String isEbook;
+    private String dawnDeliChk;
+    private String prodName;
     private String img;
     private String prodPageLink;
+    private int ordQty;
+    private int prodBasePrice;
     private int totalProdPrice;
+    private int discPrice;
     private int totalDiscPrice;
     private int totalPayPrice;
     private String cancelableDate;
@@ -35,15 +35,17 @@ public class OrderProductDto {
         this.ordProdId = ordProdId;
         this.ordId = ordId;
         this.prodId = prodId;
-        this.ordProdStusCode = ordProdStusCode;
+        this.ordChkCode = ordChkCode;
         this.codeType = codeType;
-        this.ebookChk = ebookChk;
-        this.name = name;
-        this.ordQty = ordQty;
+        this.isEbook = isEbook;
+        this.dawnDeliChk = dawnDeliChk;
+        this.prodName = prodName;
         this.img = img;
         this.prodPageLink = prodPageLink;
-        this.isDawnDelivery = isDawnDelivery;
+        this.ordQty = ordQty;
+        this.prodBasePrice = prodBasePrice;
         this.totalProdPrice = totalProdPrice;
+        this.discPrice = discPrice;
         this.totalDiscPrice = totalDiscPrice;
         this.totalPayPrice = totalPayPrice;
         this.regId = regId;

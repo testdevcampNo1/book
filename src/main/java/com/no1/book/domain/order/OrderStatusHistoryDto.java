@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class OrderStatusHistoryDto {
+
     private int ordStusHistorySeq;
     private String ordId;
     private String befOrdStusCode;

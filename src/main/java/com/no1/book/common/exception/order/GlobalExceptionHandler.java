@@ -9,57 +9,34 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice(basePackages = "com.no1.book.controller.order")
 public class GlobalExceptionHandler {
 
-    // 상품 재고 부족 처리
-    @ExceptionHandler(OutOfStockException.class)
-    public ResponseEntity<String> handleOutOfStockException(OutOfStockException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    // 키 중복 처리
-    @ExceptionHandler(DuplicateKeyException.class)
-    public ResponseEntity<String> handleDuplicateKeyException(DuplicateKeyException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    // 상품 ID 유효하지 않거나 존재하지 않을 경우 처리
-    @ExceptionHandler(InvalidProductIdException.class)
-    public ResponseEntity<String> handleInvalidProductIdException(InvalidProductIdException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    // 회원 정보 DB 조회 실패 처리
-    @ExceptionHandler(NotFoundCustomerException.class)
-    public ResponseEntity<String> handleNotFoundCustomerException(NotFoundCustomerException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    // 결제 실패 처리
-    @ExceptionHandler(PaymentFailureException.class)
-    public ResponseEntity<String> handlePaymentFailureException(PaymentFailureException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.PAYMENT_REQUIRED);
-    }
-
-    // 주문 상품 주문 불가 상태 처리
-    @ExceptionHandler(ProductNotOrderableException.class)
-    public ResponseEntity<String> handleProductNotOrderableException(ProductNotOrderableException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    // DB 연결 오류 처리
+    // Database 작업 실패시 던지는 예외
     @ExceptionHandler(SystemException.class)
-    public ResponseEntity<String> handleSystemException(SystemException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<String> handleDatabaseException(SystemException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    // 주문 필수 입력 정보 누락
-    @ExceptionHandler(MissingRequiredOrderInfoException.class)
-    public ResponseEntity<String> handleMissingRequiredOrderInfoException(MissingRequiredOrderInfoException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    // 유효하지 않은 회원일 경우 던지는 예외
+    @ExceptionHandler(InvalidCustomerException.class)
+    public ResponseEntity<String> handleCustomerException(InvalidCustomerException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(InvalidAmountException.class)
-    public ResponseEntity<String> handleInvalidAmountException(InvalidAmountException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    // 유효하지 않은 주문일 경우 던지는 예외
+    @ExceptionHandler(InvalidOrderException.class)
+    public ResponseEntity<String> handleOrderException(InvalidOrderException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    // 유효하지 않은 상품일 경우 던지는 예외
+    @ExceptionHandler(InvalidProductException.class)
+    public ResponseEntity<String> handleProductException(InvalidProductException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    // 유효하지 않은 결제일 경우 던지는 예외
+    @ExceptionHandler(InvalidPaymentException.class)
+    public ResponseEntity<String> handlePaymentException(InvalidPaymentException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     // 주문 실패 처리 - 주문에서 발생하는 모든 예외의 최상위

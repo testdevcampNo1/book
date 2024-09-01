@@ -1,0 +1,651 @@
+<!DOCTYPE html><html lang="ko" xmlns:th="http://www.thymeleaf.org"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <style>
+        body {
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #ecf2f8, #eaf3f9, #ffffff);
+            position: relative; /* body를 상대 위치로 설정 */
+        }
+
+        body {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            min-height: 100vh; /* Ensures the body is at least the full height of the viewport */
+            margin: 0;
+            background: linear-gradient(to right, #ecf2f8, #eaf3f9, #ffffff);
+            font-family: 'Pretendard-Regular';
+        }
+
+
+
+        @font-face {
+            font-family: 'Pretendard-Regular';
+            src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+            font-weight: 400;
+            font-style: normal;
+        }
+        html>header{
+            font-family:'Pretendard-Regular';
+        }
+        .menu-1{
+            font-family:'Pretendard-Regular';
+        }
+        .menu-1>li>a{
+            color:black;
+            text-decoration: none;
+        }
+        html>body{
+            font-family:'Pretendard-Regular'
+        }
+        body,ul,li{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .a{
+            color: inherit;
+            text-decoration: none;
+        }
+        h1 a {
+            text-decoration: none; /* 링크의 밑줄 제거 */
+            color: inherit; /* 기본 링크 색상 유지 */
+        }
+        p {
+            padding-left: 10px; /* 왼쪽에 20px의 공백을 추가합니다. */
+        }
+
+
+        .con{
+            width:1080px;
+            margin-left: auto;
+            margin-right:auto;
+        }
+        .block{
+            display: block;
+        }
+        .flex{
+            display:flex;
+        }
+        .flex-grow{
+            flex-grow: 1;
+        }
+        .items-center{
+            align-items: center;
+        }
+        .h-full{
+            height: 100%;
+        }
+        .w-full{
+            width:100%;
+        }
+        .bg-red-500{
+            background-color: red;
+        }
+        .bg-blue-500{
+            background-color: blue;
+        }
+        .bg-green-500{
+            background-color: green;
+        }
+        .bg-gold-500{
+            background-color: yellow;
+        }
+        .px-4{
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        .br-space{
+            line-height: 1.5;
+        }
+        .custom-link {
+            display: inline-block; /* 링크를 블록 요소로 설정하여 너비와 높이를 조절할 수 있도록 합니다. */
+            padding: 5px 10px; /* 텍스트 주변에 여백을 추가합니다. */
+            background-color:  #2a7de1;; /* 배경색을 파란색으로 설정합니다. */
+            color: white; /* 텍스트 색상을 흰색으로 설정합니다. */
+            text-decoration: none; /* 기본 링크 스타일인 밑줄을 제거합니다. */
+            border-radius: 15px; /* 둥근 테두리를 위한 테두리 반경을 설정합니다. */
+        }
+        .custom-box {
+            display: inline-block; /* 링크를 블록 요소로 설정하여 너비와 높이를 조절할 수 있도록 합니다. */
+            padding: 5px 10px; /* 텍스트 주변에 여백을 추가합니다. */
+            background-color:  rgb(126, 161, 222); /* 배경색을 파란색으로 설정합니다. */
+            color: white; /* 텍스트 색상을 흰색으로 설정합니다. */
+            border-radius: 15px; /* 둥근 테두리를 위한 테두리 반경을 설정합니다. */
+        }
+
+        /*커스텀*/
+        .top-bar{
+            position: fixed;
+            top:0;
+            left:0;
+            right:0;
+            z-index: 1000;
+            width: 100%;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            height:81px;
+            backdrop-filter: blur(100px);
+            background-color: white;
+        }
+        .top-bar >.con{
+            height: 100%;
+            padding: 0 20px;
+        }
+        .top-bar>.con>.logo{
+            padding:0 20px;
+        }
+
+
+        .top-bar .menu-1 li a:hover {
+            text-decoration: underline; /* 호버 시에 밑줄 추가 */
+        }
+
+        .intro_text{
+            padding-top: 81px;
+            text-align: center;
+        }
+
+        .main_text0{
+            width: 100%;
+            height: 0px;
+            margin-top:0;
+            background: rgb(108, 11, 11);
+        }
+        .main_text0> h1{
+            text-align: center;
+        }
+        .main_text0 > .contents1 {
+            text-align: center;
+        }
+        h1 a.custom-link {
+            margin-top: 100px; /* 위쪽 마진 크기 조절 */
+        }
+
+        .custom-link {
+            display: block; /* 링크를 블록 레벨 요소로 설정하여 가로폭을 가득 채우도록 합니다. */
+            margin: 0 auto; /* 가운데 정렬을 위해 margin을 auto로 설정합니다. */
+            width: fit-content; /* 링크의 내용에 맞게 너비를 설정합니다. */
+            text-align: center; /* 링크 안의 텍스트를 가운데 정렬합니다. */
+        }
+        .grey{
+            color:grey;
+        }
+
+
+
+
+        .icons{
+            display: flex;
+            width:1080px;
+            height:402px;
+            margin: auto;
+        }
+        .icons > li {
+            flex: 1;
+            margin-top:49px;
+            height:302px;
+            text-align: center;
+            border-radius: 10px;
+            list-style-type:none;
+        }
+        .icons > li > .icon_img{
+            margin-top:18px;
+        }
+
+        .icons > li:not(:last-child){
+            margin-right: 20px;
+        }
+
+        .icons .contents2 {
+            width:280px;
+            margin:auto;
+            letter-spacing: -1px;
+        }
+        .more{
+            width:100px;
+            height: 30px;
+            background: #2F7AF4;
+            color: #fff;
+            font-size: 12px;
+            line-height: 30px;
+            margin:25px auto;
+        }
+
+        .filter {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-left: 200px;
+        }
+
+        .category-box {
+            display: none;
+            margin-top: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            overflow-y: auto; /* 카테고리가 박스를 넘어갈 경우 스크롤 생성 (선택사항) */
+        }
+        .category-item {
+            cursor: pointer;
+            padding: 5px;
+            background-color: rgba(255, 255, 255, 0.0);
+            border-bottom: 1px solid #ccc; /* 아래쪽에 1px 두께의 실선을 추가 */
+            padding: 10px; /* 안쪽 여백 설정 */
+            margin: 3px 3px; /* 위아래로 5px, 좌우로는 0 설정 */
+            border-radius: 5px; /* 네모난 박스의 모서리를 둥글게 만듦 */
+            border: 1px solid #0d2e59; /* 테두리 추가 */
+        }
+        .category-item:hover {
+            display: flex;
+            flex-wrap:wrap;
+            background-color: #e0e0e0;
+        }
+        #categoryInput {
+            width: 1000px; /* 원하는 너비 값으로 변경 */
+            height: 30px; /* 원하는 높이 값으로 변경 */
+            /* 다른 스타일 속성 추가 가능 */
+        }
+        select[name="price-range"] {
+            width: 1000px; /* 원하는 너비로 조정 */
+            height: 30px; /* 원하는 높이 값으로 변경 */
+        }
+        select[name="review-range"] {
+            width: 1000px; /* 원하는 너비로 조정 */
+            height: 30px; /* 원하는 높이 값으로 변경 */
+        }
+        select[name="price-range"] option[disabled] {
+            color: rgb(154, 59, 59); /* 변경하고자 하는 색상 */
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(calc(20% - 32px), 1fr)); /* 한 줄에 5개씩 배치, 여백 추가 */
+            gap: 20px; /* 아이템 사이의 간격 설정 */
+            padding: 20px;
+            margin-left: 200px;
+        }
+        .gallery1 {
+            display: grid;
+            gap: 20px; /* 아이템 사이의 간격 설정 */
+            padding: 20px;
+            justify-content: center;
+            text-align: center;
+            margin-left: 150px;
+        }
+
+
+        .item {
+            border: 1px solid #6f6f6f;
+            padding: 10px;
+            text-align: center;
+            margin: 10px; /* 여백을 적절한 값으로 수정 */
+            width: calc(40%); /* 너비를 줄임 */
+            height: 270px;
+            background-color: rgb(255, 255, 255);
+            border-radius: 25px; /* 네모난 박스의 모서리를 둥글게 만듦 */
+        }
+
+        .item img {
+            max-width: 100%;
+            height: auto;
+        }
+        .item a {
+            text-decoration: none; /* 링크의 밑줄 제거 */
+            color: inherit; /* 기본 링크 색상 유지 */
+        }
+
+        /* 첫 번째와 마지막 아이템 조정 */
+        .item:nth-child(4n + 1) {
+            margin-left: 10px; /* 각 줄의 첫 번째 아이템은 왼쪽 여백을 없앰 */
+        }
+
+        .item:nth-child(4n) {
+            margin-right: 0; /* 각 줄의 마지막 아이템은 오른쪽 여백을 없앰 */
+        }
+        #linkInput {
+            width: 1000px; /* 원하는 너비 값으로 변경 */
+            height: 30px; /* 원하는 높이 값으로 변경 */
+            /* 다른 스타일 속성 추가 가능 */
+        }
+        #linkInput {
+            margin-left: 190px; /* 원하는 왼쪽 마진 값 설정 */
+        }
+        .ranking {
+
+            top: 5px;
+            left: 5px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 5px;
+            font-size: 12px;
+            border-radius: 5px;
+        }
+        .additional-content {
+            display: flex;
+
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .additional-details a {
+            cursor: pointer;
+            text-decoration: none;
+            color: blue;
+            margin-right: 5px; /* 간격을 더 좁게 조정 */
+
+        }
+
+        .hidden {
+            display: none;
+            text-align: center;
+        }
+        .contents1 {
+            text-align: center;
+        }
+        .icon_img.contents1 a {
+            text-decoration: none;
+            color: black;
+            background-color: rgb(126, 161, 222);
+            border-radius: 15px;
+            font-size: 30px;
+            padding: 5px 10px; /* 텍스트 주변에 여백을 추가합니다. */
+            color:white;
+            margin-left: 50px;
+        }
+        .container1 {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 700px; /* Set a width for the container to control its size */
+        }
+        form input[type="text"],
+        form input[type="password"],
+        form input[type="date"],
+        form input[type="tel"],
+        form input[type="email"],
+        form select {
+            width: 50%;
+            padding: 10px;
+            margin: 5px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        form input[type="checkbox"] {
+            margin-top: 10px;
+        }
+
+        form button {
+            width: 50%;
+            padding: 10px;
+            background-color: #2a7de1;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        form button:hover {
+            background-color: #1e5cad;
+        }
+
+
+        .logo-small {
+            width: 400%; /* Resizes with the container width */
+            max-width: 200px; /* Limits the maximum size */
+            height: auto;
+        }
+    </style>
+    <head>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="stylesheet" th:href="@{/css/customer/style.css}">
+            <title>정석문고 jungsukbook</title>
+        </head>
+    </head>
+    <header class="top-bar">
+        <div class="con flex h-full">
+            <a href="/" class="logo flex items-center">
+                <img th:src="@{/images/logo_transparent.png}" class="logo-small">
+
+            </a>
+            <div class="flex-grow"></div>
+
+            <ul class="menu-1 flex" >
+                <li><a href="/" class="flex h-full items-center px-4">소개</a></li>
+                <li><a href="/customer/login" id="login-link" class="flex h-full items-center px-4">로그인</a></li>
+                <li><a href="/customer/mypage" class="flex h-full items-center px-4">마이페이지</a></li>
+                <li><a href="/cart/list" class="flex h-full items-center px-4">장바구니</a></li>
+                <li><a href="#" class="flex h-full items-center px-4">문의하기</a></li>
+
+            </ul>
+        </div>
+    </header>
+
+
+
+<body class="center-area custom-body">
+
+<div class="container1">
+    <h2>회원가입</h2>
+    <div class="error" id="registerError"></div>
+    <div class="success" id="registerSuccess"></div>
+        <form method="POST" action="/customer/signup" onsubmit="return register()">
+
+        <input type="text" name="custId" id="registerId" placeholder="ID" onblur="checkIdAvailability()">
+        <div id="idCheckResult" style="font-size: 12px; color: red; text-align: center;"></div>
+
+        <input type="password" name="pwd" id="registerPassword" placeholder="Password" onblur="validatePassword()">
+        <div id="passwordCheckResult" style="font-size: 12px; color: red; text-align: center;"></div>
+
+        <input type="password" name="confirmPwd" id="registerConfirmPassword" placeholder="Confirm Password" onblur="checkPasswordMatch()">
+        <div id="passwordMatchCheck" style="font-size: 12px; color: red; text-align: center;"></div>
+        <input type="text" name="name" id="registerName" placeholder="Name"><br>
+            <label for="registerBirthDate">생년월일</label><br>
+            <input type="date" name="birthDate" id="registerBirthDate" placeholder="Birth Date">
+            <input type="hidden" name="date" id="registrationDate">
+        <input type="tel" name="mobileNum" id="registerMobile" placeholder="Mobile Number">
+        <input type="text" name="mainAddr" id="registerMainAddr" placeholder="Main Address">
+        <select name="gender" id="registerGender">
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+        <input type="email" name="email" id="registerEmail" placeholder="Email">
+            <button type="button" onclick="sendVerificationEmail()">이메일 인증 보내기</button><br>
+            <label for="verificationCode">인증코드 입력:</label><br>
+            <input type="text" id="verificationCode" name="verificationCode" required>
+            <button type="button" onclick="verifyCode()">인증코드 확인</button><br>
+            <p id="verificationResult"></p>
+
+
+
+            <input type="checkbox" name="adultChk" id="registerAdultChk" value="Y"> 이벤트 수신 동의<br>
+        <input type="checkbox" name="withdChk" id="registerWithdChk" value="Y"> Agree to Terms<br>
+
+        <button type="submit" >회원가입</button>
+    </form>
+   </div>
+
+<script>
+    function checkIdAvailability() {
+        const id = document.getElementById('registerId').value.trim();
+        const idCheckResult = document.getElementById('idCheckResult');
+
+        if (!id) {
+            idCheckResult.textContent = '아이디를 입력해주세요.';
+            return;
+        }
+
+        fetch(`/customer/check-id?custId=${encodeURIComponent(id)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.available) {
+                    idCheckResult.style.color = 'green';
+                    idCheckResult.textContent = '사용가능한 아이디입니다!';
+                } else {
+                    idCheckResult.style.color = 'red';
+                    idCheckResult.textContent = '이미 사용중인 아이디입니다.';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                idCheckResult.textContent = 'Error checking ID availability.';
+            });
+    }
+
+    function validatePassword() {
+        const password = document.getElementById('registerPassword').value.trim();
+        const passwordCheckResult = document.getElementById('passwordCheckResult');
+        const passwordPattern = /^(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,15}$/;
+
+        passwordCheckResult.textContent = ''; // Reset the error message
+
+        if (!passwordPattern.test(password)) {
+            passwordCheckResult.style.color = 'red';
+            passwordCheckResult.textContent = '비밀번호는 6~15자여야 하며, 소문자, 숫자, 특수기호를 하나 이상 포함해야 합니다.';
+            return false;
+        } else {
+            passwordCheckResult.style.color = 'green';
+            passwordCheckResult.textContent = '비밀번호가 요구 사항을 충족합니다.';
+            return true;
+        }
+    }
+
+    // 비밀번호 이중체크
+    function checkPasswordMatch() {
+        const password = document.getElementById('registerPassword').value.trim();
+        const confirmPassword = document.getElementById('registerConfirmPassword').value.trim();
+        const passwordMatchCheck = document.getElementById('passwordMatchCheck');
+
+        if (password !== confirmPassword) {
+            passwordMatchCheck.style.color = 'red';
+            passwordMatchCheck.textContent = '비밀번호가 일치하지 않습니다.';
+            return false;
+        } else {
+            passwordMatchCheck.style.color = 'green';
+            passwordMatchCheck.textContent = '비밀번호가 일치합니다.';
+            return true;
+        }
+    }
+    function register() {
+        const custId = document.getElementById('registerId').value.trim();
+        const password = document.getElementById('registerPassword').value.trim();
+        const name = document.getElementById('registerName').value.trim();
+        const birthDate = document.getElementById('registerBirthDate').value;
+        const mobile = document.getElementById('registerMobile').value.trim();
+        const gender = document.getElementById('registerGender').value;
+        const email = document.getElementById('registerEmail').value.trim();
+        const adultChk = document.getElementById('registerAdultChk').checked ? "Y" : "N";
+        const withdChk = document.getElementById('registerWithdChk').checked ? "Y" : "N";
+
+
+        const errorElement = document.getElementById('registerError');
+        const successElement = document.getElementById('registerSuccess');
+        errorElement.textContent = '';
+        successElement.textContent = '';
+
+        if (!id || !password || !name || !birthDate || !mobile || !gender || !email || !withdChk) {
+            errorElement.textContent = 'Please fill out all fields and agree to the terms.';
+            return;
+        }
+
+        if (password.length < 6) {
+            errorElement.textContent = 'Password must be at least 6 characters.';
+            return;
+        }
+
+        if (!validateEmail(email)) {
+            errorElement.textContent = 'Please enter a valid email address.';
+            return;
+        }
+
+        successElement.textContent = 'Account created successfully! Redirecting to login...';
+        setTimeout(() => {
+            window.location.href = "/customer/login";
+        }, 2000);
+    }
+    function setRegistrationDate() {
+        const now = new Date();
+        const formattedDate = now.toISOString(); // Format as YYYY-MM-DDTHH:MM:SS.SSSZ
+
+        // Set the value of the hidden input field
+        document.getElementById('registrationDate').value = formattedDate;
+    }
+
+    // Call the function when the window loads
+    window.onload = setRegistrationDate;
+
+    function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    }
+
+    //이메일 인증코드 전송
+    function sendVerificationEmail() {
+        var email = document.getElementById('registerEmail').value;
+
+        fetch('/customer/sendMail', {
+
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: email })
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();  // Handle the response as plain text
+                } else {
+                    throw new Error("Failed to send verification code");
+                }
+            })
+            .then(data => {
+                alert(data);  // Alert the success message from the server
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message);  // Show error message in case of failure
+            });
+    }
+
+
+    //이메일 인증코드 확인
+    function verifyCode() {
+        const userCode = document.getElementById('verificationCode').value;
+
+        fetch('/customer/mailCheck?userNumber=' + encodeURIComponent(userCode))
+            .then(response => {
+                // Check if the response is OK (status code 200-299)
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.text(); // Expecting a text response now
+            })
+            .then(data => {
+                // Update the verification result based on the server's response
+                const verificationResultElement = document.getElementById('verificationResult');
+                if (data === "Verification successful!") {
+                    verificationResultElement.innerText = "Verification successful!";
+                    verificationResultElement.style.color = "green"; // Optional: Make the text green on success
+                } else {
+                    verificationResultElement.innerText = "Incorrect code. Please try again.";
+                    verificationResultElement.style.color = "red"; // Optional: Make the text red on failure
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('verificationResult').innerText = "An error occurred during verification. Please try again later.";
+            });
+    }
+</script>
+
+</body></html>
