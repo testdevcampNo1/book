@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class OrderFormDto {
     private int custId = -1; // 비회원 -1
@@ -25,8 +25,9 @@ public class OrderFormDto {
     private String isAllDawnDelivery;
     private String dlvDate;
     private String defaultChk;
-    private String name;
+    private String ordId;
     // 배송 테이블에 저장할 정보
+    private String name;
     private String email;
     private String addressName;
     private String telNum;

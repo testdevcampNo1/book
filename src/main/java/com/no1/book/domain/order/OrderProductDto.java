@@ -5,11 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class OrderProductDto {
     private int ordProdId;
-    private int ordId;
+    private String ordId;
     private String prodId;
     private String ordProdStusCode;
     private String codeType;
@@ -30,8 +31,7 @@ public class OrderProductDto {
 
     // regDate, upDate - 현재시간으로 추가
     // cancelableDate - regDate + 7일
-    @Builder
-    public OrderProductDto(int ordProdId, int ordId, String prodId, String ordProdStusCode, String codeType, String ebookChk, String name, int ordQty, String img, String prodPageLink, String isDawnDelivery, int totalProdPrice, int totalDiscPrice, int totalPayPrice, String regId, String upId) {
+    public OrderProductDto(int ordProdId, String ordId, String prodId, String ordProdStusCode, String codeType, String ebookChk, String name, int ordQty, String img, String prodPageLink, String isDawnDelivery, int totalProdPrice, int totalDiscPrice, int totalPayPrice, String regId, String upId) {
         this.ordProdId = ordProdId;
         this.ordId = ordId;
         this.prodId = prodId;
@@ -49,100 +49,4 @@ public class OrderProductDto {
         this.regId = regId;
         this.upId = upId;
     }
-
-    public OrderProductDto(int ordProdId, int ordId, String prodId, String ordProdStusCode, String codeType, String ebookChk, String isDawnDelivery, String name, int ordQty, String img, String prodPageLink, int totalProdPrice, int totalDiscPrice, int totalPayPrice, String cancelableDate, String regDate, String regId, String upDate, String upId) {
-        this.ordProdId = ordProdId;
-        this.ordId = ordId;
-        this.prodId = prodId;
-        this.ordProdStusCode = ordProdStusCode;
-        this.codeType = codeType;
-        this.ebookChk = ebookChk;
-        this.isDawnDelivery = isDawnDelivery;
-        this.name = name;
-        this.ordQty = ordQty;
-        this.img = img;
-        this.prodPageLink = prodPageLink;
-        this.totalProdPrice = totalProdPrice;
-        this.totalDiscPrice = totalDiscPrice;
-        this.totalPayPrice = totalPayPrice;
-        this.cancelableDate = cancelableDate;
-        this.regDate = regDate;
-        this.regId = regId;
-        this.upDate = upDate;
-        this.upId = upId;
-    }
-
-    public int getOrdProdId() {
-        return ordProdId;
-    }
-
-    public int getOrdId() {
-        return ordId;
-    }
-
-    public String getProdId() {
-        return prodId;
-    }
-
-    public String getOrdProdStusCode() {
-        return ordProdStusCode;
-    }
-
-    public String getCodeType() {
-        return codeType;
-    }
-
-    public String getEbookChk() {
-        return ebookChk;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getOrdQty() {
-        return ordQty;
-    }
-
-    public String getImg() {
-        return img;
-    }
-
-    public String getProdPageLink() {
-        return prodPageLink;
-    }
-
-    public int getTotalProdPrice() {
-        return totalProdPrice;
-    }
-
-    public int getTotalDiscPrice() {
-        return totalDiscPrice;
-    }
-
-    public int getTotalPayPrice() {
-        return totalPayPrice;
-    }
-
-    public String getCancelableDate() {
-        return cancelableDate;
-    }
-
-    public String getRegDate() {
-        return regDate;
-    }
-
-    public String getRegId() {
-        return regId;
-    }
-
-    public String getUpDate() {
-        return upDate;
-    }
-
-    public String getUpId() {
-        return upId;
-    }
-
-    public String getIsDawnDelivery() { return isDawnDelivery; }
 }

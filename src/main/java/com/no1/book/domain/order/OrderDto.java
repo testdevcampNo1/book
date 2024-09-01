@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class OrderDto {
-    private int ordId; // auto increment
+    private String ordId; // auto increment
     private int custId;
     private String ordStusCode;
     private String codeType;
@@ -26,7 +26,8 @@ public class OrderDto {
     private String upId;
 
     // regDate, upDate, ordDate - 현재시간으로 추가
-    public OrderDto(int custId, String ordStusCode, String codeType, String custChk, String ordReqMsg, int totalProdPrice, int totalDiscPrice, int dlvPrice, int totalPayPrice, String pwd, String regId, String upId) {
+    public OrderDto(String ordId, int custId, String ordStusCode, String codeType, String custChk, String ordReqMsg, int totalProdPrice, int totalDiscPrice, int dlvPrice, int totalPayPrice, String pwd, String regId, String upId) {
+        this.ordId = ordId;
         this.custId = custId;
         this.ordStusCode = ordStusCode;
         this.codeType = codeType;
@@ -39,69 +40,5 @@ public class OrderDto {
         this.pwd = pwd;
         this.regId = regId;
         this.upId = upId;
-    }
-
-    public int getOrdId() {
-        return ordId;
-    }
-
-    public int getCustId() {
-        return custId;
-    }
-
-    public String getOrdStusCode() {
-        return ordStusCode;
-    }
-
-    public String getCodeType() {
-        return codeType;
-    }
-
-    public String getCustChk() {
-        return custChk;
-    }
-
-    public String getOrdDate() {
-        return ordDate;
-    }
-
-    public String getOrdReqMsg() {
-        return ordReqMsg;
-    }
-
-    public int getTotalProdPrice() {
-        return totalProdPrice;
-    }
-
-    public int getTotalDiscPrice() {
-        return totalDiscPrice;
-    }
-
-    public int getDlvPrice() {
-        return dlvPrice;
-    }
-
-    public int getTotalPayPrice() {
-        return totalPayPrice;
-    }
-
-    public String getPwd() {
-        return pwd;
-    }
-
-    public String getRegDate() {
-        return regDate;
-    }
-
-    public String getRegId() {
-        return regId;
-    }
-
-    public String getUpDate() {
-        return upDate;
-    }
-
-    public String getUpId() {
-        return upId;
     }
 }
