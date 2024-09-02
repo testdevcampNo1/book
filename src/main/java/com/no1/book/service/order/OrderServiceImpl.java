@@ -65,8 +65,10 @@ public class OrderServiceImpl implements OrderService {
         orderFormDto.setCustId(custId);
 
         if(!custId.isEmpty()) {
-            // 회원 정보, 기본 배송지 조회
+            // 회원 정보 조회
             getCustomerInfo(custId, orderFormDto);
+
+            // 기본 배송지 조회
 //            getAddressInfo(custId, orderFormDto);
         }
 
@@ -82,10 +84,12 @@ public class OrderServiceImpl implements OrderService {
     // 회원 정보 DB 조회
     void getCustomerInfo(String custId, OrderFormDto orderFormDto) {
         try {
-            CustomerDto customerDto = customerDao.selectCustomer(String.valueOf(custId));
+            CustomerDto customerDto = customerDao.selectCustomer(custId);
 
             orderFormDto.setEmail(customerDto.getEmail()); // 회원 이메일
             orderFormDto.setName(customerDto.getName()); // 회원 이름
+            orderFormDto.setTelNum(customerDto.getMobileNum()); // 회원 전화번호
+
         } catch (DataAccessException e) {
             throw new SystemException("회원 정보 조회 실패했습니다.");
         }
@@ -155,14 +159,15 @@ public class OrderServiceImpl implements OrderService {
             }
 
             // 상품 상태 조회
-//            if(!isProductAvailable(product.getProdId())) throw new InvalidOrderException("구매 불가능한 상품입니다. " + product.getProdId());
+            if(!isProductAvailable(product.getProdId())) throw new InvalidOrderException("구매 불가능한 상품입니다. " + product.getProdId());
 
             // 상품 금액 변동 여부 조회
-//            if(isChangeProductPrice(product.getProdId(), product.getProdBasePrice())) throw new InvalidOrderException("구매 불가능한 상품입니다. " + product.getProdId());
+            if(isChangeProductPrice(product.getProdId(), product.getProdBasePrice())) throw new InvalidOrderException("구매 불가능한 상품입니다. " + product.getProdId());
         }
 
         orderFormDto.setTotalProdBasePrice(totalProdBasePrice);
         orderFormDto.setTotalDiscPrice(totalDiscPrice);
+        orderFormDto.setTotalPayPrice(totalProdBasePrice - totalDiscPrice);
         orderFormDto.setTotalOrdQty(totalOrderQuantity);
         orderFormDto.setIsAllDawnDelivery(isAllDawnDelivery ? "Y" : "N");
         orderFormDto.setIsAllEbook(isAllEbook ? "Y" : "N");
@@ -269,7 +274,7 @@ public class OrderServiceImpl implements OrderService {
 
         String ordId = orderNumGenerator();
         orderFormDto.setOrdId(ordId);
-        String regId = !orderFormDto.getCustId().isEmpty() ? String.valueOf(orderFormDto.getCustId()) : orderFormDto.getEmail();
+        String regId = !orderFormDto.getCustId().isEmpty() ? orderFormDto.getCustId() : orderFormDto.getEmail();
         String custCheck = !orderFormDto.getCustId().isEmpty() ? "Y" : "N";
 
         LocalDateTime now = LocalDateTime.now();
@@ -323,7 +328,14 @@ public class OrderServiceImpl implements OrderService {
     public void saveOrderStatus(String ordId) {
         String regId = getRegId(ordId);
 
-        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(ordId, null, "RCVD", "결제 승인", regId, regId);
+        OrderStatusHistoryDto orderStatusHistoryDto = OrderStatusHistoryDto.builder()
+                .ordId(ordId)
+                .befOrdStusCode(null)
+                .currOrdStusCode("RCVD")
+                .chgStusReason("결제 승인")
+                .regId(regId)
+                .upId(regId)
+                .build();
 
         try {
             orderStatusHistoryDao.createOrderStatusHistory(orderStatusHistoryDto);

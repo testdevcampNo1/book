@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Service
 public interface OrderHistoryService {
-    Map<String, List<OrderProductDto>> getCustomerOrderHistoryList();
+    Map<String, List<OrderProductDto>> getCustomerOrderHistoryList(String custId);
     OrderProductDto getOrderProductDto(int ordProdId);
     void cancelOrder(int ordProdId);
 }

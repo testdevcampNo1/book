@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -47,8 +48,7 @@ class OrderStatusHistoryDaoTest {
     @Test
     void insertOrderStatusHistory() {
         String ordId = orderDao.getAllOrder().get(0).getOrdId();
-        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(ordId, null, "주문완료", null, "1", "1");
-        orderStatusHistoryDao.createOrderStatusHistory(orderStatusHistoryDto);
+        orderStatusHistoryDao.createOrderStatusHistory(getTestOrderStatusHistoryDto(ordId));
         assertEquals(countAllOrderStatusHistory(), 1);
     }
 
@@ -57,8 +57,7 @@ class OrderStatusHistoryDaoTest {
     void getOrderStatusHistory() {
         String ordId = orderDao.getAllOrder().get(0).getOrdId();
         // 주문상태이력 추가
-        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(ordId, null, "주문완료", null, "1", "1");
-        orderStatusHistoryDao.createOrderStatusHistory(orderStatusHistoryDto);
+        orderStatusHistoryDao.createOrderStatusHistory(getTestOrderStatusHistoryDto(ordId));
         assertEquals(countAllOrderStatusHistory(), 1);
 
         // 조회
@@ -72,8 +71,7 @@ class OrderStatusHistoryDaoTest {
     void getOrderStatusHistoryByOrdId() {
         String ordId = orderDao.getAllOrder().get(0).getOrdId();
         // 주문상태이력 추가
-        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(ordId, null, "주문완료", null, "1", "1");
-        orderStatusHistoryDao.createOrderStatusHistory(orderStatusHistoryDto);
+        orderStatusHistoryDao.createOrderStatusHistory(getTestOrderStatusHistoryDto(ordId));
         assertEquals(countAllOrderStatusHistory(), 1);
 
         // 조회
@@ -86,13 +84,14 @@ class OrderStatusHistoryDaoTest {
     @Test
     void getCustomerOrderStatusHistory() {
         String ordId = orderDao.getAllOrder().get(0).getOrdId();
+        String custId = orderDao.getAllOrder().get(0).getCustId();
         // 주문상태이력 추가
-        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(ordId, null, "주문완료", null, "1", "1");
+        OrderStatusHistoryDto orderStatusHistoryDto = getTestOrderStatusHistoryDto(ordId);
         orderStatusHistoryDao.createOrderStatusHistory(orderStatusHistoryDto);
         assertEquals(countAllOrderStatusHistory(), 1);
 
         // 조회
-        List<OrderStatusHistoryDto> list = orderStatusHistoryDao.getCustomerOrderStatusHistory(1);
+        List<OrderStatusHistoryDto> list = orderStatusHistoryDao.getCustomerOrderStatusHistory(custId);
         assertNotNull(list);
         assertEquals(countAllOrderStatusHistory(), 1);
     }
@@ -102,7 +101,7 @@ class OrderStatusHistoryDaoTest {
     void deleteOrderStatusHistory() {
         String ordId = orderDao.getAllOrder().get(0).getOrdId();
         // 주문상태이력 추가
-        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(ordId, null, "주문완료", null, "1", "1");
+        OrderStatusHistoryDto orderStatusHistoryDto = getTestOrderStatusHistoryDto(ordId);
         orderStatusHistoryDao.createOrderStatusHistory(orderStatusHistoryDto);
         assertEquals(countAllOrderStatusHistory(), 1);
 
@@ -116,7 +115,7 @@ class OrderStatusHistoryDaoTest {
     void deleteAllOrderStatusHistory() {
         String ordId = orderDao.getAllOrder().get(0).getOrdId();
         // 주문상태이력 추가
-        OrderStatusHistoryDto orderStatusHistoryDto = new OrderStatusHistoryDto(ordId, null, "주문완료", null, "1", "1");
+        OrderStatusHistoryDto orderStatusHistoryDto = getTestOrderStatusHistoryDto(ordId);
         orderStatusHistoryDao.createOrderStatusHistory(orderStatusHistoryDto);
         assertEquals(countAllOrderStatusHistory(), 1);
 
@@ -142,15 +141,7 @@ class OrderStatusHistoryDaoTest {
 
     // 주문 번호 생성
     public synchronized String orderNumGenerator() {
-        try {
-            Thread.sleep(1);
-            LocalDateTime srcTime = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSS");
-            return srcTime.format(formatter);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
+        return UUID.randomUUID().toString();
     }
 
     // order date
@@ -164,7 +155,7 @@ class OrderStatusHistoryDaoTest {
     private OrderDto getTestOrderDto() {
         return OrderDto.builder()
                 .ordId(orderNumGenerator())
-                .custId(1)
+                .custId("1")
                 .custChk("Y")
                 .pwd("")
                 .ordStusCode("RCVD")
@@ -176,6 +167,17 @@ class OrderStatusHistoryDaoTest {
                 .totalPayPrice(22500)
                 .regId("1")
                 .upId("1")
+                .build();
+    }
+
+    private OrderStatusHistoryDto getTestOrderStatusHistoryDto(String ordId) {
+        return OrderStatusHistoryDto.builder()
+                .ordId(ordId)
+                .befOrdStusCode(null)
+                .currOrdStusCode("주문완료")
+                .chgStusReason(null)
+                .regId("tester")
+                .upId("tester")
                 .build();
     }
 }
