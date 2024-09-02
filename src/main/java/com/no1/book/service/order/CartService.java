@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface CartService {
-    List<CartProdDto> read(Integer custId) throws Exception;
+    List<CartProdDto> read(String custId) throws Exception;
 
     Integer insertItem(CartDto cartDto) throws Exception;
 

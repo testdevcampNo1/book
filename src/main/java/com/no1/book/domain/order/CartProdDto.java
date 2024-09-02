@@ -3,7 +3,7 @@ package com.no1.book.domain.order;
 import java.util.*;
 
 public class CartProdDto {
-    Integer custId;
+    String custId;
     String prodId;
     Integer itemQty;
     String imageId;
@@ -22,7 +22,7 @@ public class CartProdDto {
     public CartProdDto() {
     }
 
-    public CartProdDto(Integer custId, String prodId, Integer salePrice, String registerDate) {
+    public CartProdDto(String custId, String prodId, Integer salePrice, String registerDate) {
         this.custId = custId;
         this.prodId = prodId;
         this.salePrice = salePrice;
@@ -30,11 +30,11 @@ public class CartProdDto {
     }
 
 
-    public Integer getCustId() {
+    public String getCustId() {
         return custId;
     }
 
-    public void setCustId(Integer custId) {
+    public void setCustId(String custId) {
         this.custId = custId;
     }
 

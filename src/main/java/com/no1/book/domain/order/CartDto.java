@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class CartDto {
-    Integer custId;
+    String custId;
     Integer itemQty;
     String prodId;
     String registerDate;
@@ -12,18 +12,18 @@ public class CartDto {
 
     public CartDto() {}
 
-    public CartDto(Integer custId, String prodId, Integer itemQty) {
+    public CartDto(String custId, String prodId, Integer itemQty) {
         this.custId  = custId;
         this.prodId  = prodId;
         this.itemQty = itemQty;
 
     }
 
-    public Integer getCustId() {
+    public String getCustId() {
         return custId;
     }
 
-    public void setCustId(Integer custId) {
+    public void setCustId(String custId) {
         this.custId = custId;
     }
 
