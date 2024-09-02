@@ -19,9 +19,12 @@ package com.no1.book.service.product;
  */
 
 import com.no1.book.dao.product.AuthorDao;
+import com.no1.book.dao.product.CustomerProductDao;
 import com.no1.book.domain.product.AuthorDto;
+import com.no1.book.domain.product.CustomerProductDto;
 import com.no1.book.domain.product.ProductDto;
 import com.no1.book.dao.product.ProductDao;
+import com.no1.book.domain.product.SearchCondition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +39,8 @@ public class ProductServiceImpl implements ProductService {
     private ProductDao productDao;
     @Autowired
     private AuthorDao authorDao;
+    @Autowired
+    private CustomerProductDao customerProductDao;
 
     @Override
     public int addProduct(ProductDto dto) throws Exception {
@@ -97,6 +102,36 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public int plusSales(String prodId) throws Exception {
         return productDao.plusSales(prodId);
+    }
+
+    @Override
+    public List<ProductDto> getPage(SearchCondition sc) throws Exception {
+        return productDao.getPage(sc);
+    }
+
+    @Override
+    public int listSize(SearchCondition sc) throws Exception {
+        return productDao.getPageSize(sc);
+    }
+
+    @Override
+    public int insertCustomerProduct(CustomerProductDto dto) throws Exception {
+        return customerProductDao.insertCustomerProduct(dto);
+    }
+
+    @Override
+    public CustomerProductDto getCustomerProduct(String custId, String prodId) throws Exception {
+        return customerProductDao.selectCustomerProduct(custId, prodId);
+    }
+
+    @Override
+    public int plusReviewCnt(CustomerProductDto dto) throws Exception {
+        return customerProductDao.plusReviewCnt(dto);
+    }
+
+    @Override
+    public int minusReviewCnt(CustomerProductDto dto) throws Exception {
+        return customerProductDao.minusReviewCnt(dto);
     }
 
 

@@ -1,6 +1,7 @@
 package com.no1.book.dao.product;
 
 import com.no1.book.domain.product.ProductDto;
+import com.no1.book.domain.product.SearchCondition;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -412,7 +413,27 @@ class ProductDaoTest {
         // 3단계 검증 -> 판매량이 1이면 통과
         assertEquals(1, productDao.select("PROD_IMSI").getTotalSales());
 
-//        productDao.delete("PROD_IMSI");
+        productDao.delete("PROD_IMSI");
+    }
+
+    @Test
+    void getPageTest() throws Exception {
+        // 1단계 데이터 선택 -> db에 존재하는 상품 레코드들 중 키워드 "가"를 prod_name에 포함하는 것들
+        // (db 상황을 가정하지 않더라도 deleteAll() 할 필요성 없어 보임
+        Map map = new HashMap();
+        map.put("sortKey", "price");
+        map.put("sortOrder", "asc");
+        map.put("keyword", "가");
+
+        // 2단계 데이터 처리 -> 해당하는 페이지의 상품 리스트 추출
+        SearchCondition sc = new SearchCondition(map);
+        List<ProductDto> selectedPage = productDao.getPage(sc);
+
+        // 3단계 검증 -> 선택된 리스트의 dto들의 상품 이름이 "가"를 포함하고 있어야 통과
+        for (int i = 0; i < selectedPage.size(); i++) {
+            assertTrue(selectedPage.get(i).getProdName().contains("가"));
+            System.out.println(selectedPage.get(i).getProdName());
+        }
     }
 
 

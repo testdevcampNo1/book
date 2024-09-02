@@ -107,6 +107,7 @@
             pblcr_review     = #{pblcrReview},
             image_id         = #{imageId},
             dawn_deli_chk    = #{dawnDeliChk},
+            star_avg         = #{starAvg},
             ord_chk_code     = #{ordChkCode},
             cate_code        = #{cateCode},
             up_date          = now(),
@@ -182,4 +183,46 @@
         where prod_id = #{prodId};
     </update>
 
+    <select id="getPage" parameterType="com.no1.book.domain.product.SearchCondition"
+            resultType="com.no1.book.domain.product.ProductDto">
+        SELECT *
+        FROM product
+        WHERE 1=1
+        <if test="cateKey != null and cateKey != ''">
+            AND cate_code LIKE CONCAT(#{cateKey}, '%')
+        </if>
+        AND product.prod_name like concat('%', #{keyword}, '%')
+        ORDER BY
+        <choose>
+            <when test="sortKey == 'price'">
+                prod_base_price
+            </when>
+            <when test="sortKey == 'sales'">
+                total_sales
+            </when>
+            <otherwise>
+                reg_date
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="sortOrder == 'desc'">
+                DESC
+            </when>
+            <otherwise>
+                ASC
+            </otherwise>
+        </choose>
+        ,prod_name asc
+        LIMIT #{offset}, #{pageSize}
+    </select>
+
+    <select id="getPageSize" parameterType="com.no1.book.domain.product.SearchCondition" resultType="int">
+        SELECT count(*)
+        FROM product
+        WHERE 1=1
+        <if test="cateKey != null and cateKey != ''">
+            AND cate_code LIKE CONCAT(#{cateKey}, '%')
+        </if>
+        AND prod_name like concat('%', #{keyword}, '%')
+    </select>
 </mapper>

@@ -21,13 +21,13 @@ a:hover {
     background-color: #343a40;
     color: white;
     position: fixed;
-    top: 0;
+    top: 100px; /* 헤더 아래로 사이드바를 위치시키기 위해 설정 */
     left: 0;
-    height: 100%;
+    height: calc(100% - 100px); /* 헤더 높이를 빼서 사이드바 높이 설정 */
     padding: 20px;
     overflow-y: auto;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    z-index: 1200; /* 모든 요소들보다 위에 위치하도록 z-index를 높게 설정 */
+    z-index: 1000;
 }
 
 .sidebar ul {
@@ -67,23 +67,50 @@ a:hover {
 
 /* Content Styles */
 .content {
-    margin-left: 270px;
+    margin-left: 270px; /* 사이드바 너비만큼 왼쪽 마진 설정 */
     padding: 20px;
+    margin-top: 100px; /* 헤더 높이만큼 위 마진 설정 */
 }
 
-.sort-form {
+/* Search and Sort Container */
+.search-and-sort {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
 }
 
-.sort-options select {
+/* Search Form */
+.search-form {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
     margin-right: 10px;
-    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+/* Sort Form */
+.sort-form {
+    display: flex;
+    align-items: center;
+}
+
+.sort-options select, .sort-options button {
+    margin-right: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
 }
 
 .sort-options button {
-    padding: 5px 10px;
+    margin-right: 0;
 }
 
 /* Product Grid */
@@ -185,16 +212,13 @@ a:hover {
 /* Pagination */
 .pagination {
     display: flex;
-    justify-content: center; /* 수평 가운데 정렬 */
-    align-items: center; /* 수직 가운데 정렬 (필요시) */
+    justify-content: center;
+    align-items: center;
     margin-top: 30px;
-    position: relative; /* z-index를 적용하기 위해 relative로 설정 */
-    z-index: 1100; /* 다른 요소들보다 앞에 오도록 높은 z-index 설정 */
     margin-bottom: 30px;
     padding-bottom: 25px;
 }
 
-/* 기본 페이지 버튼 스타일 */
 .pagination a {
     display: inline-block;
     margin: 0 5px;
@@ -206,37 +230,62 @@ a:hover {
     text-decoration: none;
 }
 
-/* 선택된 페이지 버튼 스타일 */
 .pagination a.active {
-    background-color: #007bff; /* 선택된 페이지의 배경색 */
-    color: white; /* 선택된 페이지의 텍스트 색상 */
-    border-color: #007bff; /* 선택된 페이지의 테두리 색상 */
-    font-weight: bold; /* 선택된 페이지의 텍스트를 굵게 */
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    font-weight: bold;
 }
 
 .pagination a:hover {
     background-color: #007bff;
     color: white;
 }
-/* Manage Link */
-.manage-link {
-    text-align: right;
-    margin: 20px 0;
-    position: relative; /* z-index를 적용하기 위해 relative로 설정 */
-    z-index: 1100; /* 다른 요소들보다 앞에 오도록 높은 z-index 설정 */
+
+/* Content Styles */
+.content {
+    margin-left: 130px; /* 사이드바 너비만큼 왼쪽 마진을 설정 */
+    padding: 20px;
+    margin-top: 100px; /* 헤더 높이만큼 위 마진 설정 */
 }
 
-.manage-link a {
-    color: #dc3545;
-    font-weight: bold;
-    padding: 5px 10px;
-    border: 1px solid #dc3545;
+/* Search and Sort Container */
+.search-and-sort {
+    display: flex;
+    justify-content: center; /* 컨테이너를 화면 중앙으로 정렬 */
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 20px; /* 검색창과 정렬 버튼 간격 조정 */
+}
+
+/* Search Form */
+.search-form {
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    margin-right: 10px;
     border-radius: 5px;
-    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
 }
 
-.manage-link a:hover {
-    background-color: #dc3545;
-    color: white;
+/* Sort Form */
+.sort-form {
+    display: flex;
+    align-items: center;
 }
 
+.sort-options select, .sort-options button {
+    margin-right: 10px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+.sort-options button {
+    margin-right: 0;
+}

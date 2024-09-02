@@ -2,12 +2,37 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Product List</title>
+
+
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/product/header.css">
     <link rel="stylesheet" href="/css/product/productList.css">
+
+
 </head>
 <body>
 
+<header class="top-bar">
+    <div class="con flex h-full">
+        <a href="/" class="logo flex items-center">
+
+            <img src="https://github.com/user-attachments/assets/d24c0e43-dc15-4df9-ba31-284d4a569caa" alt="로고"
+                 class="logo-small">
+        </a>
+        <div class="flex-grow"></div>
+
+        <ul class="menu-1 flex" style="max-width: 600px">
+            <li><a href="/" class="flex h-full items-center px-4">소개</a></li>
+            <li><a href="/customer/login" id="login-link" class="flex h-full items-center px-4">로그인</a></li>
+            <li><a href="/customer/mypage" class="flex h-full items-center px-4">마이페이지</a></li>
+            <li><a href="/cart/list" class="flex h-full items-center px-4">장바구니</a></li>
+            <li><a href="#" class="flex h-full items-center px-4">문의하기</a></li>
+
+        </ul>
+    </div>
+</header>
+
+<!-- 카테고리 사이드바 -->
 <div class="sidebar">
     <ul>
         <li>
@@ -36,69 +61,98 @@
 </div>
 
 <div class="content">
-    <form th:action="@{/product/list}" method="get" class="sort-form">
-        <input type="hidden" name="cateKey" th:value="${cateKey}"/>
-        <div class="sort-options">
-            <select name="sortKey">
-                <option value="date" th:selected="${sortKey == 'date'}">등록 날짜</option>
-                <option value="sales" th:selected="${sortKey == 'sales'}">판매량</option>
-                <option value="price" th:selected="${sortKey == 'price'}">가격</option>
-            </select>
-            <select name="sortOrder">
-                <option value="desc" th:selected="${sortOrder == 'desc'}">↓</option>
-                <option value="asc" th:selected="${sortOrder == 'asc'}">↑</option>
-            </select>
-            <button type="submit" class="btn btn-primary">정렬</button>
-        </div>
-    </form>
-    <br>
 
-    <div class="product-grid">
-        <div class="product-card" th:each="product : ${prodList}">
-            <a th:href="@{/product/detail(prodId=${product.prodId})}" class="product-card-link">
-                <img th:src="@{/images/product/imsi.png}" alt="상품 이미지" class="product-image">
-                <div class="product-details">
-                    <h2 class="product-title" th:text="${product.prodName}"></h2>
-                    <p class="product-description" th:text="${product.smry}"></p>
-                    <div class="product-pricing">
-                        <span class="product-base-price" th:text="${product.prodBasePrice}"></span>
-                        <span class="product-disc-rate" th:text="${product.discRate}+'%'"></span>
-                        <br>
-                        <span class="product-price" th:text="${'-> '+product.salePrice}+'원'"></span>
-                    </div>
-                    <div class="product-meta">
-                        <span class="product-sales" th:text="'판매량: ' + ${product.totalSales}"></span>
-                        <span class="product-rating" th:text="'별점: ' + ${product.starAvg}"></span>
-                        <span class="product-date" th:text="${product.regDate}"></span>
-                    </div>
+    <div class="content">
+
+        <!-- 검색창 및 정렬 -->
+        <div class="search-and-sort">
+            <form th:action="@{/product/list}" method="get" class="search-form">
+                <input type="hidden" name="cateKey" th:value="${cateKey}"/>
+                <input type="text" name="keyword" placeholder="검색어를 입력하세요" th:value="${keyword}"
+                       class="form-control search-input">
+                <button type="submit" class="btn btn-primary">검색</button>
+            </form>
+
+            <form th:action="@{/product/list}" method="get" class="sort-form">
+                <input type="hidden" name="cateKey" th:value="${cateKey}"/>
+                <input type="hidden" name="keyword" th:value="${keyword}"/>
+                <div class="sort-options">
+                    <select name="sortKey">
+                        <option value="date" th:selected="${sortKey == 'date'}">등록 날짜</option>
+                        <option value="sales" th:selected="${sortKey == 'sales'}">판매량</option>
+                        <option value="price" th:selected="${sortKey == 'price'}">가격</option>
+                    </select>
+                    <select name="sortOrder">
+                        <option value="desc" th:selected="${sortOrder == 'desc'}">↓</option>
+                        <option value="asc" th:selected="${sortOrder == 'asc'}">↑</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">정렬</button>
                 </div>
-            </a>
+            </form>
+        </div>
+        <br>
+        <br>
+
+        <!-- 상품 리스트 -->
+        <div class="product-grid">
+            <div class="product-card" th:each="product : ${prodList}">
+                <a th:href="@{/product/detail(prodId=${product.prodId})}" class="product-card-link">
+                    <!--                <img th:src="@{/images/product/imsi.png}" alt="상품 이미지" class="product-image">-->
+                    <!-- 이미지가 존재하는 경우 -->
+                    <img th:if="${product.imageId != null}" th:src="@{'/images/product/' + ${product.imageId}}"
+                         alt="상품 이미지" class="product-image">
+                    <!-- 이미지가 존재하지 않는 경우 기본 이미지를 표시 -->
+                    <img th:unless="${product.imageId != null}" th:src="@{'/images/product/imsi.png'}" alt="기본 이미지"
+                         class="product-image">
+                    <div class="product-details">
+                        <h2 class="product-title" th:text="${product.prodName}"></h2>
+                        <p class="product-description" th:text="${product.smry}"></p>
+                        <div class="product-pricing">
+                            <span class="product-base-price" th:text="${product.prodBasePrice}"></span>
+                            <span class="product-disc-rate" th:text="${product.discRate}+'%'"></span>
+                            <br>
+                            <span class="product-price" th:text="${'-> '+product.salePrice}+'원'"></span>
+                        </div>
+                        <div class="product-meta">
+                            <span class="product-sales" th:text="'판매량: ' + ${product.totalSales}"></span>
+                            <span class="product-rating"
+                                  th:text="${product.starAvg} ? '별점: ' + ${product.starAvg} + ' / 5' : '별점 없음'"></span>
+                            <span class="product-date" th:text="${product.regDate}"></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
-</div>
 
-<div th:if="${admin}=='admin'" class="manage-link">
-    <a th:href="@{/product/manage}">Manage</a>
-</div>
+    <div class="manage-link">
+        <a th:href="@{http://127.0.0.1:5000/}">Chatbot</a>
+    </div>
 
-<nav class="pagination">
+    <!-- 상품관리 버튼 -->
+    <div th:if="${admin}=='admin'" class="manage-link">
+        <a th:href="@{/product/manage}">Manage</a>
+    </div>
+
+    <!-- 페이지 네비게이션바 -->
+    <nav class="pagination">
     <span th:if="${ph.showPrev}">
         <a th:href="@{/product/list(cateKey=${cateKey}, sortKey=${sortKey}, sortOrder=${sortOrder}, page=${ph.beginPage-1}, pageSize=${ph.pageSize})}">
             &lt;
         </a>
     </span>
 
-    <span th:if="${ph.totalCnt > 0}" th:each="i : ${#numbers.sequence(ph.beginPage, ph.endPage)}">
-        <a th:href="@{/product/list(cateKey=${cateKey}, sortKey=${sortKey}, sortOrder=${sortOrder}, page=${i}, pageSize=${ph.pageSize})}"
+        <span th:if="${ph.totalCnt > 0}" th:each="i : ${#numbers.sequence(ph.beginPage, ph.endPage)}">
+        <a th:href="@{/product/list(cateKey=${cateKey},keyword=${keyword}, sortKey=${sortKey}, sortOrder=${sortOrder}, page=${i}, pageSize=${ph.pageSize})}"
            th:text="${i}" th:classappend="${ph.page == i} ? 'active' : ''"></a>
     </span>
 
-    <span th:if="${ph.showNext}">
+        <span th:if="${ph.showNext}">
         <a th:href="@{/product/list(cateKey=${cateKey}, sortKey=${sortKey}, sortOrder=${sortOrder}, page=${ph.endPage+1}, pageSize=${ph.pageSize})}">
             &gt;
         </a>
     </span>
-</nav>
+    </nav>
 
 </body>
 </html>

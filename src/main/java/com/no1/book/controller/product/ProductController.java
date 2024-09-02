@@ -2,15 +2,21 @@ package com.no1.book.controller.product;
 
 import com.no1.book.domain.product.AuthorDto;
 import com.no1.book.domain.product.CategoryDto;
+import com.no1.book.domain.product.CustomerProductDto;
 import com.no1.book.domain.product.PageHandler;
 import com.no1.book.domain.product.ProductDto;
+import com.no1.book.domain.product.SearchCondition;
 import com.no1.book.service.product.AuthorService;
 import com.no1.book.service.product.CategoryService;
 import com.no1.book.service.product.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,8 +28,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +52,7 @@ public class ProductController {
     AuthorService authorService;
 
     @GetMapping("/list")
-    public String list(HttpSession session, Integer page, Integer pageSize, String sortKey, String sortOrder, String cateKey, Model m) throws Exception {
+    public String list(HttpSession session, Integer page, String keyword, Integer pageSize, String sortKey, String sortOrder, String cateKey, Model m) throws Exception {
 
         // 권한이 있는 id인지 확인 후 권한이 있으면 모델에 넘기기 (관리자 페이지 용도)
         String id = (String) session.getAttribute("id");
@@ -52,6 +63,7 @@ public class ProductController {
         if (pageSize == null) pageSize = 12;
         if (sortKey == null) sortKey = "date";
         if (sortOrder == null) sortOrder = "desc";
+        if (keyword == null) keyword = "";
 
         // 페이징에 정보 맵에 저장
         Map<String, Object> map = new HashMap<>();
@@ -60,13 +72,18 @@ public class ProductController {
         map.put("sortKey", sortKey);
         map.put("sortOrder", sortOrder);
         map.put("cateKey", cateKey);
+        map.put("keyword", keyword);
+
+        SearchCondition sc = new SearchCondition(map);
 
         // 한 페이지 정보 가져오기
-        List<ProductDto> prodList = productService.getSortedPage(map);
+        List<ProductDto> prodList = productService.getPage(sc);
 
         // 카테고리화된 상품의 크기 반환 후 페이지 핸들러에 전달
-        int filteredTotalCnt = productService.getFilteredAndSortedTotalSize(map);
-        PageHandler pageHandler = new PageHandler(filteredTotalCnt, page, pageSize);
+//        int filteredTotalCnt = productService.getFilteredAndSortedTotalSize(map);
+        int getPageSize = productService.listSize(sc);
+        PageHandler pageHandler = new PageHandler(getPageSize, page, pageSize);
+
 
         // 모든 카테고리 정보 가져오기 (카테고리 선택 버튼)
         List<CategoryDto> cateList = categoryService.getAllCategories();
@@ -82,6 +99,8 @@ public class ProductController {
         // 정렬 키와 정렬 순서 모델에 추가
         m.addAttribute("sortKey", sortKey);
         m.addAttribute("sortOrder", sortOrder);
+        // 키워드
+        m.addAttribute("keyword", keyword);
 
         return "product/productList";
     }
@@ -93,7 +112,7 @@ public class ProductController {
     }
 
     @GetMapping("/detail")
-    public String detail(HttpServletRequest request, Integer custId, String prodId, Model m) throws Exception {
+    public String detail(HttpServletRequest request, String prodId, Model m) throws Exception {
         // 클라이언트로부터 받아온 상품id로 상품 dto 읽어와서 모델에 담기 (상세 페이지에 출력 용도)
         ProductDto pdto = productService.readProductDetail(prodId);
         m.addAttribute("pdto", pdto);
@@ -107,19 +126,32 @@ public class ProductController {
         String cateName = productService.getCateName(cateCode);
         m.addAttribute("cateName", cateName);
 
-        // 세션 받아서 id 모델에 담기 (장바구니 이동 용도)
+        // 세션에서 custId 받아와서 모델에 추가
         HttpSession session = request.getSession();
-        System.out.println("session = " + session.getId());
-        m.addAttribute("custId", custId);
+        String custId = (String) session.getAttribute("custId");
+        if (custId != null) {
+            m.addAttribute("custId", custId);
+        }
 
         return "product/productDetail";
     }
 
     @PostMapping("/detail")
-    public void detail(@RequestBody Map map) throws Exception {
+    public void detail(@RequestBody Map<String, Object> map) throws Exception {
 
         String prodId = map.get("prodId").toString();
+        String custId = map.get("custId").toString();
         int itemQty = Integer.parseInt(map.get("itemQty").toString());
+
+        // CustomerProduct dto가 있으면 그거 유지
+        CustomerProductDto existingDto = productService.getCustomerProduct(custId, prodId);
+
+        // CustomerProduct dto가 없으면 생성
+        if (existingDto == null) {
+            CustomerProductDto newDto = new CustomerProductDto(custId, prodId);
+            productService.insertCustomerProduct(newDto);
+        }
+
 
         for (int i = 0; i < itemQty; i++) {
             productService.plusSales(prodId);
@@ -140,14 +172,43 @@ public class ProductController {
         return "product/manage";
     }
 
+    private String uploadPath = System.getProperty("user.dir") + "/src/main/resources/static/images/product";
+
     @PostMapping("/manage/add")
-    public String addProduct(@ModelAttribute ProductDto productDto) throws Exception {
-        // 클라이언트로부터 받아온 상품정보를 db에 추가
+    public String addProduct(
+            @ModelAttribute ProductDto productDto,
+            @RequestParam("prodImg") MultipartFile prodImg,
+            RedirectAttributes redirectAttributes) throws Exception {
+
+        // 파일 업로드 처리
+        if (!prodImg.isEmpty()) {
+            String fileName = prodImg.getOriginalFilename();
+            System.out.println(fileName);
+
+            // 저장할 경로 지정
+            File directory = new File(uploadPath);
+            if (!directory.exists()) {
+                directory.mkdirs(); // 디렉토리 생성
+            }
+
+            File upFile = new File(uploadPath, fileName);
+            prodImg.transferTo(upFile);
+
+            // 업로드한 파일의 이름을 productDto의 imageId 필드에 설정
+            productDto.setImageId(fileName);
+        }
+
+        // 상품 정보 저장
         productService.addProduct(productDto);
-        return "redirect:/product/manage";
+
+        // 성공 메시지를 추가
+        redirectAttributes.addFlashAttribute("message", "상품이 성공적으로 등록되었습니다.");
+
+        // product/list로 리다이렉트
+        return "redirect:/product/list";
     }
 
-    @PostMapping("/manage/view")
+    @PostMapping("/manage/view" )
     @ResponseBody
     public ProductDto viewProduct(@RequestParam("prodId") String prodId) throws Exception {
         // 클라이언트로부터 받아온 상품 id로 상품 조회
@@ -155,9 +216,25 @@ public class ProductController {
     }
 
     @PostMapping("/manage/update")
-    public String updateProduct(@ModelAttribute ProductDto productDto) throws Exception {
-        // 클라이언트로부터 받아온 상품정보로 업데이트
+    public String updateProduct(
+            @ModelAttribute ProductDto productDto,
+            @RequestParam(value = "prodImg", required = false) MultipartFile prodImg) throws Exception {
+
+        // 새로운 이미지 파일 저장 로직
+        if (prodImg != null && !prodImg.isEmpty()) {
+            String newFileName = prodImg.getOriginalFilename();
+
+            // 새로운 이미지 파일 저장
+            File upFile = new File(uploadPath, newFileName);
+            prodImg.transferTo(upFile);
+
+            // 새로운 이미지 파일명을 ProductDto에 지정
+            productDto.setImageId(newFileName);
+        }
+
+        // 상품 정보 업데이트
         productService.updateProduct(productDto);
+
         return "redirect:/product/manage";
     }
 
@@ -167,8 +244,6 @@ public class ProductController {
         productService.removeProduct(prodId);
         return "redirect:/product/manage";
     }
-
-
 
 
     @ExceptionHandler(DataIntegrityViolationException.class)

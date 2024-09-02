@@ -47,7 +47,7 @@
     <!--상품 추가-->
     <div class="form-container">
         <h2>상품 등록</h2>
-        <form th:action="@{/product/manage/add}" method="post" id="addForm">
+        <form th:action="@{/product/manage/add}" method="post" id="addForm" enctype="multipart/form-data">
             <div class="form-group">
                 <div style="display: flex; align-items: center;">
                     <input type="hidden" id="prod_id" name="prodId" value="1">
@@ -149,6 +149,11 @@
                     <option value="STOP">STOP (판매 중지)</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label for="prod_img">상품 이미지</label>
+                <input type="file" id="prod_img" name="prodImg">
+            </div>
+
             <div class="btn-group">
                 <button type="submit" id="addBtn">상품 등록</button>
             </div>
@@ -156,7 +161,7 @@
     </div>
 
     <!-- 상품 조회, 수정, 삭제 -->
-    <div class="form-container">
+    <div class="form-container" enctype="multipart/form-data">
         <h2>상품 수정, 삭제</h2>
         <form id="manageForm">
             <div class="form-group">
@@ -243,6 +248,13 @@
                     </select>
                 </div>
             </div>
+            <div class="form-group">
+                <label for="prod_img">상품 이미지</label>
+                <input type="file" id="prod_img_" name="prodImg">
+                <!-- 이미지 미리보기를 위한 img 태그 -->
+                <img id="prod_img_preview" alt="상품 이미지 미리보기" style="display:none; width: 150px; height: auto; margin-top: 10px;">
+            </div>
+
             <div class="btn-group">
                 <button id="beforeUpdateBtn" type="button" onclick="beforeUpdateProduct()">수정하기</button>
                 <button id="afterUpdateBtn" type="button" onclick="updateProduct()">수정완료</button>
@@ -366,6 +378,16 @@
                     document.getElementById("auth_option_").value = response.authorInfoId;
                     document.getElementById("cate_option_").value = response.cateCode;
 
+                    // 이미지 미리보기 처리
+                    if (response.imageId) {
+                        var imgPreview = document.getElementById("prod_img_preview");
+                        imgPreview.src = '/images/product/' + response.imageId; // 이미지가 저장된 경로에 맞게 조정
+                        imgPreview.style.display = 'block';
+                    } else {
+                        // 이미지가 없으면 미리보기 숨김
+                        document.getElementById("prod_img_preview").style.display = 'none';
+                    }
+
                     document.getElementById("beforeUpdateBtn").disabled = false;
                     document.getElementById("deleteBtn").disabled = false;
 
@@ -400,33 +422,38 @@
         var cateCode = document.getElementById("cate_option_").value;
         var authorInfoId = document.getElementById("auth_option_").value;
         var ordChkCode = document.getElementById("ord_chk_code_").value;
+        var prodImg = document.getElementById("prod_img_").files[0];  // 이미지 파일 가져오기
 
         if (prodId && prodName) {
-            var formData = {
-                prodId: prodId,
-                prodName: prodName,
-                prodBasePrice: prodBasePrice,
-                discRate: discRate,
-                tableOfContent: tableOfContent,
-                smry: smry,
-                pblcr: pblcr,
-                pblcrReview: pblcrReview,
-                isbn: isbn,
-                pblshDate: pblshDate,
-                totalPages: totalPages,
-                totalBooks: totalBooks,
-                trlr: trlr,
-                dawnDeliChk: dawnDeliChk,
-                cateCode: cateCode,
-                authorInfoId: authorInfoId,
-                ordChkCode: ordChkCode
-            };
+            var formData = new FormData();
+            formData.append("prodId", prodId);
+            formData.append("prodName", prodName);
+            formData.append("prodBasePrice", prodBasePrice);
+            formData.append("discRate", discRate);
+            formData.append("tableOfContent", tableOfContent);
+            formData.append("smry", smry);
+            formData.append("pblcr", pblcr);
+            formData.append("pblcrReview", pblcrReview);
+            formData.append("isbn", isbn);
+            formData.append("pblshDate", pblshDate);
+            formData.append("totalPages", totalPages);
+            formData.append("totalBooks", totalBooks);
+            formData.append("trlr", trlr);
+            formData.append("dawnDeliChk", dawnDeliChk);
+            formData.append("cateCode", cateCode);
+            formData.append("authorInfoId", authorInfoId);
+            formData.append("ordChkCode", ordChkCode);
+
+            if (prodImg) {
+                formData.append("prodImg", prodImg);
+            }
 
             $.ajax({
                 url: '/product/manage/update',
                 method: 'POST',
-                contentType: 'application/x-www-form-urlencoded',
-                data: $.param(formData),
+                contentType: false,  // FormData를 사용할 때는 false로 설정
+                processData: false,  // FormData를 사용할 때는 false로 설정
+                data: formData,
                 success: function() {
                     alert('상품이 성공적으로 수정되었습니다.');
 

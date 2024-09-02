@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.no1.book.dao.product.CustomerProductDao">
+
+    <insert id="insertCustomerProduct">
+        INSERT INTO customerProduct (cust_id, prod_id, review_cnt)
+        VALUES (#{custId}, #{prodId}, 0)
+    </insert>
+
+    <select id="selectCustomerProduct" resultType="com.no1.book.domain.product.CustomerProductDto">
+        SELECT cust_id, prod_id, review_cnt
+        FROM customerProduct
+        WHERE cust_id = #{custId} AND prod_id = #{prodId}
+    </select>
+
+    <update id="updateReviewCnt" parameterType="com.no1.book.domain.product.CustomerProductDto">
+        UPDATE customerProduct
+        SET review_cnt = #{reviewCnt}
+        WHERE cust_id = #{custId} AND prod_id = #{prodId}
+    </update>
+
+    <delete id="deleteCustomerProduct" parameterType="map">
+        DELETE FROM customerProduct
+        WHERE cust_id = #{custId} AND prod_id = #{prodId}
+    </delete>
+
+    <update id="plusReviewCnt" parameterType="com.no1.book.domain.product.CustomerProductDto">
+        update customerProduct
+        set review_cnt = review_cnt + 1
+        WHERE cust_id = #{custId} AND prod_id = #{prodId}
+    </update>
+
+    <update id="minusReviewCnt" parameterType="com.no1.book.domain.product.CustomerProductDto">
+        update customerProduct
+        set review_cnt = review_cnt - 1
+        WHERE cust_id = #{custId} AND prod_id = #{prodId}
+    </update>
+
+</mapper>
