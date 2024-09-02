@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 //import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,9 +36,8 @@ class OrderDaoTest {
     }
 
     @DisplayName("주문 생성 테스트")
-    @ParameterizedTest
-    @ValueSource(ints = {1, 2, 3, 4, 5})
-    void createOrder(int ordId) {
+    @Test
+    void createOrder() {
         OrderDto orderDto = getTestOrderDto();
         orderDao.createOrder(orderDto);
         assertEquals(countAllOrder(), 1);
@@ -65,7 +65,7 @@ class OrderDaoTest {
     }
 
     // 회원의 주문 전체 개수
-    int countCustomerOrders(int custId) {
+    int countCustomerOrders(String custId) {
         return orderDao.getCustomerOrders(custId).size();
     }
 
@@ -76,15 +76,7 @@ class OrderDaoTest {
 
     // 주문 번호 생성
     public synchronized String orderNumGenerator() {
-        try {
-            Thread.sleep(1);
-            LocalDateTime srcTime = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSS");
-            return srcTime.format(formatter);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
+        return UUID.randomUUID().toString();
     }
 
     // order date
@@ -96,9 +88,10 @@ class OrderDaoTest {
     }
 
     private OrderDto getTestOrderDto() {
+        String custId = "tester";
         return OrderDto.builder()
                 .ordId(orderNumGenerator())
-                .custId(1)
+                .custId(custId)
                 .custChk("Y")
                 .pwd("")
                 .ordStusCode("RCVD")

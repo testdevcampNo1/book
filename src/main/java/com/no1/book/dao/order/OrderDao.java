@@ -13,12 +13,13 @@ public interface OrderDao {
 
     // read
     OrderDto getOrder(String ordId);
-    List<OrderDto> getCustomerOrders(int custId);
+    List<OrderDto> getCustomerOrders(String custId);
     List<OrderDto> getAllOrder();
 
     // update
     void updateOrderStatus(Map param);
 
     // delete
+    void deleteCustomerOrders(String custId);
     void deleteAllOrder();
 }

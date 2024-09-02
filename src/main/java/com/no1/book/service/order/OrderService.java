@@ -13,8 +13,4 @@ public interface OrderService {
     void saveOrderStatus(String ordId);
     void saveDelivery(String ordId);
     void savePayment(String ordId);
-
-//    void order();
-//    void insertCustInfo();
-//    void insertAddressInfo();
 }

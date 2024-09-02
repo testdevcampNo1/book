@@ -20,21 +20,21 @@
         ORDER BY up_date
     </select>
 
+    <!--    회원의 주문상태이력 전체 조회-->
+    <!--    변경 날짜로 정렬-->
+    <select id="getCustomerOrderStatusHistory" parameterType="String" resultType="OrderStatusHistoryDto">
+        SELECT * FROM no1.orderStatusHistory
+                          JOIN no1.order ON no1.orderStatusHistory.ord_id = no1.order.ord_id
+        WHERE no1.order.cust_id = #{custId}
+        ORDER BY orderStatusHistory.up_date
+    </select>
+
     <!--    한 주문의 주문상태이력 전체 조회-->
     <!--    변경 날짜로 정렬-->
     <select id="getOrderStatusHistoryByOrdId" parameterType="String" resultType="OrderStatusHistoryDto">
         SELECT * FROM no1.orderStatusHistory
         WHERE ord_id = #{ordId}
         ORDER BY up_date
-    </select>
-
-    <!--    회원의 주문상태이력 전체 조회-->
-    <!--    변경 날짜로 정렬-->
-    <select id="getCustomerOrderStatusHistory" parameterType="int" resultType="OrderStatusHistoryDto">
-        SELECT * FROM no1.orderStatusHistory
-        JOIN no1.order ON no1.orderStatusHistory.ord_id = no1.order.ord_id
-        WHERE no1.order.cust_id = #{custId}
-        ORDER BY orderStatusHistory.up_date
     </select>
 
     <!--    주문상태이력 전체 조회-->

@@ -22,12 +22,8 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @Autowired
-    private ProductService productService;
-
     @PostMapping("/order/form")
     public ResponseEntity<Map<String, Object>> order(@RequestBody List<OrderProductDto> orderProductDtoList, HttpSession session) {
-        System.out.println("post mapping : " + orderProductDtoList);
         session.setAttribute("orderProductDtoList", orderProductDtoList);
 
         Map<String, Object> response = new HashMap<>();
@@ -38,11 +34,12 @@ public class OrderController {
     // 상품상세 또는 장바구니 화면에서 진입하는 주문 화면
     @GetMapping("/order/form")
     public String orderForm(HttpSession session, Model model) throws Exception {
+        // session에서 data 조회
         String custId = (String) session.getAttribute("custId");
         List<OrderProductDto> orderProductDtoList = (List<OrderProductDto>) session.getAttribute("orderProductDtoList");
 
-        System.out.println(orderProductDtoList);
-        System.out.println("get mapping : " + orderProductDtoList);
+        // 불필요한 session 정보 제거
+        session.removeAttribute("orderProductDtoList");
 
         OrderFormDto orderFormDto = orderService.initOrderInfo(custId, orderProductDtoList);
 

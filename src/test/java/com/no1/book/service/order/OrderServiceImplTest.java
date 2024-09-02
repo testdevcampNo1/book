@@ -131,7 +131,7 @@ class OrderServiceImplTest {
 
         OrderDto orderDto = OrderDto.builder()
                 .ordId(UUID.randomUUID().toString())
-                .custId(1)
+                .custId("1")
                 .custChk("Y")
                 .pwd("")
                 .ordStusCode("RCVD")
@@ -148,7 +148,7 @@ class OrderServiceImplTest {
 
         OrderDto orderDto2 = OrderDto.builder()
                 .ordId(UUID.randomUUID().toString())
-                .custId(1)
+                .custId("")
                 .custChk("Y")
                 .pwd("")
                 .ordStusCode("RCVD")
@@ -173,7 +173,7 @@ class OrderServiceImplTest {
     private OrderDto getOrderDto() {
         OrderDto orderDto = OrderDto.builder()
                 .ordId(UUID.randomUUID().toString())
-                .custId(1)
+                .custId("1")
                 .custChk("Y")
                 .pwd("")
                 .ordStusCode("RCVD")
@@ -194,7 +194,7 @@ class OrderServiceImplTest {
     // test order form
     OrderFormDto getOrderFormDto() {
         OrderFormDto orderFormDto = OrderFormDto.builder()
-                .custId(1)
+                .custId("1")
                 .productList(getOrderProductDtoList())
                 .ordId(UUID.randomUUID().toString())
                 .name("jiseon")

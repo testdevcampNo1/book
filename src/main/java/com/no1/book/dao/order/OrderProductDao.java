@@ -13,7 +13,7 @@ public interface OrderProductDao {
 
     // read
     OrderProductDto getOrderProduct(int ordProdId);
-    List<OrderProductDto> getCustomerOrderProducts(int custId);
+    List<OrderProductDto> getCustomerOrderProducts(String custId);
     List<OrderProductDto> getOrderProductsByOrderId(String ordId);
     List<OrderProductDto> getAllOrderProduct();
 
@@ -22,6 +22,6 @@ public interface OrderProductDao {
 
     // delete
     void deleteOrderProducts(String ordId);
-    void deleteCustomerOrderProducts(int custId);
+    void deleteCustomerOrderProducts(String custId);
     void deleteAllOrderProduct();
 }

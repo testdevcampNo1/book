@@ -17,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 //import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,7 +41,7 @@ class OrderProductDaoTest {
         orderProductDao.deleteAllOrderProduct();
         assertEquals(countAllOrderProduct(), 0);
 
-        OrderDto orderDto = getTestOrderDto(1);
+        OrderDto orderDto = getTestOrderDto("1");
         orderDao.createOrder(orderDto);
         assertEquals(countAllOrder(), 1);
     }
@@ -51,7 +52,7 @@ class OrderProductDaoTest {
     void insertOrderProduct(int ordProdId) {
         String ordId = orderDao.getAllOrder().get(0).getOrdId();
 
-        orderProductDao.insertOrderProduct(getOrderProduct(ordProdId, ordId, "1"));
+        orderProductDao.insertOrderProduct(getOrderProduct(ordId, "1"));
         assertEquals(countAllOrderProduct(), 1);
     }
 
@@ -61,20 +62,22 @@ class OrderProductDaoTest {
         String ordId = orderDao.getAllOrder().get(0).getOrdId();
 
         // 주문상품 추가
-        OrderProductDto orderProductDto = getOrderProduct(1, ordId, "1");
+        OrderProductDto orderProductDto = getOrderProduct(ordId, "1");
         orderProductDao.insertOrderProduct(orderProductDto);
         assertEquals(countAllOrderProduct(), 1);
 
+        int ordProdId = orderProductDao.getAllOrderProduct().get(0).getOrdProdId();
+
         // 상태 업데이트
         Map param = new HashMap();
-        param.put("ordProdId", orderProductDto.getOrdProdId());
-        param.put("ordProdStusCode", "반품접수");
+        param.put("ordProdId", ordProdId);
+        param.put("ordChkCode", "반품접수");
         param.put("upId", orderProductDto.getRegId());
 
         orderProductDao.updateOrderProductStatus(param);
 
         // 검증
-        OrderProductDto updatedOrderProductDto = orderProductDao.getOrderProduct(orderProductDto.getOrdProdId());
+        OrderProductDto updatedOrderProductDto = orderProductDao.getOrderProduct(ordProdId);
         assertEquals("반품접수", updatedOrderProductDto.getOrdChkCode());
     }
 
@@ -86,7 +89,7 @@ class OrderProductDaoTest {
 
         // 추가
         for(int i = 1; i<11; i++) {
-            OrderProductDto orderProductDto = getOrderProduct(i, ordId, "1");
+            OrderProductDto orderProductDto = getOrderProduct(ordId, "1");
             orderProductDao.insertOrderProduct(orderProductDto);
         }
 
@@ -99,19 +102,19 @@ class OrderProductDaoTest {
     @DisplayName("회원의 주문상품 조회 테스트")
     void getCustomerOrderProducts() {
         // 회원2의 주문2 생성
-        OrderDto orderDto2 = getTestOrderDto(2);
+        OrderDto orderDto2 = getTestOrderDto("2");
         orderDao.createOrder(orderDto2);
         // init에서 주문1 생성했으므로 총 주문 2개
         assertEquals(countAllOrder(), 2);
 
         // 주문2에 주문상품 추가
         for(int i = 1; i<11; i++) {
-            OrderProductDto orderProductDto = getOrderProduct(i, orderDto2.getOrdId(), "1");
+            OrderProductDto orderProductDto = getOrderProduct(orderDto2.getOrdId(), "1");
             orderProductDao.insertOrderProduct(orderProductDto);
         }
 
         // 회원2의 주문상품 조회
-        List<OrderProductDto> list = orderProductDao.getCustomerOrderProducts(2);
+        List<OrderProductDto> list = orderProductDao.getCustomerOrderProducts("2");
         assertEquals(list.size(), 10);
     }
 
@@ -122,7 +125,7 @@ class OrderProductDaoTest {
 
         // 주문1에 주문상품 추가
         for(int i = 1; i<11; i++) {
-            OrderProductDto orderProductDto = getOrderProduct(i, ordId, "1");
+            OrderProductDto orderProductDto = getOrderProduct(ordId, "1");
             orderProductDao.insertOrderProduct(orderProductDto);
         }
 
@@ -137,7 +140,7 @@ class OrderProductDaoTest {
     }
 
     // 회원의 주문상품 전체 개수
-    int countCustomerAllOrderProduct(int custId) {
+    int countCustomerAllOrderProduct(String custId) {
         return orderProductDao.getCustomerOrderProducts(custId).size();
     }
 
@@ -152,22 +155,30 @@ class OrderProductDaoTest {
     }
 
     // 테스트용 OrderProductDto 반환
-    OrderProductDto getOrderProduct(int ordProdId, String ordId, String prodId) {
-        OrderProductDto orderProductDto = new OrderProductDto();
-        return orderProductDto;
+    OrderProductDto getOrderProduct(String ordId, String prodId) {
+        return OrderProductDto.builder()
+                .ordId(ordId)
+                .prodId("500")
+                .ordChkCode("주문완료")
+                .codeType("301")
+                .isEbook("N")
+                .dawnDeliChk("N")
+                .prodName("자바의 정석")
+                .img("")
+                .prodPageLink("")
+                .ordQty(1)
+                .totalProdPrice(25000)
+                .totalDiscPrice(1000)
+                .totalPayPrice(24000)
+                .cancelableDate("2024-10-02 00:00:00")
+                .regId("tester")
+                .upId("tester")
+                .build();
     }
 
     // 주문 번호 생성
     public synchronized String orderNumGenerator() {
-        try {
-            Thread.sleep(1);
-            LocalDateTime srcTime = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSS");
-            return srcTime.format(formatter);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
+        return UUID.randomUUID().toString();
     }
 
     // order date
@@ -178,7 +189,7 @@ class OrderProductDaoTest {
         return date;
     }
 
-    private OrderDto getTestOrderDto(int custId) {
+    private OrderDto getTestOrderDto(String custId) {
         return OrderDto.builder()
                 .ordId(orderNumGenerator())
                 .custId(custId)

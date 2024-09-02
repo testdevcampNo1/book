@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class OrderDto {
-
     private String ordId; // auto increment
     private String custId;
     private String custChk; // 회원 여부
@@ -27,21 +26,4 @@ public class OrderDto {
     private String regId;
     private String upDate;
     private String upId;
-
-    // regDate, upDate, ordDate - 현재시간으로 추가
-    public OrderDto(String ordId, String custId, String ordStusCode, String codeType, String custChk, String ordReqMsg, int totalProdPrice, int totalDiscPrice, int dlvPrice, int totalPayPrice, String pwd, String regId, String upId) {
-        this.ordId = ordId;
-        this.custId = custId;
-        this.custChk = custChk;
-        this.pwd = pwd;
-        this.ordStusCode = ordStusCode;
-        this.codeType = codeType;
-        this.ordReqMsg = ordReqMsg;
-        this.totalProdPrice = totalProdPrice;
-        this.totalDiscPrice = totalDiscPrice;
-        this.dlvPrice = dlvPrice;
-        this.totalPayPrice = totalPayPrice;
-        this.regId = regId;
-        this.upId = upId;
-    }
 }
