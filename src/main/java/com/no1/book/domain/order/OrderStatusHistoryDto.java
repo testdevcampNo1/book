@@ -1,7 +1,6 @@
 package com.no1.book.domain.order;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class OrderStatusHistoryDto {
+
     private int ordStusHistorySeq;
     private String ordId;
     private String befOrdStusCode;
@@ -19,7 +19,8 @@ public class OrderStatusHistoryDto {
     private String upDate;
     private String upId;
 
-    @Builder
+    // ordStusHistorySeq - auto increment
+    // regDate, upDate - 현재시간으로 추가
     public OrderStatusHistoryDto(String ordId, String befOrdStusCode, String currOrdStusCode, String chgStusReason, String regId, String upId) {
         this.ordId = ordId;
         this.befOrdStusCode = befOrdStusCode;

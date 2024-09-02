@@ -17,7 +17,8 @@ public enum OrderValidatorErrorMessage {
     INVALID_PRODUCT_STATUS("주문 불가능한 상품이 존재합니다."),
     ZERO_OR_NEGATIVE_QUANTITY("주문 수량이 0개 이하인 상품이 존재합니다."),
     INSUFFICIENT_STOCK("재고가 부족한 상품이 존재합니다."),
-    SAVE_DATABASE_FAILED("DB에 저장 실패했습니다."),
+    CHANGE_PRODUCT_PRICE("상품 금액이 변경되었습니다."),
+    ACCESS_DATABASE_FAILED("DB 접근에 실패했습니다."),
     PAYMENT_FAILED("결제 실패했습니다.");
 
     private final String message;

@@ -7,8 +7,15 @@
     <!--    조회-->
     <select id="getDefaultAddress" parameterType="int" resultType="DeliveryAddressDto">
         SELECT * FROM deliveryAddress
-        WHERE cust_id = ${custId} AND default_chk = 'Y';
+        WHERE cust_id = #{custId} AND default_chk = 'Y';
     </select>
+
+    <!--    기본 배송지 갱신-->
+    <update id="updateDefaultAddress" parameterType="DeliveryAddressDto">
+        UPDATE no1.deliveryAddress
+        SET zpcd = #{zpcd}, main_addr = #{mainAddr}, detail_addr = #{detailAddr}, mobile_num = #{mobileNum}, tel_num = #{telNum}, default_chk = 'Y', up_date = DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s'), up_id = #{upId}
+        WHERE dlv_id = #{dlvId}
+    </update>
 
 </mapper>
 

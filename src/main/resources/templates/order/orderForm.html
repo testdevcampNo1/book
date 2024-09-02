@@ -67,6 +67,14 @@
                     return; // 함수 종료
                 }
             }
+
+            var checkbox = document.getElementById('default');
+
+            if (checkbox.checked) {
+                checkbox.value = 'Y';
+            } else {
+                checkbox.value = 'N';
+            }
         }
     </script>
 </head>
@@ -128,8 +136,8 @@
                         <div th:if="${orderFormDto.getCustId()} == -1">
                             <input class="order_info" type="text" name="pwd" placeholder="비회원 주문 조회에 사용할 비밀번호를 입력해 주세요.">
                         </div>
-                        <input type="checkbox" id="default" name="defaultChk" style="display: inline-block">
                         <div th:if="${orderFormDto.getCustId() != -1}" style="display: inline-block">
+                            <input type="checkbox" id="default" name="defaultChk" style="display: inline-block">
                             <label for="default" style="display: inline-block">다음에도 이 주소로 받을게요</label>
                         </div>
                     </td>

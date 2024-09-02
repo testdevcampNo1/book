@@ -7,10 +7,12 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Data
 public class OrderDto {
-    private String ordId;
-    private int custId;
+
+    private String ordId; // auto increment
+    private String custId;
     private String custChk; // 회원 여부
     private String pwd; // 비회원 주문조회 비밀번호
     private String ordStusCode;
@@ -26,8 +28,8 @@ public class OrderDto {
     private String upDate;
     private String upId;
 
-    @Builder
-    public OrderDto(String ordId, int custId, String custChk, String pwd, String ordStusCode, String codeType, String ordReqMsg, String ordDate, int totalProdPrice, int totalDiscPrice, int dlvPrice, int totalPayPrice, String regId, String upId) {
+    // regDate, upDate, ordDate - 현재시간으로 추가
+    public OrderDto(String ordId, String custId, String ordStusCode, String codeType, String custChk, String ordReqMsg, int totalProdPrice, int totalDiscPrice, int dlvPrice, int totalPayPrice, String pwd, String regId, String upId) {
         this.ordId = ordId;
         this.custId = custId;
         this.custChk = custChk;
@@ -35,7 +37,6 @@ public class OrderDto {
         this.ordStusCode = ordStusCode;
         this.codeType = codeType;
         this.ordReqMsg = ordReqMsg;
-        this.ordDate = ordDate;
         this.totalProdPrice = totalProdPrice;
         this.totalDiscPrice = totalDiscPrice;
         this.dlvPrice = dlvPrice;

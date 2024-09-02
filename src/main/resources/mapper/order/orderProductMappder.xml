@@ -24,7 +24,7 @@
     </select>
 
     <!--    한 주문의 주문상품 전체 조회-->
-    <select id="getOrderProductsByOrderId" parameterType="int" resultType="OrderProductDto">
+    <select id="getOrderProductsByOrderId" parameterType="String" resultType="OrderProductDto">
         SELECT * FROM no1.orderProduct
         WHERE ord_id = #{ordId}
     </select>
@@ -42,7 +42,7 @@
     </update>
 
     <!--    한 주문의 주문상품 전체 삭제-->
-    <delete id="deleteOrderProducts" parameterType="int">
+    <delete id="deleteOrderProducts" parameterType="String">
         DELETE FROM no1.orderProduct
         WHERE ord_id = #{ordID}
     </delete>
