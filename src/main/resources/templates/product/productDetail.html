@@ -66,7 +66,7 @@
             var prodBasePrice = document.getElementById("prodBasePrice").value;
             var salePrice = document.getElementById("salePrice").value;
 
-            var params = {
+            var params = [{
                 prodId: prodId,
                 ordChkCode: ordChkCode,
                 isEbook: isEbook,
@@ -75,32 +75,33 @@
                 ordQty: itemQty,
                 prodBasePrice: prodBasePrice,
                 salePrice: salePrice
-            };
+            }];
 
-            $.ajax({
-                url: '/product/detail',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({prodId : prodId, itemQty : itemQty, custId : custId}),
-                success: function() {
-                },
-                error: function() {
-                }
-            });
+            // $.ajax({
+            //     url: '/product/detail',
+            //     method: 'POST',
+            //     contentType: 'application/json',
+            //     data: JSON.stringify({prodId : prodId, itemQty : itemQty, custId : custId}),
+            //     success: function() {
+            //     },
+            //     error: function() {
+            //     }
+            // });
 
             // order로 주문 정보 보내기
-        //     $.ajax({
-        //         url: '/order',
-        //         method: 'POST',
-        //         contentType: 'application/json',
-        //         data: JSON.stringify(params),
-        //         success: function() {
-        //             alert('주문 창으로 이동합니다.');
-        //         },
-        //         error: function() {
-        //             alert('주문에 실패했습니다.');
-        //         }
-        //     });
+            $.ajax({
+                url: '/order/form',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(params),
+                success: function() {
+                    alert('주문 창으로 이동합니다.');
+                    window.location.href = '/order/form';
+                },
+                error: function() {
+                    alert('주문에 실패했습니다.');
+                }
+            });
         }
 
         window.onload = function() { // window.onload -> 화면이 로드되면 자동으로 실행
@@ -219,7 +220,7 @@
                 success: function(review) {
                     // 불러온 리뷰 데이터를 폼에 채움
                     document.getElementById("reviewContent").value = review.content;
-                    document.getElementById("reviewRating").value = review.starPt;  // 수정된 부분
+                    document.getElementById("reviewRating").value = review.starPt;
                     document.getElementById("reviewId").value = review.reviewId;
 
                     document.getElementById("submitReviewBtn").style.display = "none";
