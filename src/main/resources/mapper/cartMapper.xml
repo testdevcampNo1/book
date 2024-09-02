@@ -13,11 +13,14 @@
 
 
     <!-- 장바구니 상품 추가 (장바구니에 상품이 존재하면 추가하지 않음)-->
-    <insert id = "insertItem"  parameterType="cartDto">
+    <insert id="insertItem" parameterType="CartDto">
         INSERT INTO cart (cust_id, prod_id, item_qty, register_date, expired_date)
         SELECT #{custId}, #{prodId}, #{itemQty}, now(), DATE_ADD(NOW(), INTERVAL 15 DAY)
-        FROM DUAL
-        WHERE NOT EXISTS(SELECT * FROM cart WHERE cust_id = #{custId} AND prod_id = #{prodId});
+            WHERE NOT EXISTS (
+        SELECT 1
+        FROM cart
+        WHERE cust_id = #{custId} AND prod_id = #{prodId}
+                );
     </insert>
 
 

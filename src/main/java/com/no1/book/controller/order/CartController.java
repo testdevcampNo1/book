@@ -48,11 +48,11 @@ public class CartController {
 
             try{
 
-//                System.out.println("비회원 session = " + session.getId());
-//                System.out.println("session.getAttributeNames = " + session.getAttributeNames());
-//                System.out.println("session.getAttribute(\"cartLists\") = " + session.getAttribute("cartLists"));
+                System.out.println("비회원 session = " + session.getId());
+                System.out.println("session.getAttributeNames = " + session.getAttributeNames());
+                System.out.println("session.getAttribute(\"cartLists\") = " + session.getAttribute("cartLists"));
 
-                m.addAttribute("sessionId",session.getId());
+                m.addAttribute("custId",session.getId());
                 m.addAttribute("cartProdDto", session.getAttribute("cartLists"));
 
             } catch(Exception e){
@@ -90,10 +90,15 @@ public class CartController {
         }else{
             try{
                 List<CartProdDto> cartProducts = (List<CartProdDto>) session.getAttribute("cartLists");
-                cartProducts.removeIf(obj -> obj.getProdId() == prodId);
+                System.out.println("삭제하기 전 상품 확인 : " + cartProducts.toString());
+
+                cartProducts.removeIf(obj -> obj.getProdId().equals(prodId));
+
+                System.out.println("삭제 후 상품 확인 : " + cartProducts.toString());
+                
                 session.setAttribute("cartLists", cartProducts);
 
-                rattr.addAttribute("sessionId", session.getId());
+                rattr.addAttribute("custId", session.getId());
                 rattr.addAttribute("msg","DEL_OK");
 
             }catch(Exception e){
@@ -107,7 +112,7 @@ public class CartController {
 
     @PostMapping("/add")
     @ResponseBody
-    public  Map<String, Object> addItem(@RequestBody CartDto reqDto, HttpServletRequest request, HttpServletResponse response) throws Exception{
+    public  Map<String, Object> addItem(@RequestBody CartProdDto reqDto, HttpServletRequest request, HttpServletResponse response) throws Exception{
 
         Map map = new HashMap();
         HttpSession session = request.getSession();
@@ -116,7 +121,8 @@ public class CartController {
 
             String custId  = (String)session.getAttribute("custId");
 
-            CartDto dto = reqDto;
+
+            CartDto dto = new CartDto(reqDto.getCustId(), reqDto.getProdId(), reqDto.getItemQty());
             dto.setCustId(custId);
 
             List<CartProdDto> cartProducts  = cartService.read(custId);
@@ -132,9 +138,9 @@ public class CartController {
                 }
             }
 
-            // 장바구니에 상품이 존재하면 수량만 업데이트, 존재하지 않으면 상품 추가
             int ret;
 
+            // 장바구니에 상품이 존재하면 수량만 업데이트, 존재하지 않으면 상품 추가
             if(hasItem == true) { ret = cartService.updateItemQty(dto); }
             else                { ret = cartService.insertItem(dto); }
 
@@ -146,24 +152,34 @@ public class CartController {
             List<CartProdDto> cartProducts = (List<CartProdDto>) session.getAttribute("cartLists");
 
             // 장바구니에 추가할 상품 객체 생성
-            CartProdDto newProduct = new CartProdDto();
-            newProduct.setProdId(reqDto.getProdId());
-            newProduct.setItemQty(reqDto.getItemQty());
+//            CartProdDto newProduct = new CartProdDto();
+//            newProduct.setProdId(reqDto.getProdId());
+//            newProduct.setSalePrice(reqDto.getSalePrice());
+//            newProduct.setItemQty(reqDto.getItemQty());
 
 
-            // 장바구니에 상품 추가
-            boolean productExists = false;
-            for (CartProdDto product : cartProducts) {
-                if (product.getProdId().equals(newProduct.getProdId())) {
-                    product.setItemQty(product.getItemQty() + newProduct.getItemQty());
-                    productExists = true;
-                    break;
+            if(cartProducts != null){
+
+                // 장바구니에 상품 추가
+                boolean productExists = false;
+                for (CartProdDto product : cartProducts) {
+                    if (product.getProdId().equals(reqDto.getProdId())) {
+                        product.setItemQty(product.getItemQty() + reqDto.getItemQty());
+                        productExists = true;
+                        break;
+                    }
                 }
+
+                if (!productExists) { cartProducts.add(reqDto); }
+                session.setAttribute("cartLists", cartProducts);
+
+            }else{
+                List<CartProdDto> cartProducts2 = new ArrayList<CartProdDto>();
+                cartProducts2.add(reqDto);
+
+                session.setAttribute("cartLists", cartProducts2);
             }
 
-            if (!productExists) { cartProducts.add(newProduct); }
-
-            session.setAttribute("cartLists", cartProducts);
             map.put("status","success");
         }
 
@@ -203,7 +219,7 @@ public class CartController {
             boolean productExists = false;
             for (CartProdDto product : cartProducts) {
                 if (product.getProdId().equals(newProduct.getProdId())) {
-                    product.setItemQty(product.getItemQty() + newProduct.getItemQty());
+                    product.setItemQty(newProduct.getItemQty());
                     break;
                 }
             }
