@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>상품 상세 페이지</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/product/productDetail.css}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -270,6 +271,9 @@
     </script>
 </head>
 <body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
 <input type="hidden" id="custId" th:value="${custId}">
 <div class="container">
     <h3 th:text="${cateName}">카테고리 네임</h3>
