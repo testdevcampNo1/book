@@ -33,6 +33,7 @@ public class CustomerDto {
     private String upId;
     private int failedAttempts;
     private LocalDateTime lockUntil;
+    private long num;
 
 
     public CustomerDto() {}

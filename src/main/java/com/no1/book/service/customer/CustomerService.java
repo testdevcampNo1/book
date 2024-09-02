@@ -18,8 +18,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -35,6 +34,7 @@ public class CustomerService implements CustomerSV{
     private static final int MAX_FAILED_ATTEMPTS = 3;  //최대 로그인 실패 횟수
     private static final int LOCK_TIME_DURATION = 15; //계정 잠금 시간
     public final CustomerDao customerDao;
+
 
 
     //회원가입
@@ -58,8 +58,10 @@ public class CustomerService implements CustomerSV{
                 //회원이 입력한 비밀번호랑 조회한 값의 비밀번호가 같으면 성공
             }
         }
-       return null;
+       return null; //1번
+
     }
+
 
     public String handleFailedAttempt(CustomerDto customerDto) {
         int newFailedAttempts = customerDto.getFailedAttempts() + 1;
@@ -187,8 +189,29 @@ public class CustomerService implements CustomerSV{
         log.info("[Mail 전송 완료]");
         return number;
     }
+    private static Map<String,CustomerDto> store=new HashMap<>();
+    private static long sequence=0L;
+
+    public CustomerDto findById(String id){
+        return store.get(id);
+    }
 
 
+    public Optional<CustomerDto> findByLoginId(String loginId) {
+        return findAll().stream()
+                .filter(m -> m.getCustId().equals(loginId))
+                .findFirst();
+
+
+
+    }
+    public List<CustomerDto> findAll() {
+        return new ArrayList<>(store.values());
+    }
+
+    public void clearStore(){
+        store.clear();
+    }
 
 
 

@@ -73,7 +73,10 @@
 
         <ul class="menu-1 flex" >
             <li><a href="/" class="flex h-full items-center px-4">소개</a></li>
-            <li><a href="/customer/logout" id="logout-link" class="flex h-full items-center px-4">로그아웃</a></li>
+            <li>
+                <form action="/customer/logout" method="post" style="display:inline;">
+                    <button type="submit" id="logout-link" class="flex h-full items-center px-4">로그아웃</button>
+                </form></li>
             <li><a href="/customer/mypage" class="flex h-full items-center px-4">마이페이지</a></li>
             <li><a href="#" class="flex h-full items-center px-4">문의하기</a></li>
 
