@@ -23,7 +23,7 @@
     </resultMap>
 
     <!-- 장바구니 상품 조회 -->
-    <select id="selectCartItem" resultMap="CartProdResultMap" parameterType="Integer">
+    <select id="selectCartItem" resultMap="CartProdResultMap" parameterType="String">
         select c.cust_id, p.prod_id, p.is_ebook, p.image_id, p.prod_name, p.prod_base_price, p.disc_rate, p.disc_price, p.sale_price, p.ord_ab_stus_code,
                 c.item_qty, c.register_date, c.expired_date, p.dawn_deli_chk
         from cart c, product p

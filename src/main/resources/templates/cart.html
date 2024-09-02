@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" th:href="@{/css/style.css}">
         <link rel="stylesheet" type="text/css" th:href="@{/css/cart/style.css}">
 
         <title>정석문고 jungsukbook</title>
@@ -116,7 +114,7 @@
 
 <h3>장바구니</h3>
 
-<div th:if="${cartProdDto != null and !cartProdDto.isEmpty()}" class="container">
+<div th:if="${cartProdDto != null}" class="container">
 
     <!-- 체크박스 전체 여부 -->
     <div class="all_check_input_div">
@@ -138,7 +136,7 @@
         </thead>
         <tbody>
         <tr th:each="product : ${cartProdDto}" th:id="ordAbStusCode">
-            <td><input type="checkbox" name="selectedProducts"  th:disabled="${product.ordAbStusCode != '202' ? 'disabled' : null}" onclick="calculateTotal()" /></td>
+            <td><input type="checkbox" name="selectedProducts"  th:disabled="${product.ordAbStusCode == '400'? 'disabled' : null}" onclick="calculateTotal()" /></td>
             <td class="product-id" th:text="${product.prodName}" th:name="${product.prodId}">Product Name</td>
             <td class="original-price" th:id="'originPriceSpan-'+ ${product.prodId}" th:text="${product.prodBasePrice}">originPrice</td>
             <td class="sale-price" th:id="'priceSpan-'+ ${product.prodId}" th:text="${product.salePrice}">salePrice</td>
@@ -178,7 +176,7 @@
 
 </div>
 
-<div th:if="${cartProdDto == null or cartProdDto.isEmpty()}">
+<div th:if="${cartProdDto == null}">
     <p>장바구니에 담긴 상품이 없습니다.</p>
 </div>
 <script>
@@ -253,10 +251,11 @@
                 // 성공 시 처리
                 console.log('Success:', data);
                 // 예를 들어, 주문 완료 페이지로 이동
-                window.location.href = '/order-success'; // 주문 성공 페이지로 이동
+                // window.location.href = '/order-success'; // 주문 성공 페이지로 이동
+                window.location.href = '/order/form';
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error(error);
             });
     }
 

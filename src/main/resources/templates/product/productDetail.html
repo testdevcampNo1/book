@@ -25,11 +25,22 @@
         function addToCart() {
             var prodId = document.getElementById("prodId").value;
             var itemQty = countValue;
-            var custId = document.getElementById("custId").value;
+            var ordChkCode = document.getElementById("ordChkCode").value;
+            var isEbook = document.getElementById("isEbook").value;
+            var dawnDeliChk = document.getElementById("dawnDeliChk").value;
+            var prodName = document.getElementById("prodName").value;
+            var prodBasePrice = document.getElementById("prodBasePrice").value;
+            var salePrice = document.getElementById("salePrice").value;
 
             var params = {
                 prodId: prodId,
-                itemQty: itemQty
+                ordChkCode: ordChkCode,
+                isEbook: isEbook,
+                dawnDeliChk: dawnDeliChk,
+                prodName: prodName,
+                itemQty: itemQty,
+                prodBasePrice: prodBasePrice,
+                salePrice: salePrice
             };
 
             // 서버에 AJAX 요청 보내기
@@ -42,7 +53,7 @@
                     if (response.status === "success") {
                         var userChoice = confirm("상품이 장바구니에 추가되었습니다. 장바구니로 이동하시겠습니까?");
                         if (userChoice) {
-                            window.location.href = "/cart/list?custId=" + custId;
+                            window.location.href = "/cart/list";
                         } else {
                             alert("상품이 장바구니에 추가되었습니다. 계속 쇼핑을 하세요.");
                         }
