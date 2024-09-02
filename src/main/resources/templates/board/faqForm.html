@@ -15,12 +15,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: "Noto Sans KR", sans-serif;
-        }
 
         .container {
             width : 50%;
@@ -112,22 +106,7 @@
     if (v_msg != null) alert(v_msg);
 </script>
 <body class="center-area custom-body">
-<header class="top-bar">
-    <div class="con flex h-full">
-        <a href="/" class="logo flex items-center">
-            <img src="https://github.com/user-attachments/assets/d24c0e43-dc15-4df9-ba31-284d4a569caa" alt="로고"
-                 class="logo-small">
-        </a>
-        <div class="flex-grow"></div>
-        <ul class="menu-1 flex" style="max-width: 600px">
-            <li><a href="/" class="flex h-full items-center px-4">소개</a></li>
-            <li><a href="/customer/login" id="login-link" class="flex h-full items-center px-4">로그인</a></li>
-            <li><a href="/customer/mypage" class="flex h-full items-center px-4">마이페이지</a></li>
-            <li><a href="/cart/list" class="flex h-full items-center px-4">장바구니</a></li>
-            <li><a href="/cscenter" class="flex h-full items-center px-4">고객센터</a></li>
-        </ul>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: header}"></div>
 <div class="intro_text">
     <h2><br>게시판</h2>
 </div><br/>

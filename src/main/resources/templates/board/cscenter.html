@@ -78,24 +78,7 @@
     if (v_msg != null) alert(v_msg);
 
 </script>
-<header class="top-bar">
-    <div class="con flex h-full">
-        <a href="/" class="logo flex items-center">
-
-            <img src="https://github.com/user-attachments/assets/d24c0e43-dc15-4df9-ba31-284d4a569caa" alt="로고"
-                 class="logo-small">
-        </a>
-        <div class="flex-grow"></div>
-
-        <ul class="menu-1 flex" style="max-width: 600px">
-            <li><a href="/" class="flex h-full items-center px-4">소개</a></li>
-            <li><a href="/customer/login" id="login-link" class="flex h-full items-center px-4">로그인</a></li>
-            <li><a href="/customer/mypage" class="flex h-full items-center px-4">마이페이지</a></li>
-            <li><a href="/cart/list" class="flex h-full items-center px-4">장바구니</a></li>
-            <li><a href="/cscenter" class="flex h-full items-center px-4">고객센터</a></li>
-        </ul>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: header}"></div>
 <section class="section-1">
     <div class="con">
         <img class="w-full block" src="" alt="">

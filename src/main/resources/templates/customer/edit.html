@@ -69,23 +69,7 @@
 </head>
 
 
-<header class="top-bar">
-    <div class="con flex h-full">
-        <a href="/" class="logo flex items-center">
-            <img th:src="@{/images/logo_transparent.png}" class="logo-small">
-
-        </a>
-        <div class="flex-grow"></div>
-
-        <ul class="menu-1 flex" >
-            <li><a href="/" class="flex h-full items-center px-4">소개</a></li>
-            <li><a href="/customer/logout" id="logout-link" class="flex h-full items-center px-4">로그아웃</a></li>
-            <li><a href="/customer/mypage" class="flex h-full items-center px-4">마이페이지</a></li>
-            <li><a href="#" class="flex h-full items-center px-4">문의하기</a></li>
-
-        </ul>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: header}"></div>
 
 <body class="center-area custom-body">
 
