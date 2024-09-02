@@ -5,6 +5,7 @@ import com.no1.book.domain.customer.CustomerDto;
 import com.no1.book.service.customer.CustomerService;
 import com.no1.book.service.customer.EmailService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -33,51 +34,48 @@ public class CustomerController {
         this.customerService = customerService;
     }
     @GetMapping("/")
-    public String home(HttpServletResponse response) {
-        // Create a cookie with name "userSessionId" and a random value
-        Cookie cookie = new Cookie("userSessionId", UUID.randomUUID().toString());
-        cookie.setMaxAge(7 * 24 * 60 * 60); // 7일동안 유효
-        cookie.setPath("/"); // Make the cookie available to the entire site
-        cookie.setHttpOnly(true); // Prevent client-side scripts from accessing the cookie
+    public String home(@SessionAttribute(name=SessionConst.LOGIN_MEMBER,required = false) CustomerDto loginCustomer, Model model) {
+       if(loginCustomer == null) {
+           return "/";
+       }
 
-        // Add the cookie to the response
-        response.addCookie(cookie);
-
-        log.info("Cookie created with name: {} and value: {}", cookie.getName(), cookie.getValue());
-
-        // Return the homepage view
-        return "/"; // Replace with your actual homepage view name
+        //세션이 유지되면 로그인으로 이동
+        model.addAttribute("loginCustomer", loginCustomer);
+        return "customer/mypage"; // Replace with your actual homepage view name
     }
 
 
     //로그인
     @GetMapping("/login")
-    public CustomerDto login(HttpSession session)throws Exception{
-        CustomerDto customerDto =new CustomerDto();
 
-        Object obj =session.getAttribute("SPRING_SECURITY_CONTEXT");
+    public void login()throws Exception{
 
-        if(obj==null) {
-            customerDto.setName("member/login");
-        }else {
-            customerDto.setName("redirect:/");
-        }
-        return customerDto;
     }
     @PostMapping("/login")
-    public String login(@RequestParam("custId") String custId, String pwd, HttpSession session,Model model) {
+    public String login(@RequestParam("custId") String custId, String pwd, Model model, HttpServletRequest request) {
         CustomerDto customerDto = customerService.login(custId, pwd);
 
+        log.info("---------------세션아이디"+request.getSession().getId());
         log.info("==========loginMember={}", customerDto);
         if (customerDto != null) {
-            session.setAttribute("custId", customerDto.getCustId());
-            session.setAttribute("nickname", customerDto.getNickName());
+            HttpSession session1 = request.getSession(false);
+           // session1.setAttribute(SessionConst.LOGIN_MEMBER, customerDto);
+            session1.setAttribute("custId", customerDto.getCustId());
+
+
+            /*session.setAttribute("nickname", customerDto.getNickName());
             session.setAttribute("email", customerDto.getEmail());
             session.setAttribute("birthDate", customerDto.getBirthDate());
             session.setAttribute("address", customerDto.getMainAddr());
-            session.setAttribute("mobileNum", customerDto.getMobileNum());
-            return "redirect:/customer/mypage";
+            session.setAttribute("mobileNum", customerDto.getMobileNum());*/
+
+
+
+            return "redirect:/";
         }
+
+        //Custid,isuser 만들어서 세션에 저장
+        //
         else if(customerDto == null){
             CustomerDto customerDto1 = customerService.getCustomerById(custId);
             if(customerService.handleFailedAttempt(customerDto1).equals("Incorrect password. ")){
@@ -88,16 +86,28 @@ public class CustomerController {
             }
             return "customer/login";
         }
-        session.setAttribute("custId", customerDto.getCustId());
-        session.setAttribute("nickname", customerDto.getNickName());
+
 
         return "customer/login";
          // Return to login page if credentials are incorrect
     }
-    @RequestMapping("logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/";
+
+    @GetMapping("/loginHome")
+    public String loginHome(HttpServletRequest request){
+
+        return "customer/loginHome";
+    }
+
+
+    @PostMapping("/logout")
+    public String logout(HttpServletRequest request,HttpServletResponse response) {
+
+        HttpSession session = request.getSession(false);
+        if(session != null) {
+            session.invalidate();
+        }
+
+        return "customer/login";
     }
 
 
@@ -134,7 +144,7 @@ public class CustomerController {
     }
     // 마이페이지
     @GetMapping("/mypage")
-    public String showMyPage(HttpSession session, Model model) {
+    public String showMyPage(HttpSession session, Model model,HttpServletRequest request) {
         // Use session attribute instead of request parameter
         String customerId = (String) session.getAttribute("custId");
 
