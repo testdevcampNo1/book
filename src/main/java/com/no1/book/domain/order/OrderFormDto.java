@@ -4,12 +4,11 @@ import lombok.*;
 
 import java.util.List;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class OrderFormDto {
 
-    private int custId = -1; // 비회원 -1
+    private String custId;
     // 노출에 필요한 상품 정보
     private List<OrderProductDto> productList;
     private String ordId;
@@ -20,9 +19,12 @@ public class OrderFormDto {
     private String isAllDawnDelivery;
     private String dlvDate;
     private String defaultChk;
-    private String ordId;
+    private int totalProdBasePrice;
+    private int totalDiscPrice;
+    private int totalPayPrice;
+    private int dlvPrice;
+    private int totalOrdQty;
     // 배송 테이블에 저장할 정보
-    private String name;
     private String email;
     private String addressName;
     private String telNum;
@@ -34,7 +36,7 @@ public class OrderFormDto {
     private String paymentMethod;
 
     @Builder
-    public OrderFormDto(int custId, List<OrderProductDto> productList, String ordId, String name, String orderRequestMessage, String pwd, String isAllEbook, String isAllDawnDelivery, String dlvDate, String defaultChk, int totalProdBasePrice, int totalDiscPrice, int totalPayPrice, int dlvPrice, int totalOrdQty, String email, String addressName, String telNum, String zipCode, String mainAddress, String detailAddress, String commonEntrancePassword, String paymentMethod) {
+    public OrderFormDto(String custId, List<OrderProductDto> productList, String ordId, String name, String orderRequestMessage, String pwd, String isAllEbook, String isAllDawnDelivery, String dlvDate, String defaultChk, int totalProdBasePrice, int totalDiscPrice, int totalPayPrice, int dlvPrice, int totalOrdQty, String email, String addressName, String telNum, String zipCode, String mainAddress, String detailAddress, String commonEntrancePassword, String paymentMethod) {
         this.custId = custId;
         this.productList = productList;
         this.ordId = ordId;

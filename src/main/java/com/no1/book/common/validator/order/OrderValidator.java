@@ -24,7 +24,7 @@ public class OrderValidator {
         validateNotEmpty(orderInfo.getName(), OrderValidatorErrorMessage.MISSING_NAME.getMessage());
         validateNotEmpty(orderInfo.getTelNum(), OrderValidatorErrorMessage.MISSING_TEL_NUM.getMessage());
 
-        if(orderInfo.getCustId() == -1) { // 비회원
+        if(orderInfo.getCustId().isEmpty()) { // 비회원
             validateNotEmpty(orderInfo.getPwd(), OrderValidatorErrorMessage.MISSING_PASSWORD.getMessage());
         }
 

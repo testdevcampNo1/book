@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -59,14 +60,14 @@ public class OrderServiceImpl implements OrderService {
 
     // 주문 화면 진입시 노출할 정보
     @Override
-    public OrderFormDto initOrderInfo(int custId, List<OrderProductDto> productList) throws Exception {
+    public OrderFormDto initOrderInfo(String custId, List<OrderProductDto> productList) throws Exception {
         OrderFormDto orderFormDto = new OrderFormDto();
         orderFormDto.setCustId(custId);
 
-        if(custId > -1) {
+        if(!custId.isEmpty()) {
             // 회원 정보, 기본 배송지 조회
             getCustomerInfo(custId, orderFormDto);
-            getAddressInfo(custId, orderFormDto);
+//            getAddressInfo(custId, orderFormDto);
         }
 
         // 상품 정보 가공하여 저장
@@ -79,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     // 회원 정보 DB 조회
-    void getCustomerInfo(int custId, OrderFormDto orderFormDto) {
+    void getCustomerInfo(String custId, OrderFormDto orderFormDto) {
         try {
             CustomerDto customerDto = customerDao.selectCustomer(String.valueOf(custId));
 
@@ -91,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     // 기본배송지 정보 DB 조회
-    int getAddressInfo(int custId, OrderFormDto orderFormDto) {
+    int getAddressInfo(String custId, OrderFormDto orderFormDto) {
         try {
             DeliveryAddressDto deliveryAddressDto = deliveryAddressDao.getDefaultAddress(custId);
 
@@ -145,7 +146,7 @@ public class OrderServiceImpl implements OrderService {
             // 수량
             totalOrderQuantity += product.getOrdQty();
 
-            if(product.getDawnDeliChk().equals("N")) {
+            if(product.getDawnDeliChk() == null || product.getDawnDeliChk().equals("N")) {
                 isAllDawnDelivery = false;
             }
 
@@ -154,10 +155,10 @@ public class OrderServiceImpl implements OrderService {
             }
 
             // 상품 상태 조회
-            if(!isProductAvailable(product.getProdId())) throw new InvalidOrderException("구매 불가능한 상품입니다. " + product.getProdId());
+//            if(!isProductAvailable(product.getProdId())) throw new InvalidOrderException("구매 불가능한 상품입니다. " + product.getProdId());
 
             // 상품 금액 변동 여부 조회
-            if(isChangeProductPrice(product.getProdId(), product.getProdBasePrice())) throw new InvalidOrderException("구매 불가능한 상품입니다. " + product.getProdId());
+//            if(isChangeProductPrice(product.getProdId(), product.getProdBasePrice())) throw new InvalidOrderException("구매 불가능한 상품입니다. " + product.getProdId());
         }
 
         orderFormDto.setTotalProdBasePrice(totalProdBasePrice);
@@ -244,7 +245,7 @@ public class OrderServiceImpl implements OrderService {
         saveDelivery(orderFormDto.getOrdId());
         savePayment(orderFormDto.getOrdId());
 
-        if(orderFormDto.getCustId() != -1 && orderFormDto.getDefaultChk().equals("Y")) {
+        if(!orderFormDto.getCustId().isEmpty() && orderFormDto.getDefaultChk().equals("Y")) {
             updateDefaultAddress(orderFormDto);
         }
     }
@@ -268,8 +269,8 @@ public class OrderServiceImpl implements OrderService {
 
         String ordId = orderNumGenerator();
         orderFormDto.setOrdId(ordId);
-        String regId = orderFormDto.getCustId() > -1 ? String.valueOf(orderFormDto.getCustId()) : orderFormDto.getEmail();
-        String custCheck = orderFormDto.getCustId() > -1 ? "Y" : "N";
+        String regId = !orderFormDto.getCustId().isEmpty() ? String.valueOf(orderFormDto.getCustId()) : orderFormDto.getEmail();
+        String custCheck = !orderFormDto.getCustId().isEmpty() ? "Y" : "N";
 
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

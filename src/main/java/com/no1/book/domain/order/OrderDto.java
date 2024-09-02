@@ -1,16 +1,18 @@
 package com.no1.book.domain.order;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Data
 public class OrderDto {
 
     private String ordId; // auto increment
-    private int custId;
+    private String custId;
     private String custChk; // 회원 여부
     private String pwd; // 비회원 주문조회 비밀번호
     private String ordStusCode;
@@ -27,7 +29,7 @@ public class OrderDto {
     private String upId;
 
     // regDate, upDate, ordDate - 현재시간으로 추가
-    public OrderDto(String ordId, int custId, String ordStusCode, String codeType, String custChk, String ordReqMsg, int totalProdPrice, int totalDiscPrice, int dlvPrice, int totalPayPrice, String pwd, String regId, String upId) {
+    public OrderDto(String ordId, String custId, String ordStusCode, String codeType, String custChk, String ordReqMsg, int totalProdPrice, int totalDiscPrice, int dlvPrice, int totalPayPrice, String pwd, String regId, String upId) {
         this.ordId = ordId;
         this.custId = custId;
         this.custChk = custChk;
