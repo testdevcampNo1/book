@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link rel="stylesheet" th:href="@{/css/customer/style.css}">
         <title>정석문고 jungsukbook</title>
     </head>
 
@@ -98,18 +98,6 @@
                 <tr class="delivery_info">
                     <th class="delivery_info_title">주문자 정보</th>
                     <td>
-                        <!-- 배송지 이름 -->
-                        <!--                        <span th:text="${orderFormDto.getAddressName()}"></span>-->
-                        <!--                        <span th:if="${orderFormDto.getDefaultChk() == 'Y'}"> - 기본배송지</span>-->
-                        <!-- 수령자 이름, 전화번호 -->
-                        <!--                        <div th:text="${orderFormDto.getName()} + ' / ' + ${orderFormDto.getTelNum()}"></div>-->
-                        <!--                        <input type="hidden" name="name" th:value="${orderFormDto.getName()}">-->
-                        <!--                        <input type="hidden" name="telNum" th:value="${orderFormDto.getTelNum()}">-->
-                        <!--                        <div class="address" th:text=" '[' + ${orderFormDto.getZipCode()} + '] ' + ${orderFormDto.getMainAddress()} + ${orderFormDto.getDetailAddress()}"></div>-->
-                        <!--                        <input type="hidden" name="zipCode" th:value="${orderFormDto.getZipCode()}">-->
-                        <!--                        <input type="hidden" name="mainAddress" th:value="${orderFormDto.getMainAddress()}">-->
-                        <!--                        <input type="hidden" name="detailAddress" th:value="${orderFormDto.getDetailAddress()}">-->
-
                         <input class="order_info" type="text" name="name" th:value="${orderFormDto.getName()}" placeholder="수령인 이름을 입력해 주세요.">
                         <input class="order_info" type="text" name="telNum" th:value="${orderFormDto.getTelNum()}" placeholder="수령인 전화번호를 입력해 주세요.">
                         <input class="order_info" type="text" name="zipCode" th:value="${orderFormDto.getZipCode()}" placeholder="우편번호를 입력해 주세요.">
@@ -173,8 +161,8 @@
                     <div class="product_name" th:text="${product.getProdName()}"></div>
                     <div class="product_quantity" th:text="${product.getOrdQty()} + '개'"></div>
                     <div class="product_price">
-                        <div class="sale_price" th:attr="data-price=${product.getTotalPayPrice()}" th:text="${product.getTotalPayPrice()} + '원'" ></div>
-                        <div class="product_base_price" th:attr="data-price=${product.getTotalProdPrice()}" th:text="${product.getTotalProdPrice()} + '원'"></div>
+                        <div class="sale_price" th:attr="data-price=${product.getProdBasePrice() * product.getOrdQty() - product.getDiscPrice() * product.getOrdQty()}" th:text="${product.getProdBasePrice() * product.getOrdQty() - product.getDiscPrice() * product.getOrdQty()} + '원'" ></div>
+                        <div class="product_base_price" th:attr="data-price=${product.getProdBasePrice() * product.getOrdQty()}" th:text="${product.getProdBasePrice() * product.getOrdQty()} + '원'"></div>
                     </div>
                     <input type="hidden" name="email" th:value="${orderFormDto.getEmail()}">
                 </div>

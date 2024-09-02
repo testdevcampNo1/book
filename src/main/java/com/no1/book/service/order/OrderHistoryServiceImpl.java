@@ -26,25 +26,21 @@ public class OrderHistoryServiceImpl implements OrderHistoryService {
     private OrderProductDao orderProductDao;
 
     @Override
-    public Map<String, List<OrderProductDto>> getCustomerOrderHistoryList() {
-        int custId = 1;
+    public Map<String, List<OrderProductDto>> getCustomerOrderHistoryList(String custId) {
         List<OrderProductDto> orderProductList = orderProductDao.getCustomerOrderProducts(custId);
+        // ordId로 그룹핑
         var res = orderProductList.stream().collect(Collectors.groupingBy(OrderProductDto::getOrdId));
-        System.out.println(res);
         return res;
     }
 
     @Override
     public OrderProductDto getOrderProductDto(int ordProdId) {
-        OrderProductDto orderProductDto = new OrderProductDto();
-
         try {
-             orderProductDto = orderProductDao.getOrderProduct(ordProdId);
+            OrderProductDto orderProductDto = orderProductDao.getOrderProduct(ordProdId);
+            return orderProductDto;
         } catch (DataAccessException e) {
             throw new SystemException(OrderValidatorErrorMessage.MISSING_PRODUCT_ID.getMessage());
         }
-
-        return orderProductDto;
     }
 
     @Override
