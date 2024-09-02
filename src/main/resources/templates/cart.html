@@ -1,11 +1,139 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-
+<style>
+    body,ul,li{
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    .menu-1{
+        font-family:‘Pretendard-Regular’;
+    }
+    .menu-1>li>a{
+        color:black;
+        text-decoration: none;
+    }
+    .px-4{
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    .intro_text{
+        padding-top: 81px;
+        text-align: center;
+    }
+    .main_text0{
+        width: 100%;
+        height: 0px;
+        margin-top:0;
+        background: rgb(108, 11, 11);
+    }
+    .main_text0> h1{
+        text-align: center;
+    }
+    .main_text0 > .contents1 {
+        text-align: center;
+    }
+    .con{
+        width:1080px;
+        margin-left: auto;
+        margin-right:auto;
+    }
+    .block{
+        display: block;
+    }
+    .flex{
+        display:flex;
+    }
+    .flex-grow{
+        flex-grow: 1;
+    }
+    .items-center{
+        align-items: center;
+    }
+    .h-full{
+        height: 100%;
+    }
+    .w-full{
+        width:100%;
+    }
+    .custom-link {
+        display: inline-block; /* 링크를 블록 요소로 설정하여 너비와 높이를 조절할 수 있도록 합니다. */
+        padding: 5px 10px; /* 텍스트 주변에 여백을 추가합니다. */
+        background-color:  #2A7DE1;; /* 배경색을 파란색으로 설정합니다. */
+        color: white; /* 텍스트 색상을 흰색으로 설정합니다. */
+        text-decoration: none; /* 기본 링크 스타일인 밑줄을 제거합니다. */
+        border-radius: 15px; /* 둥근 테두리를 위한 테두리 반경을 설정합니다. */
+    }
+    .custom-box {
+        display: inline-block; /* 링크를 블록 요소로 설정하여 너비와 높이를 조절할 수 있도록 합니다. */
+        padding: 5px 10px; /* 텍스트 주변에 여백을 추가합니다. */
+        background-color:  rgb(126, 161, 222); /* 배경색을 파란색으로 설정합니다. */
+        color: white; /* 텍스트 색상을 흰색으로 설정합니다. */
+        border-radius: 15px; /* 둥근 테두리를 위한 테두리 반경을 설정합니다. */
+    }
+    /*커스텀*/
+    .top-bar{
+        position: fixed;
+        top:0;
+        left:0;
+        right:0;
+        z-index: 1000;
+        width: 100%;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        height:81px;
+        backdrop-filter: blur(100px);
+        background-color: white;
+    }
+    .top-bar >.con{
+        height: 100%;
+        padding: 0 20px;
+    }
+    .top-bar>.con>.logo{
+        padding:0 20px;
+    }
+    .top-bar .menu-1 li a:hover {
+        text-decoration: underline; /* 호버 시에 밑줄 추가 */
+    }
+    .container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: fit-content;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 50px;
+    }
+    .container1 {
+        background-color: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 700px; /* Set a width for the container to control its size */
+    }
+    .container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 300px;
+    }
+    .logo-small {
+        width: 400%; /* Resizes with the container width */
+        max-width: 260px; /* Limits the maximum size */
+        height: auto;
+    }
+</style>
 <head>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" th:href="@{/css/style.css}">
         <link rel="stylesheet" type="text/css" th:href="@{/css/cart/style.css}">
 
         <title>정석문고 jungsukbook</title>

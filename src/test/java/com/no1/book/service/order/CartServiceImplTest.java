@@ -44,7 +44,7 @@ public class CartServiceImplTest {
     public void deleteItem() throws Exception {
 
         Map map = new HashMap();
-        map.put("custId",1);
+        map.put("custId","1");
         map.put("postId","PROD002");
         Integer row = cartService.remove(map);
         assertTrue(row>0);

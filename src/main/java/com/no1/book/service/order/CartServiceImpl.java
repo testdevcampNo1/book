@@ -20,7 +20,7 @@ public class CartServiceImpl implements CartService {
     CartProdDao cartProdDao;
 
     @Override
-    public List<CartProdDto> read(Integer custId) throws Exception{
+    public List<CartProdDto> read(String custId) throws Exception{
         List<CartProdDto> cartProdDto = cartProdDao.selectCartItem(custId);
         return cartProdDto;
 

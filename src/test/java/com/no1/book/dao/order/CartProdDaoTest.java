@@ -26,7 +26,7 @@ public class CartProdDaoTest {
     @DisplayName("장바구니 상품 정보")
     public void selectItemDetailTest() throws Exception{
 
-        int custId = 1;
+        String custId = "1";
         List<CartProdDto> cartProducts = cartProdDao.selectCartItem(custId);
         System.out.println("cartProducts = " + cartProducts.size());
 

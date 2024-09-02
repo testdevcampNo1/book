@@ -8,5 +8,5 @@ import java.util.*;
 @Mapper
 public interface CartProdDao {
 
-    List<CartProdDto> selectCartItem(Integer custId);
+    List<CartProdDto> selectCartItem(String custId);
 }

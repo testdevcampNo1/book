@@ -28,13 +28,11 @@ public class CartController {
     public String read(Model m, HttpServletRequest request, HttpServletResponse response) throws Exception{
 
         HttpSession session = request.getSession();
-        session.setAttribute("isUser","Y");
-        // session.setAttribute("isUser","N");
 
         // 세션에서 회원 여부 조회
-        if(session.getAttribute("isUser") == "Y"){ // 회원일 경우 - DB조회
+        if(loginCheck(request) == true){ // 회원일 경우 - DB조회
 
-            Integer custId = 1;
+            String custId = (String)session.getAttribute("custId");
 
             try{
                 List<CartProdDto> cartProducts  = cartService.read(custId);
@@ -50,9 +48,9 @@ public class CartController {
 
             try{
 
-                System.out.println("비회원 session = " + session.getId());
-                System.out.println("session.getAttributeNames = " + session.getAttributeNames());
-                System.out.println("session.getAttribute(\"cartLists\") = " + session.getAttribute("cartLists"));
+//                System.out.println("비회원 session = " + session.getId());
+//                System.out.println("session.getAttributeNames = " + session.getAttributeNames());
+//                System.out.println("session.getAttribute(\"cartLists\") = " + session.getAttribute("cartLists"));
 
                 m.addAttribute("sessionId",session.getId());
                 m.addAttribute("cartProdDto", session.getAttribute("cartLists"));
@@ -62,7 +60,6 @@ public class CartController {
             }
         }
 
-
         return "cart";
     }
 
@@ -71,14 +68,11 @@ public class CartController {
     public String remove(String prodId,  Model m, RedirectAttributes rattr, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         HttpSession session = request.getSession();
-        session.setAttribute("isUser","Y");
-        // session.setAttribute("isUser","N");
 
-        Integer custId = (Integer)session.getAttribute("custId");
-                custId = 1; // 임의로 아이디값 설정
-
-        if(session.getAttribute("isUser") == "Y") { // 회원일 경우 - DB조회
+        if(loginCheck(request) == true) { // 회원일 경우 - DB조회
             try{
+                String custId = (String)session.getAttribute("custId");
+
                 Map map = new HashMap();
                 map.put("custId", custId);
                 map.put("prodId", prodId);
@@ -99,7 +93,7 @@ public class CartController {
                 cartProducts.removeIf(obj -> obj.getProdId() == prodId);
                 session.setAttribute("cartLists", cartProducts);
 
-                rattr.addAttribute("custId", session.getId());
+                rattr.addAttribute("sessionId", session.getId());
                 rattr.addAttribute("msg","DEL_OK");
 
             }catch(Exception e){
@@ -107,7 +101,6 @@ public class CartController {
                 rattr.addAttribute("msg","DEL_ERR");
             }
         }
-
 
         return "redirect:/cart/list";
     }
@@ -118,13 +111,10 @@ public class CartController {
 
         Map map = new HashMap();
         HttpSession session = request.getSession();
-        session.setAttribute("isUser","Y");
-        // session.setAttribute("isUser","N");
 
-        if(session.getAttribute("isUser") == "Y"){
+        if(loginCheck(request) == true){
 
-            // Integer custId  = (Integer)session.getAttribute("custId");
-            Integer custId  = 1; // 임의로 아이디값 설정
+            String custId  = (String)session.getAttribute("custId");
 
             CartDto dto = reqDto;
             dto.setCustId(custId);
@@ -187,13 +177,11 @@ public class CartController {
 
         Map map = new HashMap();
         HttpSession session = request.getSession();
-        session.setAttribute("isUser","Y");
-        // session.setAttribute("isUser","N");
 
         Map<String, Object> updateResult = new HashMap<>();
 
-        if(session.getAttribute("isUser") == "Y") {
-            Integer custId = 1; // 임의로 지정
+        if(loginCheck(request) == true) {
+            String custId = (String)session.getAttribute("custId");
 
             int updateOk = cartService.updateItemQty(dto);
             if( updateOk != 1 ) { throw new Exception("cart item quantity update error"); }

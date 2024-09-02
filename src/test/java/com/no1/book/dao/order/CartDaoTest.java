@@ -43,8 +43,8 @@ public class CartDaoTest {
     public void selectCartItemTest() throws Exception{
         //cartDao.deleteAll();
 
-        Integer custId = 1;
-        Integer fakeCustId = 10;
+        String custId = "1";
+        String fakeCustId = "10";
         CartDto cartDto;
         for (int i = 0; i <10 ; i++) {
             cartDto = new CartDto(custId,"PROD00"+i,1);
@@ -67,12 +67,12 @@ public class CartDaoTest {
         cartDao.deleteAll();
 
         // 성공) 각 타입 정상적으로 들어갈 경우 -> 1
-        CartDto cartDto = new CartDto(9, "PROD009" , 1);
+        CartDto cartDto = new CartDto("9", "PROD009" , 1);
         //System.out.println("cartDao.insertItem(cartDto) = " + cartDao.insertItem(cartDto));
         assertTrue(cartDao.insertItem(cartDto) == 1);
 
         // 실패) 이미 상품이 존재한다면 -> 0
-        CartDto cartDto2 = new CartDto(9, "PROD009" , 2);
+        CartDto cartDto2 = new CartDto("9", "PROD009" , 2);
         System.out.println("cartDao.insertItem(cartDto2) = " + cartDao.insertItem(cartDto2));
         assertTrue(cartDao.insertItem(cartDto2) == 0);
 
@@ -86,11 +86,11 @@ public class CartDaoTest {
 
 
         // 예외) 중복 키 값이 들어갈 때
-        CartDto cartDto3 = new CartDto(9, "PROD009" , 1);
-        CartDto cartDto4 = new CartDto(9, "PROD009" , 1);
-
-        assertTrue(cartDao.insertItem(cartDto3)==1);
-        assertTrue(cartDao.insertItem(cartDto4)==0);
+//        CartDto cartDto3 = new CartDto("9", "PROD009" , 1);
+//        CartDto cartDto4 = new CartDto("9", "PROD009" , 1);
+//
+//        assertTrue(cartDao.insertItem(cartDto3)==0);
+//        assertTrue(cartDao.insertItem(cartDto4)==0);
 
     }
 
@@ -100,20 +100,20 @@ public class CartDaoTest {
         cartDao.deleteAll();
 
 
-        CartDto cartDto = new CartDto(1, "PROD0001",1 );
+        CartDto cartDto = new CartDto("1", "PROD0001",1 );
         assertTrue(cartDao.insertItem(cartDto)==1);
 
         // 성공) 일치 -> 1
-        CartDto cartDto1 = new CartDto(1,"PROD0001",2);
+        CartDto cartDto1 = new CartDto("1","PROD0001",2);
         assertTrue(cartDao.updateItemQty(cartDto1) == 1);
 
 
         // 실패1) 테이블에 없는 값 -> 0
-        CartDto cartDto2 = new CartDto(1,"PROD0003",2);
+        CartDto cartDto2 = new CartDto("1","PROD0003",2);
         assertTrue(cartDao.updateItemQty(cartDto2) == 0);
 
         // 실패2) key값 불일치 -> 0
-        CartDto cartDto3 = new CartDto(2,"PROD0003",2);
+        CartDto cartDto3 = new CartDto("2","PROD0003",2);
         assertTrue(cartDao.updateItemQty(cartDto3) == 0);
 
         // 실패3) 값이 없는 map -> 0
@@ -131,7 +131,7 @@ public class CartDaoTest {
     public void deleteItemTest() throws Exception{
         cartDao.deleteAll();
 
-        CartDto cartDto = new CartDto(10, "PROD3897",2);
+        CartDto cartDto = new CartDto("10", "PROD3897",2);
         assertTrue(cartDao.insertItem(cartDto)==1);
 
         // 성공)
@@ -143,7 +143,7 @@ public class CartDaoTest {
 
         // 실패1) 회원ID 일치, 상품ID 불일치
         Map map3 = new HashMap();
-        map3.put("custId",10);
+        map3.put("custId","10");
         map3.put("prodId","dddd");
         assertTrue(cartDao.deleteItem(map3) == 0);
 

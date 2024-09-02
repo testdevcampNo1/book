@@ -8,7 +8,7 @@ import java.util.*;
 @Mapper
 public interface CartDao {
 
-    List<CartDto> selectCart(Integer custId) throws Exception;
+    List<CartDto> selectCart(String custId) throws Exception;
     Integer insertItem(CartDto cartDto) throws Exception;
     Integer updateItemQty(CartDto cartDto) throws Exception;
     Integer deleteItem(Map map) throws Exception;
