@@ -225,4 +225,14 @@
         </if>
         AND prod_name like concat('%', #{keyword}, '%')
     </select>
+
+    <select id="orderBySales">
+        select * from product
+        order by total_sales desc;
+    </select>
+
+    <select id="orderByStar">
+        select * from product
+        order by star_avg desc;
+    </select>
 </mapper>

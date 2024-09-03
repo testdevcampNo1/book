@@ -1,0 +1,117 @@
+/* 챗봇 버튼 스타일링 */
+#chatbot-button-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+#chatbot-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#chatbot-button-container {
+    position: fixed;
+    top: 50%; /* 화면의 세로 중앙에 위치시킴 */
+    right: 20px; /* 오른쪽에서 20px 떨어진 위치 */
+    transform: translateY(-50%); /* 정확히 중앙에 오도록 조정 */
+    z-index: 1000;
+}
+
+#chatbot-button {
+    background-color: transparent; /* 배경을 투명하게 설정 */
+    border: none; /* 테두리 제거 */
+    padding: 0; /* 여백 제거 */
+    cursor: pointer;
+    outline: none;
+}
+
+#chatbot-button img {
+    width: 80px; /* 아이콘 크기 확대 */
+    height: 80px;
+    border-radius: 50%; /* 아이콘을 동그랗게 만듦 */
+    transition: transform 0.3s ease; /* 애니메이션 추가 */
+}
+
+#chatbot-button img:hover {
+    transform: scale(1.1); /* 호버 시 약간 확대 */
+}
+
+/* 챗봇 플로팅 창 스타일링 */
+.chatbot-modal {
+    display: none;
+    position: fixed;
+    width: 350px; /* 너비 설정 */
+    height: 600px; /* 높이 설정 */
+    bottom: 20px; /* 화면 하단에서의 거리 */
+    right: 20px; /* 화면 오른쪽에서의 거리 */
+    z-index: 1050; /* 다른 요소들보다 앞에 보이도록 설정 */
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* 바깥쪽 스크롤바 제거 */
+}
+
+/* 내부 콘텐츠에 대한 스타일링 */
+.chatbot-modal-content {
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* 바깥쪽 스크롤바를 완전히 제거 */
+}
+
+.chatbot-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #aaa;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* 챗봇 iframe에서만 스크롤바가 보이도록 설정 */
+.chatbot-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    overflow-y: auto; /* 내부 스크롤바 */
+}
+
+body, .content {
+    overflow: visible; /* 또는 overflow 설정을 제거 */
+}
+
+/* 사용자 입력 필드와 전송 버튼 스타일 */
+.input-container {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+}
+
+#user-input {
+    flex-grow: 1;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+}
+
+#send-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+#send-button:hover {
+    background-color: #0056b3;
+}

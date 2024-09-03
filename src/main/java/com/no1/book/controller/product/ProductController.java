@@ -245,6 +245,14 @@ public class ProductController {
         return "redirect:/product/manage";
     }
 
+    @GetMapping("/flaskTest")
+    public String flaskTest(Model m) throws Exception {
+
+        return "product/flaskTest";
+    }
+
+
+
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public String dataInteVioEx(Exception ex, Model m) {

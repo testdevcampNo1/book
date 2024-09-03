@@ -18,4 +18,7 @@ public interface CustomerProductDao {
     int plusReviewCnt(CustomerProductDto customerProductDto);
 
     int minusReviewCnt(CustomerProductDto customerProductDto);
+
+//    boolean existsCustomerProduct(CustomerProductDto customerProductDto);
+
 }

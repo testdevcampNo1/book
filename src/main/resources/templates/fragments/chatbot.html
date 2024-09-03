@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 챗봇 프래그먼트 정의 -->
+<div th:fragment="chatbotButton">
+    <!-- 페이지 하단에 챗봇 버튼 추가 -->
+    <div id="chatbot-button-container">
+        <button id="chatbot-button">
+            <img th:src="@{/images/product/chatbot.webp}" alt="Chatbot Icon">
+        </button>
+    </div>
+
+    <!-- 챗봇 모달 내부 -->
+    <div id="chatbot-modal" class="chatbot-modal">
+        <div class="chatbot-modal-content">
+            <span class="chatbot-close">&times;</span>
+            <iframe src="http://127.0.0.1:5000/chatbot" class="chatbot-frame" scrolling="no"></iframe>
+
+            <!-- 사용자 입력 필드 및 전송 버튼 -->
+            <div class="input-container">
+                <input type="text" id="user-input" placeholder="Type your message here..."/>
+                <button id="send-button">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

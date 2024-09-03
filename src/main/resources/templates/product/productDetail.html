@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>상품 상세 페이지</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/product/productDetail.css}">
+    <link rel="stylesheet" th:href="@{/css/product/chatbot.css}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
         let countValue = 1;
@@ -68,7 +69,7 @@
         }
 
         function goToOrder() {
-            // var custId = document.getElementById("custId").value;
+            var custId = document.getElementById("custId").value;
             var prodId = document.getElementById("prodId").value;
             var itemQty = countValue;
             var ordChkCode = document.getElementById("ordChkCode").value;
@@ -89,16 +90,17 @@
                 salePrice: salePrice
             }];
 
-            // $.ajax({
-            //     url: '/product/detail',
-            //     method: 'POST',
-            //     contentType: 'application/json',
-            //     data: JSON.stringify({prodId : prodId, itemQty : itemQty, custId : custId}),
-            //     success: function() {
-            //     },
-            //     error: function() {
-            //     }
-            // });
+            // CustomerProduct 업데이트 위함
+            $.ajax({
+                url: '/product/detail',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({prodId : prodId, itemQty : itemQty, custId : custId}),
+                success: function() {
+                },
+                error: function() {
+                }
+            });
 
             // order로 주문 정보 보내기
             $.ajax({
@@ -151,7 +153,7 @@
                 <div class="review-item">
                     <p><strong>${review.custId}</strong></p>
                     <p>별점: ${'★'.repeat(review.starPt)}</p>
-                    <p>${review.content}</p>`;
+                    <p class="review-content">${review.content}</p>`;
 
                         // 현재 사용자와 리뷰 작성자가 동일한 경우에만 수정/삭제 버튼 보이도록
                         if (review.custId === currentUserId) {
@@ -416,6 +418,12 @@
     <br>
     <p th:text="${'Product ID : ' + pdto.prodId}"></p>
 </div>
+
+<!-- productList.html -->
+<div th:replace="~{fragments/chatbot :: chatbotButton}"></div>
+
+<!-- chatbot.js -->
+<script th:src="@{/js/chatbot.js}"></script>
 
 </body>
 </html>
