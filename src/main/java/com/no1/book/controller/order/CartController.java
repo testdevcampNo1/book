@@ -47,19 +47,12 @@ public class CartController {
         }else{ // 비회원일 경우 - 세션 조회
 
             try{
-
-                System.out.println("비회원 session = " + session.getId());
-                System.out.println("session.getAttributeNames = " + session.getAttributeNames());
-                System.out.println("session.getAttribute(\"cartLists\") = " + session.getAttribute("cartLists"));
-
                 m.addAttribute("custId",session.getId());
                 m.addAttribute("cartProdDto", session.getAttribute("cartLists"));
-
             } catch(Exception e){
                 e.printStackTrace();
             }
         }
-
         return "cart";
     }
 
@@ -70,6 +63,7 @@ public class CartController {
         HttpSession session = request.getSession();
 
         if(loginCheck(request) == true) { // 회원일 경우 - DB조회
+
             try{
                 String custId = (String)session.getAttribute("custId");
 
@@ -87,14 +81,13 @@ public class CartController {
                 e.printStackTrace();
                 rattr.addAttribute("msg","DEL_ERR");
             }
+
         }else{
+
             try{
                 List<CartProdDto> cartProducts = (List<CartProdDto>) session.getAttribute("cartLists");
-                System.out.println("삭제하기 전 상품 확인 : " + cartProducts.toString());
 
                 cartProducts.removeIf(obj -> obj.getProdId().equals(prodId));
-
-                System.out.println("삭제 후 상품 확인 : " + cartProducts.toString());
                 
                 session.setAttribute("cartLists", cartProducts);
 
@@ -106,9 +99,9 @@ public class CartController {
                 rattr.addAttribute("msg","DEL_ERR");
             }
         }
-
         return "redirect:/cart/list";
     }
+
 
     @PostMapping("/add")
     @ResponseBody
@@ -120,7 +113,6 @@ public class CartController {
         if(loginCheck(request) == true){
 
             String custId  = (String)session.getAttribute("custId");
-
 
             CartDto dto = new CartDto(reqDto.getCustId(), reqDto.getProdId(), reqDto.getItemQty());
             dto.setCustId(custId);
@@ -151,13 +143,6 @@ public class CartController {
 
             List<CartProdDto> cartProducts = (List<CartProdDto>) session.getAttribute("cartLists");
 
-            // 장바구니에 추가할 상품 객체 생성
-//            CartProdDto newProduct = new CartProdDto();
-//            newProduct.setProdId(reqDto.getProdId());
-//            newProduct.setSalePrice(reqDto.getSalePrice());
-//            newProduct.setItemQty(reqDto.getItemQty());
-
-
             if(cartProducts != null){
 
                 // 장바구니에 상품 추가
@@ -179,10 +164,8 @@ public class CartController {
 
                 session.setAttribute("cartLists", cartProducts2);
             }
-
             map.put("status","success");
         }
-
         return map;  // status : successs, fail
     }
 
@@ -197,13 +180,15 @@ public class CartController {
         Map<String, Object> updateResult = new HashMap<>();
 
         if(loginCheck(request) == true) {
+            CartDto newDto = dto;
             String custId = (String)session.getAttribute("custId");
+            newDto.setCustId(custId);
 
-            int updateOk = cartService.updateItemQty(dto);
+            int updateOk = cartService.updateItemQty(newDto);
             if( updateOk != 1 ) { throw new Exception("cart item quantity update error"); }
 
             // 결과 반환
-            updateResult.put("itemQty", dto.getItemQty());
+            updateResult.put("itemQty", newDto.getItemQty());
 
         }else{ // 비회원일때 수량 처리
 
@@ -214,7 +199,6 @@ public class CartController {
             newProduct.setProdId(dto.getProdId());
             newProduct.setItemQty(dto.getItemQty());
 
-
             // 장바구니에 상품 추가
             boolean productExists = false;
             for (CartProdDto product : cartProducts) {
@@ -223,21 +207,14 @@ public class CartController {
                     break;
                 }
             }
-
             session.setAttribute("cartLists", cartProducts);
             updateResult.put("itemQty", newProduct.getItemQty());
         }
-
         return updateResult;
     }
 
-
     private boolean loginCheck(HttpServletRequest request) {
-        // 1. 세션을 얻어서
         HttpSession session = request.getSession();
-        // 2. 세션에 id가 있는지 확인, 있으면 true를 반환
         return session.getAttribute("custId")!=null;
     }
-
 }
-
