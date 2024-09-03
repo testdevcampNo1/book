@@ -4,6 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
         <link rel="stylesheet" type="text/css" th:href="@{/css/cart/style.css}">
 
         <title>정석문고 jungsukbook</title>
@@ -152,9 +153,9 @@
                     <div class="product-text" th:id="d" th:name="${product.dawnDeliCk}"
                          th:if="${product.dawnDeliCk} == 'Y'">새벽배송</div>
                     <div class="product-text" th:id="e" th:name="${product.isEBook}"
-                         th:if="${product.isEBook} == 0">종이책</div>
+                         th:if="${product.isEBook} == 'N'">종이책</div>
                     <div class="product-text"
-                         th:if="${product.isEBook} == 1">e-book</div>
+                         th:if="${product.isEBook} == 'Y'">e-book</div>
                 </div>
             </td>
             <td class="rmvBtn">
@@ -203,8 +204,8 @@
             products.dawnDeliChk = $('#d').attr('name'); //ow.querySelector('td.product-dawn').textContent;
             products.isEbook = $('#e').attr('name'); //row.querySelector('td.product-dawn').textContent;
             products.ordQty = row.querySelector('.prodQty').value; // row.querySelector('td.quantity-wrapper').textContent;
-            products.originPrice = row.querySelector('td.original-price').textContent;
-            products.salePrice = row.querySelector('td.sale-price').textContent;
+            products.prodBasePrice = row.querySelector('td.original-price').textContent;
+            products.discPrice = row.querySelector('td.sale-price').textContent;
 
 
             // console.log("prodId",products.prodId);
@@ -223,7 +224,10 @@
 
 
         if(confirm('총 ' + prodCnt+'개 상품을 주문하시겠습니까?')){
+
+            console.log("주문할 상품 리스트 : ", prodList)
             submitCart(prodList);
+
         }else{
             return;
         }
