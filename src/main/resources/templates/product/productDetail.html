@@ -291,12 +291,10 @@
 <div class="container">
     <h3 th:text="${cateName}">카테고리 네임</h3>
 
-<!--    <img th:src="@{/images/product/imsi.png}" alt="상품 이미지" class="product-image">-->
-    <!-- 이미지가 존재하는 경우 -->
-    <img th:if="${pdto.imageId != null}" th:src="@{'/images/product/' + ${pdto.imageId}}" alt="상품 이미지" class="product-image">
+    <!-- 이미지가 존재하는 경우 URL을 그대로 사용 -->
+    <img th:if="${pdto.imageId != null}" th:src="${pdto.imageId}" alt="상품 이미지" class="product-image">
     <!-- 이미지가 존재하지 않는 경우 기본 이미지를 표시 -->
     <img th:unless="${pdto.imageId != null}" th:src="@{'/images/product/imsi.png'}" alt="기본 이미지" class="product-image">
-
     <h1 th:text="${pdto.prodName}">책 제목</h1>
 
     <div class="product-info">
