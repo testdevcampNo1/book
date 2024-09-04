@@ -18,8 +18,8 @@
         <result property="ordAbStusCode" column="ord_ab_stus_code"/>
         <result property="registerDate" column="register_date"/>
         <result property="expiredDate" column="expired_date"/>
-        <result property="dawnDeliCk" column="dawn_deli_chk"/>
-        <result property="isEBook" column="is_ebook"/>
+        <result property="dawnDeliChk" column="dawn_deli_chk"/>
+        <result property="isEbook" column="is_ebook"/>
     </resultMap>
 
     <!-- 장바구니 상품 조회 -->
