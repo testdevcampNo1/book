@@ -51,7 +51,7 @@ public class OrderValidator {
             throw new InvalidOrderException(OrderValidatorErrorMessage.NEGATIVE_AMOUNT.getMessage());
         }
 
-        if(orderFormDto.getTotalProdBasePrice() < orderFormDto.getTotalPayPrice()) {
+        if(orderFormDto.getTotalProdBasePrice() + orderFormDto.getDlvPrice() < orderFormDto.getTotalPayPrice()) {
             throw new InvalidOrderException(OrderValidatorErrorMessage.SALE_PRICE_EXCEEDS_BASE_PRICE.getMessage());
         }
 
