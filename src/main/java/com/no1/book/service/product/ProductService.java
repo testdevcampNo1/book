@@ -1,5 +1,6 @@
 package com.no1.book.service.product;
 
+import com.no1.book.dao.product.CustomerProductDao;
 import com.no1.book.domain.product.AuthorDto;
 import com.no1.book.domain.product.CustomerProductDto;
 import com.no1.book.domain.product.ProductDto;
@@ -65,4 +66,5 @@ public interface ProductService {
     int plusReviewCnt(CustomerProductDto dto) throws Exception;
 
     int minusReviewCnt(CustomerProductDto dto) throws Exception;
+
 }

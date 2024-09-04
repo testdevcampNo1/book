@@ -39,4 +39,8 @@ public interface ProductDao {
     List<ProductDto> getPage(SearchCondition sc) throws Exception;
 
     int getPageSize(SearchCondition sc) throws Exception;
+
+    List<ProductDto> orderBySales() throws Exception;
+
+    List<ProductDto> orderByStar() throws Exception;
 }

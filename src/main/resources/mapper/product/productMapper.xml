@@ -105,7 +105,6 @@
             author_info_id   = #{authorInfoId},
             smry             = #{smry},
             pblcr_review     = #{pblcrReview},
-            image_id         = #{imageId},
             dawn_deli_chk    = #{dawnDeliChk},
             star_avg         = #{starAvg},
             ord_chk_code     = #{ordChkCode},
@@ -224,5 +223,15 @@
             AND cate_code LIKE CONCAT(#{cateKey}, '%')
         </if>
         AND prod_name like concat('%', #{keyword}, '%')
+    </select>
+
+    <select id="orderBySales">
+        select * from product
+        order by total_sales desc;
+    </select>
+
+    <select id="orderByStar">
+        select * from product
+        order by star_avg desc;
     </select>
 </mapper>

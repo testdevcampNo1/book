@@ -1,14 +1,15 @@
 /* Global Styles */
 body {
+    background-color: #f8f9fa; /* 기본 배경 색상 유지 */
+    color: #343a40;
     font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
     margin: 0;
     padding: 0;
-    color: #343a40;
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1400px; /* 더 넓은 최대 너비 설정 */
+    width: 75%; /* 화면 너비의 75%를 사용 */
     margin: 0 auto;
     padding: 20px;
     background-color: #fff;
@@ -16,14 +17,17 @@ body {
     border-radius: 10px;
 }
 
+/* 헤딩 스타일 */
 h1, h2, h3, h4 {
     color: #343a40;
     margin-bottom: 15px;
+    font-family: 'Pretendard-Regular', Arial, sans-serif; /* 스타일 통일 */
 }
 
 h1 {
     font-size: 2em;
     font-weight: bold;
+    text-align: center;
 }
 
 h2 {
@@ -41,140 +45,37 @@ h4 {
     color: #dc3545;
 }
 
+/* 텍스트 스타일 */
 p {
     font-size: 1em;
     line-height: 1.6;
     color: #6c757d;
+    padding-left: 10px;
 }
 
-/* Product Image */
+/* 상품 이미지 */
 .product-image {
     width: 100%;
-    max-width: 300px;
+    max-width: 400px; /* 이미지 크기 확장 */
     height: auto;
     display: block;
     margin: 0 auto 20px auto;
 }
 
-/* Product Info */
+/* 상품 정보 섹션 */
 .product-info {
     text-align: center;
 }
 
-.product-price h2 {
-    font-size: 1.8em;
-    color: #e74c3c;
-    font-weight: bold;
-}
-
-.product-price h3 {
-    font-size: 1.4em;
-    text-decoration: line-through;
-    color: #999;
-}
-
-.product-price h4 {
-    font-size: 1.6em;
-    color: #007bff;
-    font-weight: bold;
-}
-
-/* Cart and Order */
-.cart-and-order {
-    margin-top: 20px;
-    text-align: center;
-}
-
-.cart-and-order input[type='button'] {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px;
-    margin: 0 5px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.2em;
-}
-
-.cart-and-order button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 0 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.2em;
-}
-
-.cart-and-order button:hover {
-    background-color: #218838;
-}
-
-/* Product Details */
-.product-details {
-    margin-top: 40px;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Author Section */
-.author-section {
-    margin-top: 40px;
-    padding: 20px;
-    background-color: #e9ecef;
-    border-radius: 10px;
-}
-
-/* Publisher Section */
-.publisher-section {
-    margin-top: 40px;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 10px;
-}
-
-/* Additional Info */
-.additional-info {
-    margin-top: 40px;
-    padding: 20px;
-    background-color: #e9ecef;
-    border-radius: 10px;
-}
-
-/* Rating and Sales */
-.rating, .sales {
-    margin-top: 10px;
-    font-size: 1.1em;
-    color: #6c757d;
-}
-
-/* Delivery Check */
-.delivery-check {
-    margin-top: 10px;
-    font-size: 1.1em;
-    color: #17a2b8;
-}
-
-/* 비활성화된 버튼 스타일 */
-button:disabled {
-    background-color: #d6d8db; /* 비활성화된 버튼을 회색으로 설정 */
-    color: #a6a8ab; /* 텍스트 색상도 회색으로 변경 */
-    cursor: not-allowed; /* 마우스 커서를 'not-allowed'로 변경 */
-    opacity: 0.6; /* 비활성화 상태를 명확히 보이도록 흐리게 처리 */
-}
-
-/* 상품 가격 스타일 */
+/* 가격 정보 스타일 */
 .product-price h2 {
     font-size: 1.2em;
     color: #999;
     font-weight: normal;
-    text-decoration: line-through; /* 기본가에 취소선 추가 */
+    text-decoration: line-through;
 }
 
-.product-price h3 { /* 상품 할인율 */
+.product-price h3 {
     font-size: 1.4em;
     color: #323539;
     font-weight: bold;
@@ -187,8 +88,13 @@ button:disabled {
     font-weight: bold;
 }
 
-/* Cart and Order */
-.cart-and-order input[type='button'] {
+/* 장바구니 및 주문 버튼 스타일 */
+.cart-and-order {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.cart-and-order input[type='button'], .cart-and-order button {
     background-color: #007bff;
     color: white;
     border: none;
@@ -201,69 +107,27 @@ button:disabled {
 
 .cart-and-order button {
     background-color: #28a745;
-    color: white;
-    border: none;
     padding: 10px 20px;
-    margin: 0 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.2em;
 }
 
 .cart-and-order button:hover {
     background-color: #218838;
 }
 
-/* Product Title */
-h1 {
-    font-size: 2em;
-    font-weight: bold;
-    text-align: center; /* 제목을 가운데 정렬 */
-    margin-bottom: 15px;
-    color: #343a40;
-}
-
-
-/* Product Card Link */
-.product-card {
-    position: relative;
-    background-color: #ffffff;
-    border: 1px solid #dee2e6;
-    border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.product-card-link {
-    display: block; /* a 태그를 블록 레벨로 설정 */
-    height: 100%; /* 부모인 product-card의 전체 높이를 차지하도록 설정 */
-    color: inherit; /* 텍스트 색상을 상속받도록 설정 */
-    text-decoration: none; /* 링크의 기본 밑줄을 제거 */
-}
-
-.product-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-/* Ensure the image and text are not underlined when hovered */
-.product-card-link:hover .product-title,
-.product-card-link:hover .product-description {
-    text-decoration: none;
-}
-
-/* Review List Section */
-.review-list {
+/* 상품 상세 정보 */
+.product-details, .author-section, .publisher-section, .additional-info, .review-section, .review-list {
     margin-top: 40px;
     padding: 20px;
-    background-color: #ffffff;
+    background-color: #f8f9fa;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: left; /* 텍스트를 좌측 정렬로 설정 */
+    width: 100%; /* 컨테이너의 너비에 맞추어 조정 */
 }
 
+/* 리뷰 스타일 */
 .review-item {
-    background-color: #f8f9fa;
+    background-color: #e9ecef; /* 배경과 구분되는 색상으로 설정 */
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 15px;
@@ -275,6 +139,7 @@ h1 {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+/* 리뷰 메타 데이터 */
 .review-meta {
     display: flex;
     justify-content: space-between;
@@ -282,127 +147,66 @@ h1 {
     margin-bottom: 10px;
 }
 
-.review-meta p {
-    margin: 0;
-    font-size: 1.1em;
-    color: #495057;
+.review-buttons button {
+    padding: 8px 12px; /* 버튼의 높이를 맞추기 위해 패딩 조정 */
+    margin: 0 2px;
+    font-size: 0.9em;
 }
 
-.review-meta .review-buttons {
-    display: flex;
-    gap: 10px;
-}
-
+/* 리뷰 내용 */
 .review-content {
     margin-top: 10px;
     font-size: 1em;
     color: #495057;
-    text-align: left;
-}
-
-.review-buttons button {
-    background-color: transparent;
-    color: #007bff;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-size: 0.9em;
-    border-radius: 5px;
-    transition: background-color 0.2s ease;
-}
-
-.review-buttons button:hover {
-    background-color: #e9ecef;
-}
-
-.review-buttons button.btn-danger {
-    color: #dc3545;
-}
-
-.review-buttons button.btn-danger:hover {
-    background-color: #f8d7da;
-}
-
-/* Review Form Section */
-.review-section {
-    margin-top: 40px;
-    padding: 25px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.review-section h3 {
-    margin-bottom: 20px;
-    font-size: 1.5em;
-    color: #495057;
-    text-align: center;
-}
-
-.review-section .form-group {
-    margin-bottom: 20px;
-}
-
-.review-section label {
-    font-size: 1em;
-    color: #495057;
-    display: block;
-    margin-bottom: 8px;
-}
-
-.review-section textarea.form-control,
-.review-section select.form-control {
-    width: 100%;
+    text-align: left; /* 텍스트를 좌측 정렬로 설정 */
+    background-color: #ffffff; /* 리뷰 내용과 구분되도록 배경색 추가 */
     padding: 15px;
-    border: 1px solid #dee2e6;
     border-radius: 5px;
-    font-size: 1em;
-    background-color: #f8f9fa;
-    color: #495057;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* 내부 음영 추가 */
 }
 
-.review-section textarea.form-control:focus,
-.review-section select.form-control:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
-    background-color: #ffffff;
-}
-
-.review-section button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    margin-top: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.1em;
-    width: 100%;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.review-section button:hover {
-    background-color: #0056b3;
-    transform: translateY(-3px);
-}
-
-/* Media Query for Mobile */
+/* 미디어 쿼리 - 모바일 최적화 */
 @media (max-width: 768px) {
     .review-meta {
         flex-direction: column;
         align-items: flex-start;
     }
 
-    .review-meta .review-buttons {
-        margin-top: 10px;
-    }
-
     .review-section textarea.form-control {
         height: 80px;
     }
 
-    .review-section button {
-        font-size: 1em;
+    .container {
+        width: 95%; /* 모바일에서 좀 더 넓게 차지 */
     }
+}
+
+body::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background-color: #ffffff;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    margin-top: 18px;
+}
+
+.btn-danger {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+    margin-top: 18px;
+}
+
+button:disabled {
+    background-color: #669966; /* 흐려진 배경색 */
+    color: #666666; /* 흐려진 텍스트 색 */
+    cursor: not-allowed; /* 비활성화된 상태일 때 커서를 'not-allowed'로 설정 */
 }

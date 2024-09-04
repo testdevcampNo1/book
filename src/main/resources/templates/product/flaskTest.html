@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Data Transfer</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function sendTopSellingBooks() {
+            $.ajax({
+                url: '/send-top-selling-books',
+                type: 'POST',
+                success: function(data) {
+                    console.log('Success:', data);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error:', errorThrown);
+                }
+            });
+        }
+
+        function sendTopRatedBooks() {
+            $.ajax({
+                url: '/send-top-rated-books',
+                type: 'POST',
+                success: function(data) {
+                    console.log('Success:', data);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error:', errorThrown);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<h1>Book Data Transfer</h1>
+<button onclick="sendTopSellingBooks()">판매량이 가장 높은 책 5개 Flask 서버로 넘기기</button>
+<br><br>
+<button onclick="sendTopRatedBooks()">별점이 가장 높은 책 5개 Flask 서버로 넘기기</button>
+</body>
+</html>
