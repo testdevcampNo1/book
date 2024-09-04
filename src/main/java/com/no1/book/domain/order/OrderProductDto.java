@@ -21,6 +21,7 @@ public class OrderProductDto {
     private int prodBasePrice;
     private int totalProdPrice;
     private int discPrice;
+    private int salePrice;
     private int totalDiscPrice;
     private int totalPayPrice;
     private String cancelableDate;

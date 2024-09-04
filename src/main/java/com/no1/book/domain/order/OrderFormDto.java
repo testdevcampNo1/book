@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 public class OrderFormDto {
     private String custId;
+    private String custChk = "N";
     // 노출에 필요한 상품 정보
     private List<OrderProductDto> productList;
     private String ordId;
