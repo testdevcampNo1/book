@@ -74,12 +74,6 @@ public class OrderValidator {
                 throw new InvalidProductException(OrderValidatorErrorMessage.MISSING_PRODUCT_ID.getMessage());
             }
 
-            // 상품 상태 검증
-            // 상품 상태 DB에서 실시간으로 조회 필요
-            if (product.getOrdChkCode() == null || product.getOrdChkCode().isEmpty() || !product.getOrdChkCode().equals("AVBL") || product.getCodeType() == null || product.getCodeType().isEmpty()) {
-                throw new InvalidProductException(OrderValidatorErrorMessage.INVALID_PRODUCT_STATUS.getMessage());
-            }
-
             // 0개 이하인 주문 수량 검증
             if (product.getOrdQty() <= 0) {
                 throw new InvalidProductException(OrderValidatorErrorMessage.ZERO_OR_NEGATIVE_QUANTITY.getMessage());
@@ -94,7 +88,7 @@ public class OrderValidator {
                 throw new InvalidProductException(OrderValidatorErrorMessage.SALE_PRICE_EXCEEDS_BASE_PRICE.getMessage());
             }
 
-            if (product.getTotalPayPrice() < product.getDiscPrice() * product.getOrdQty()) {
+            if (product.getTotalPayPrice() < product.getTotalDiscPrice()) {
                 throw new InvalidProductException(OrderValidatorErrorMessage.DISCOUNT_PRICE_EXCEEDS_SALE_PRICE.getMessage());
             }
         }

@@ -62,11 +62,17 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderFormDto initOrderInfo(String custId, List<OrderProductDto> productList) throws Exception {
         OrderFormDto orderFormDto = new OrderFormDto();
-        orderFormDto.setCustId(custId);
+        CustomerDto customerDto = new CustomerDto();
 
-        if(!custId.isEmpty()) {
+        if (custId != null && !custId.isEmpty()) {
+            orderFormDto.setCustId(custId);
+        }
+
+        if(orderFormDto.getCustId() != null) {
+            orderFormDto.setCustChk("Y");
+
             // 회원 정보 조회
-            getCustomerInfo(custId, orderFormDto);
+            getCustomerInfo(orderFormDto.getCustId(), customerDto, orderFormDto);
 
             // 기본 배송지 조회
 //            getAddressInfo(custId, orderFormDto);
@@ -82,9 +88,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     // 회원 정보 DB 조회
-    void getCustomerInfo(String custId, OrderFormDto orderFormDto) {
+    void getCustomerInfo(String custId, CustomerDto customerDto, OrderFormDto orderFormDto) {
         try {
-            CustomerDto customerDto = customerDao.selectCustomer(custId);
+            customerDto = customerDao.selectCustomer(custId);
 
             orderFormDto.setEmail(customerDto.getEmail()); // 회원 이메일
             orderFormDto.setName(customerDto.getName()); // 회원 이름
@@ -137,32 +143,53 @@ public class OrderServiceImpl implements OrderService {
     void setProductInfo(OrderFormDto orderFormDto) throws Exception {
         int totalProdBasePrice = 0;
         int totalDiscPrice = 0;
+        int totalPayPrice = 0;
         int totalOrderQuantity = 0;
 
         boolean isAllDawnDelivery = true;
         boolean isAllEbook = true;
 
         for(OrderProductDto product : orderFormDto.getProductList()) {
+            // 정가와 판매가가 다를 경우, 할인금액 설정
+            if(product.getProdBasePrice() != product.getSalePrice()) {
+                product.setDiscPrice(product.getProdBasePrice() - product.getSalePrice());
+            }
+
             // 금액
             totalProdBasePrice += product.getProdBasePrice() * product.getOrdQty();
+            product.setTotalProdPrice(product.getProdBasePrice() * product.getOrdQty());
             totalDiscPrice += product.getDiscPrice() * product.getOrdQty();
+            product.setTotalDiscPrice(product.getDiscPrice() * product.getOrdQty());
+            totalPayPrice += product.getSalePrice() * product.getOrdQty();
+            product.setTotalPayPrice(product.getSalePrice() * product.getOrdQty());
 
             // 수량
             totalOrderQuantity += product.getOrdQty();
+
+            // 상품 코드 202
+            product.setCodeType("202");
+
+            // TODO: 상품 상세페이지 - 현재 구현 상태에서 바뀔 가능성이 없다면 컬럼 없어도 되겠다.
+            product.setProdPageLink("");
 
             if(product.getDawnDeliChk() == null || product.getDawnDeliChk().equals("N")) {
                 isAllDawnDelivery = false;
             }
 
-            if(product.getIsEbook().equals("N")) {
+            if(product.getIsEbook() == null || product.getIsEbook().equals("N")) {
                 isAllEbook = false;
+            }
+
+            // img
+            if(product.getImg() == null || product.getImg().isBlank()) {
+                product.setImg("https://github.com/user-attachments/assets/db191f13-2afa-4201-9aa2-a5b047a140ab");
             }
 
             // 상품 상태 조회
             if(!isProductAvailable(product.getProdId())) throw new InvalidOrderException("구매 불가능한 상품입니다. " + product.getProdId());
 
             // 상품 금액 변동 여부 조회
-            if(isChangeProductPrice(product.getProdId(), product.getProdBasePrice())) throw new InvalidOrderException("구매 불가능한 상품입니다. " + product.getProdId());
+            if(isChangeProductPrice(product.getProdId(), product.getProdBasePrice())) throw new InvalidProductException(OrderValidatorErrorMessage.CHANGE_PRODUCT_PRICE.getMessage());
         }
 
         orderFormDto.setTotalProdBasePrice(totalProdBasePrice);
@@ -193,8 +220,7 @@ public class OrderServiceImpl implements OrderService {
     // 배송비 계산
     void setDeliveryPrice(OrderFormDto orderFormDto) {
         int dlvPrice = orderFormDto.getTotalProdBasePrice() - orderFormDto.getTotalDiscPrice() < minOrderAmountForFreeDelivery ? deliveryFee : 0;
-
-        orderFormDto.setTotalPayPrice(orderFormDto.getTotalProdBasePrice() - orderFormDto.getTotalDiscPrice() - dlvPrice);
+        orderFormDto.setTotalPayPrice(orderFormDto.getTotalProdBasePrice() - orderFormDto.getTotalDiscPrice() + dlvPrice);
         orderFormDto.setDlvPrice(dlvPrice);
     }
 
@@ -219,22 +245,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     // 상품 금액 변동 여부 검증
+    @Transactional
     boolean isChangeProductPrice(String prodId, int prodBasePrice) throws Exception {
-        ProductDto productDto = new ProductDto();
-
-        // 상품 금액 조회
-        try {
-            productDto.setProdBasePrice(productDao.select(prodId).getProdBasePrice());
-        } catch (DataAccessException e) {
-            throw new SystemException(OrderValidatorErrorMessage.ACCESS_DATABASE_FAILED.getMessage());
-        }
-
-        // 상품 가격 변동 여부 검증
-        if(productDto.getProdBasePrice() != prodBasePrice) {
-            throw new InvalidProductException(OrderValidatorErrorMessage.CHANGE_PRODUCT_PRICE.getMessage());
-        }
-
-        return false;
+        int getProdBasePrice = productDao.select(prodId).getProdBasePrice();
+        return getProdBasePrice != prodBasePrice;
     }
 
     // 주문 번호 생성
@@ -244,15 +258,17 @@ public class OrderServiceImpl implements OrderService {
 
     // 주문 요청
     public void requestOrder(OrderFormDto orderFormDto) {
+
+
         saveOrder(orderFormDto);
         saveOrderProduct(orderFormDto.getOrdId(), orderFormDto.getProductList());
         saveOrderStatus(orderFormDto.getOrdId());
         saveDelivery(orderFormDto.getOrdId());
         savePayment(orderFormDto.getOrdId());
 
-        if(!orderFormDto.getCustId().isEmpty() && orderFormDto.getDefaultChk().equals("Y")) {
-            updateDefaultAddress(orderFormDto);
-        }
+//        if(!orderFormDto.getCustId().isEmpty() && orderFormDto.getDefaultChk().equals("Y")) {
+//            updateDefaultAddress(orderFormDto);
+//        }
     }
 
     // 특정 주문의 regId 조회
@@ -274,8 +290,7 @@ public class OrderServiceImpl implements OrderService {
 
         String ordId = orderNumGenerator();
         orderFormDto.setOrdId(ordId);
-        String regId = !orderFormDto.getCustId().isEmpty() ? orderFormDto.getCustId() : orderFormDto.getEmail();
-        String custCheck = !orderFormDto.getCustId().isEmpty() ? "Y" : "N";
+        String regId = orderFormDto.getCustId();
 
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -284,7 +299,7 @@ public class OrderServiceImpl implements OrderService {
         OrderDto orderDto = OrderDto.builder()
                 .ordId(ordId)
                 .custId(orderFormDto.getCustId())
-                .custChk(custCheck)
+                .custChk(orderFormDto.getCustChk())
                 .pwd(orderFormDto.getPwd())
                 .ordStusCode("RCVD")
                 .codeType("301")
@@ -315,6 +330,10 @@ public class OrderServiceImpl implements OrderService {
                 product.setOrdId(ordId);
                 product.setRegId(regId);
                 product.setUpId(regId);
+                product.setCodeType("300");
+                product.setOrdChkCode("CMPL");
+                product.setImg(product.getImg() == null ? "" : product.getImg());
+                product.setProdPageLink("");
 
                 orderProductDao.insertOrderProduct(product);
             }

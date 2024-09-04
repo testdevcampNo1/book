@@ -40,6 +40,11 @@ class OrderServiceImplTest {
     @Mock
     private OrderStatusHistoryDao orderStatusHistoryDao;
 
+    @Test
+    void random() {
+        System.out.println(UUID.randomUUID());
+    }
+
     // 각 테스트 메서드가 실행되기 전 선행적으로 실행되는 메서드
     @BeforeEach
     void setUp() {

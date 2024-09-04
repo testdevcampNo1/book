@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/payment")
 @Controller
@@ -23,8 +21,14 @@ public class PaymentController {
     private ProductService productService;
 
     @PostMapping("/request")
-    public String requestPayment(OrderFormDto orderFormDto, HttpSession session, Model model) {
+    public ResponseEntity<String> requestPayment(@RequestBody OrderFormDto orderFormDto, HttpSession session) {
         session.setAttribute("orderFormDto", orderFormDto);
+        return ResponseEntity.ok("success request payment");
+    }
+
+    @GetMapping("/request")
+    public String payment(HttpSession session, Model model) {
+        OrderFormDto orderFormDto = (OrderFormDto) session.getAttribute("orderFormDto");
         model.addAttribute("orderFormDto", orderFormDto);
         return "/order/requestPayment";
     }
@@ -36,7 +40,7 @@ public class PaymentController {
         orderService.requestOrder(orderFormDto);
         model.addAttribute("orderFormDto", orderFormDto);
 
-         session.removeAttribute("orderFormDto");
+        session.removeAttribute("orderFormDto");
 
         return "/order/orderComplete";
     }

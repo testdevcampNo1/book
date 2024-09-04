@@ -19,6 +19,12 @@
             });
         });
 
+        $(document).ready(function () {
+            $('.main_button').click(function () {
+                window.location.href = '/product/list';
+            });
+        });
+
         function formatPrice(price) {
             return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
@@ -74,10 +80,23 @@
         <div class="content" th:text="${orderFormDto.getName()} + ' / ' + ${orderFormDto.getTelNum()}"></div>
         <br>
         <div class="title">받는 주소</div>
-        <div class="content" th:text="'[' + ${orderFormDto.getZipCode()} + '] ' + ${orderFormDto.getMainAddress()} + ${orderFormDto.getDetailAddress()}"></div>
+        <div class="content" th:text="'[' + ${orderFormDto.getZipCode()} + '] ' + ' ' + ${orderFormDto.getMainAddress()} + ' ' + ${orderFormDto.getDetailAddress()}"></div>
         <br>
         <div class="title">요청사항</div>
         <div class="content" th:text="${orderFormDto.getOrderRequestMessage()}"></div>
+    </div>
+</div>
+
+<!-- 비회원정보 -->
+<div class="nonCustomerInfo" th:if="${orderFormDto.getCustChk()} == 'N' ">
+    <div class="box_title">비회원 정보</div>
+    <div class="box_wrap" style="padding-top: 32px">
+        <div id="non_customer_desc" style="margin: 0px 0px 16px 32px">비회원의 주문 내역 조회시 이메일과 비밀번호 정보가 필요합니다. 입력하신 정보를 다시 한 번 확인해 주세요.</div>
+        <div class="title">이메일</div>
+        <div class="content" th:text="${orderFormDto.getCustId()}"></div>
+        <br>
+        <div class="title">비밀번호</div>
+        <div class="content" th:text="${orderFormDto.getPwd()}"></div>
     </div>
 </div>
 
