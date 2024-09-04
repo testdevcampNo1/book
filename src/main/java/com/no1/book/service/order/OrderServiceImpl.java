@@ -143,6 +143,7 @@ public class OrderServiceImpl implements OrderService {
     void setProductInfo(OrderFormDto orderFormDto) throws Exception {
         int totalProdBasePrice = 0;
         int totalDiscPrice = 0;
+        int totalPayPrice = 0;
         int totalOrderQuantity = 0;
 
         boolean isAllDawnDelivery = true;
@@ -156,7 +157,11 @@ public class OrderServiceImpl implements OrderService {
 
             // 금액
             totalProdBasePrice += product.getProdBasePrice() * product.getOrdQty();
+            product.setTotalProdPrice(product.getProdBasePrice() * product.getOrdQty());
             totalDiscPrice += product.getDiscPrice() * product.getOrdQty();
+            product.setTotalDiscPrice(product.getDiscPrice() * product.getOrdQty());
+            totalPayPrice += product.getSalePrice() * product.getOrdQty();
+            product.setTotalPayPrice(product.getSalePrice() * product.getOrdQty());
 
             // 수량
             totalOrderQuantity += product.getOrdQty();
@@ -167,6 +172,11 @@ public class OrderServiceImpl implements OrderService {
 
             if(product.getIsEbook() == null || product.getIsEbook().equals("N")) {
                 isAllEbook = false;
+            }
+
+            // img
+            if(product.getImg() == null || product.getImg().isBlank()) {
+                product.setImg("https://github.com/user-attachments/assets/db191f13-2afa-4201-9aa2-a5b047a140ab");
             }
 
             // 상품 상태 조회
@@ -315,6 +325,7 @@ public class OrderServiceImpl implements OrderService {
                 product.setRegId(regId);
                 product.setUpId(regId);
                 product.setCodeType("300");
+                product.setOrdChkCode("CMPL");
                 product.setImg(product.getImg() == null ? "" : product.getImg());
                 product.setProdPageLink("");
 
