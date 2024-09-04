@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Interface</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot.css') }}">
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chatbox"></div>
+        <div id="loading-icon"></div> <!-- 로딩 아이콘 추가 -->
+        <div id="input-container">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+$(document).ready(function() {
+    $("#send-btn").click(function() {
+        var userInput = $("#user-input").val();
+        if (userInput.trim() !== "") {
+            // 유저의 메시지를 화면에 표시
+            $("#chatbox").append("<div class='user-message'><b>You:</b> " + userInput + "</div>");
+            
+            // 입력창 비우기
+            $("#user-input").val("");
+
+            // 로딩 아이콘 표시
+            $("#loading-icon").show();  
+
+            // Flask 서버로 메시지를 전송
+            $.ajax({
+                url: "/chatbot",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ message: userInput }),
+                success: function(response) {
+                    // 로딩 아이콘 숨김
+                    $("#loading-icon").hide();  
+
+                    // 챗봇의 응답을 화면에 표시
+                    $("#chatbox").append("<div class='bot-message'><b>Bot:</b> " + response.message + "</div>");
+                    $("#chatbox").scrollTop($("#chatbox")[0].scrollHeight);  // 스크롤 하단으로 이동
+                },
+                error: function(error) {
+                    console.error("Error:", error);
+                    // 로딩 아이콘 숨김
+                    $("#loading-icon").hide();  
+                }
+            });
+        }
+    });
+
+    // Enter 키로 메시지 전송
+    $("#user-input").keypress(function(e) {
+        if(e.which == 13) {
+            $("#send-btn").click();
+        }
+    });
+});
+    </script>
+</body>
+</html>
