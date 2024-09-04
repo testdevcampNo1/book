@@ -166,6 +166,12 @@ public class OrderServiceImpl implements OrderService {
             // 수량
             totalOrderQuantity += product.getOrdQty();
 
+            // 상품 코드 202
+            product.setCodeType("202");
+
+            // TODO: 상품 상세페이지 - 현재 구현 상태에서 바뀔 가능성이 없다면 컬럼 없어도 되겠다.
+            product.setProdPageLink("");
+
             if(product.getDawnDeliChk() == null || product.getDawnDeliChk().equals("N")) {
                 isAllDawnDelivery = false;
             }
