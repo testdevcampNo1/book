@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="/css/order/history.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/product/chatbot.css}">
     <script>
         $(document).ready(function () {
             $('.cancel_order_button').click(function () {
@@ -91,6 +92,9 @@
         <button class="cancel_order_button" th:attr="data-ord-prod-id=${historyItem.getOrdProdId()}" th:if="${historyItem.getOrdChkCode()} != 'CNCL'">주문 취소</button>
     </div>
 </div>
+
+<div th:replace="~{fragments/order_chatbot :: chatbotButton}"></div>
+<script th:src="@{/js/order/order_chatbot.js}"></script>
 </body>
 
 </html>

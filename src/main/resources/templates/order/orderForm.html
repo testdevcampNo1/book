@@ -4,11 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{/css/customer/style.css}">
     <title>정석문고 jungsukbook</title>
 
+    <link rel="stylesheet" th:href="@{/css/customer/style.css}">
     <link rel="stylesheet" href="/css/order/form.css">
     <script th:src="@{/js/order/orderForm.js}"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/product/chatbot.css}">
 </head>
 
 <body>
@@ -137,5 +140,8 @@
         <input type="hidden" id="total_pay_price" th:value="${orderFormDto.getTotalPayPrice()}">
         <button class="payment_button">결제하기</button>
     </form>
+
+    <div th:replace="~{fragments/order_chatbot :: chatbotButton}"></div>
+    <script th:src="@{/js/order/order_chatbot.js}"></script>
 </body>
 </html>
