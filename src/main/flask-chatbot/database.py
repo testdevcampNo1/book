@@ -1,5 +1,6 @@
 import pymysql
-
+from dotenv import load_dotenv
+import os
 
 # 데이터베이스 연결 함수
 def get_db_connection():
@@ -7,7 +8,7 @@ def get_db_connection():
         host='127.0.0.1',
         port=3306,
         user='root',
-        password='Ws66196619@',
+        password=os.getenv('DB_PASSWORD'),
         db='no1',
         charset='utf8'
     )
@@ -21,6 +22,23 @@ def get_product():
         sql = "SELECT prod_name, prod_id, sale_price, total_sales, star_avg, dawn_deli_chk, ord_chk_code FROM product"
         cursor.execute(sql)
         products = cursor.fetchall()  # DB에서 가져온 결과
+        
+        return products
+    finally:
+        cursor.close()
+        connection.close()
+
+
+# 장바구니 조회
+def get_cart(cust_id):
+    connection = get_db_connection()
+    cursor = connection.cursor(pymysql.cursors.DictCursor)
+    
+    try:
+        # Use parameterized query to avoid SQL injection
+        sql = "SELECT * FROM cart WHERE cust_id = %s"
+        cursor.execute(sql, (cust_id,))
+        products = cursor.fetchall() 
         
         return products
     finally:

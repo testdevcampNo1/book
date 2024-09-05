@@ -8,6 +8,7 @@ import com.no1.book.domain.product.ProductDto;
 import com.no1.book.domain.product.SearchCondition;
 import com.no1.book.service.product.AuthorService;
 import com.no1.book.service.product.CategoryService;
+import com.no1.book.service.product.FlaskService;
 import com.no1.book.service.product.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -50,6 +51,9 @@ public class ProductController {
 
     @Autowired
     AuthorService authorService;
+
+    @Autowired
+    FlaskService flaskService;
 
     @GetMapping("/list")
     public String list(HttpSession session, Integer page, String keyword, Integer pageSize, String sortKey, String sortOrder, String cateKey, Model m) throws Exception {
@@ -132,6 +136,14 @@ public class ProductController {
         if (custId != null) {
             m.addAttribute("custId", custId);
         }
+
+
+
+        // prodId를 flask 서버로 전송
+        Map toFlask = new HashMap();
+        toFlask.put("prodId", prodId);
+        flaskService.sendDataToFlask(toFlask,"receive-prod-id");
+
 
         return "product/productDetail";
     }

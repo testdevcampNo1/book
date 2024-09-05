@@ -4,11 +4,13 @@ import com.no1.book.dao.customer.CustomerDao;
 import com.no1.book.domain.customer.CustomerDto;
 import com.no1.book.service.customer.CustomerService;
 import com.no1.book.service.customer.EmailService;
+import com.no1.book.service.product.FlaskService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,9 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/customer")
 public class CustomerController {
+
+    @Autowired
+    FlaskService flaskService;
 
     private final CustomerService customerService;
     private String number;
@@ -62,13 +67,18 @@ public class CustomerController {
            // session1.setAttribute(SessionConst.LOGIN_MEMBER, customerDto);
             session1.setAttribute("custId", customerDto.getCustId());
 
-
             /*session.setAttribute("nickname", customerDto.getNickName());
             session.setAttribute("email", customerDto.getEmail());
             session.setAttribute("birthDate", customerDto.getBirthDate());
             session.setAttribute("address", customerDto.getMainAddr());
             session.setAttribute("mobileNum", customerDto.getMobileNum());*/
 
+
+
+            // custId를 Flask 서버로 전송
+            HashMap toFlask = new HashMap();
+            toFlask.put("custId", customerDto.getCustId());
+            flaskService.sendDataToFlask(toFlask, "receive-cust-id");
 
 
             return "redirect:/";

@@ -1,14 +1,17 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, session
 from flask_cors import CORS
 from openai import OpenAI
 from dotenv import load_dotenv
 import requests
 import os
-from database import get_product
+from database import get_product, get_cart
+from api_specifi import get_api_routes
 
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)  # FLask에서 세션 사용하려면 비밀키 지정해야한다고 함
+
 CORS(app)
 
 api_key = os.getenv('OPENAI_API_KEY')
@@ -22,7 +25,7 @@ def home():
 
 def make_prompt(user_input):
     res = client.chat.completions.create(
-        model='gpt-4o',
+        model='gpt-4o-mini',
         messages=user_input
     )
     return res.choices[0].message.content
@@ -31,16 +34,13 @@ def make_prompt(user_input):
 @app.route('/chatbot', methods=["GET", "POST"])
 def chatbot():
     if request.method == "POST":
+
+        print("session get : ", session.get('cust_id')) 
         # POST 요청이 들어오면 사용자의 입력을 받아 처리
         user_input = request.json.get("message")
         
         # 대화 기록을 기반으로 OpenAI에게 응답을 요청
         conversation = [{"role":"system", "content":few_shot()}] 
-        # content에서 질문에 따른 답변을 few shot 러닝 시킬수 있는듯... 그럼 db 조회는 어떻게?
-        # 따로 db 조회 함수를 만들어서 content 안에 삽입 하면 될듯? 아마도?
-        # 스프링에서 보내는 정보들은? (세션에 담긴 custId나 해당 제품 상세 페이지의 prodId 등) .....
-        # 그건 일단 나중에 생각
-        
 
         conversation.extend(messages)
         conversation.append({"role": "user", "content": user_input})
@@ -59,17 +59,24 @@ def chatbot():
         return render_template("chatbot.html")
 
 
-
 def few_shot():
-    content = (  # 파이썬에서 소괄호 안의 문자열은 하나의 문자열로 처리됨
+    print("session get : ", session.get('cust_id')) 
+    content = (
         "너는 도서 쇼핑몰 챗봇이야. "
         "내가 너에게 제공하는 DB 내용을 기반으로 사용자 질문에 대한 적절한 답변을 제시해야 해. "
         "사용자의 요청에 대한 판단은 내가 너에게 제공하는 DB에 기반해서 네가 직접 해야 해. "
         "이건 상품 데이터에 대한 DB 정보야: {}. "
+        "이건 사이트 api 명세야: {}. "
+        "사이트 이용에 대한 문의가 들어오면 api 명세를 활용해서 답변을 해주면 돼. "
+        "이건 현재 사용자의 id야: {}. "
+        "이건 장바구니 정보야: {}. "
+        "만약 회원이 장바구니에 담긴 상품을 묻는다면 사용자 id와 장바구니 table의 cust_id가 일치하는 품목들에 대해 답변을 해줘야 해. "
+        "이건 사용자가 현재 존재하는 페이지의 상품 id야: {}"
+        "해당 상품에 대해 물어본다면 상품 id에 맞는 도서를 찾아서 너가 아는대로 대답하면 돼."
         "또한 지금부터 예측되는 사용자 질문에 대한 답변 가이드를 너에게 제시할 거야. "
         "잘 참고해서 실제 답변에 활용하길 바랄게. "
-        "책 추천의 경우 되도록이면 DB내 존재하는 책들로 추천해주고 너가 판단하기에 DB내에 추천해줄 책이 없다면 다른 유명한 책으로 추천하고 구글에 검색 링크만 제공하도록 해."
-        "가이드 답변 내에서 내가 너에게 하는 말은 -- 안에다가 작성할게"
+        "책 추천의 경우 되도록이면 DB내 존재하는 책들로 추천해줘. "
+        "가이드 답변 내에서 내가 너에게 하는 말은 -- 안에다가 작성할게. "
         "\n\nQ: 요즘 심리학에 관심을 갖게 되었어. 심리학에 대한 책을 추천해줄래?\n"
         "A: 심리학에 빠진 당신을 위해 이 책을 추천합니다 -DB 조회 결과 바탕으로 책 추천-\n"
         "사이트 내 책 검색: 'http://localhost:8080/product/list?cateKey=&keyword=-여기에 책 제목-'\n"
@@ -86,22 +93,46 @@ def few_shot():
         "구글에 -책 제목2- 검색: 'https://www.google.com/search?q=-여기에 책 제목-&sourceid=chrome&ie=UTF-8'\n"
         "사이트 내 -책 제목3- 검색: 'http://localhost:8080/product/list?cateKey=&keyword=-여기에 책 제목-'\n"
         "구글에 -책 제목3- 검색: 'https://www.google.com/search?q=-여기에 책 제목-&sourceid=chrome&ie=UTF-8'\n"
-        "\n\n product 테이블의 ord_chk_code는 AVBL일 경우 판매가능 OSKT는 일시품절 STOP은 판매중지야\n"
-        "레코드의 개별적인 정보에 대해서는 제공할 필요 없어 이를테면 ' - 새벽배송 여부: **Y** - 판매 상태: **AVBL** ' 이런거 답변에 포함하지 말라는거야."
+        "\n\n product 테이블의 ord_chk_code는 AVBL일 경우 판매가능 OSKT는 일시품절 STOP은 판매중지야. "
+        "레코드의 개별적인 정보에 대해서는 제공할 필요 없어 이를테면 ' - 새벽배송 여부: **Y** - 판매 상태: **AVBL** ' 이런거 답변에 포함하지 말라는거야. "
+        "너가 답변을 마크다운 형식으로 하는 경향이 있는 것 같아. 답변을 마크다운 형식으로 주지 말되 줄바꿈은 신경써서 해줘."
+    ).format(
+        get_product(), 
+        get_api_routes(), 
+        cust_id, 
+        get_cart(cust_id),
+        prod_id
+    )
 
-    ).format(get_product())  # DB에서 상품 정보를 가져오는 함수 호출 (이후에 다른 함수도 추가할 예정)
-
-    return content 
+    return content
 
 
+# 스프링에서 보내는 cust_id 받기
+@app.route('/receive-cust-id', methods=['POST'])
+def receive_cust_id_from_spring():
+    # cust_id = request.json.get('custId')
+    # session['cust_id'] = cust_id  # 세션에 custId 저장
+    # print(f"custId from spring: {cust_id}")
+    global cust_id
+    cust_id = request.json.get('custId')
+    print("global cust id : ", cust_id)
+    return jsonify({"status": "success", "received_data": cust_id})
 
 
-# 스프링에서 보내는 데이터 받는 테스트 메서드
-@app.route('/receive-data', methods=['POST'])
-def receive_data():
-    data = request.json
-    print(f"Received data: {data}")
-    return jsonify({"status": "success", "received_data": data})
+# 스프링에서 보내는 prod_id 받기
+@app.route('/receive-prod-id', methods=['POST'])
+def receive_prod_id_from_spring():
+    global prod_id
+    prod_id = request.json.get('prodId')
+    print(f"prodId from spring: {prod_id}")
+    print("globa prod id : ", prod_id)
+    return jsonify({"status": "success", "received_data": prod_id})
+
+
+
+
+
+
 
 # 스프링으로 데이터 보내는 테스트 메서드
 @app.route('/send-to-spring', methods=['GET'])
