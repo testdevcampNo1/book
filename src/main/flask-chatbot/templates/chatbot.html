@@ -18,49 +18,62 @@
     </div>
 
     <script>
-$(document).ready(function() {
-    $("#send-btn").click(function() {
-        var userInput = $("#user-input").val();
-        if (userInput.trim() !== "") {
-            // 유저의 메시지를 화면에 표시
-            $("#chatbox").append("<div class='user-message'><b>You:</b> " + userInput + "</div>");
-            
-            // 입력창 비우기
-            $("#user-input").val("");
+        $(document).ready(function() {
+            // 세션 스토리지에서 채팅 기록을 가져와서 표시
+            if (sessionStorage.getItem("chatHistory")) {
+                $("#chatbox").html(sessionStorage.getItem("chatHistory"));
+                $("#chatbox").scrollTop($("#chatbox")[0].scrollHeight);  // 스크롤 하단으로 이동
+            }
 
-            // 로딩 아이콘 표시
-            $("#loading-icon").show();  
+            $("#send-btn").click(function() {
+                var userInput = $("#user-input").val();
+                if (userInput.trim() !== "") {
+                    // 유저의 메시지를 화면에 표시
+                    var userMessage = "<div class='user-message'><b>You:</b> " + userInput + "</div>";
+                    $("#chatbox").append(userMessage);
 
-            // Flask 서버로 메시지를 전송
-            $.ajax({
-                url: "/chatbot",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({ message: userInput }),
-                success: function(response) {
-                    // 로딩 아이콘 숨김
-                    $("#loading-icon").hide();  
+                    // 입력창 비우기
+                    $("#user-input").val("");
 
-                    // 챗봇의 응답을 화면에 표시
-                    $("#chatbox").append("<div class='bot-message'><b>Bot:</b> " + response.message + "</div>");
-                    $("#chatbox").scrollTop($("#chatbox")[0].scrollHeight);  // 스크롤 하단으로 이동
-                },
-                error: function(error) {
-                    console.error("Error:", error);
-                    // 로딩 아이콘 숨김
-                    $("#loading-icon").hide();  
+                    // 로딩 아이콘 표시
+                    $("#loading-icon").show();  
+
+                    // Flask 서버로 메시지를 전송
+                    $.ajax({
+                        url: "/chatbot",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({ message: userInput }),
+                        success: function(response) {
+                            // 로딩 아이콘 숨김
+                            $("#loading-icon").hide();  
+
+                            // 챗봇의 응답을 화면에 표시
+                            var botMessage = "<div class='bot-message'><b>Bot:</b> " + response.message + "</div>";
+                            $("#chatbox").append(botMessage);
+
+                            // 스크롤 하단으로 이동
+                            $("#chatbox").scrollTop($("#chatbox")[0].scrollHeight);
+
+                            // 세션 스토리지에 채팅 내역 저장
+                            sessionStorage.setItem("chatHistory", $("#chatbox").html());
+                        },
+                        error: function(error) {
+                            console.error("Error:", error);
+                            // 로딩 아이콘 숨김
+                            $("#loading-icon").hide();  
+                        }
+                    });
                 }
             });
-        }
-    });
 
-    // Enter 키로 메시지 전송
-    $("#user-input").keypress(function(e) {
-        if(e.which == 13) {
-            $("#send-btn").click();
-        }
-    });
-});
+            // Enter 키로 메시지 전송
+            $("#user-input").keypress(function(e) {
+                if(e.which == 13) {
+                    $("#send-btn").click();
+                }
+            });
+        });
     </script>
 </body>
 </html>

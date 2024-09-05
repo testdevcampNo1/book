@@ -4,7 +4,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import requests
 import os
-from database import get_product, get_cart
+from database import get_product, get_cart, get_FAQ, get_notice, get_QNA
 from api_specifi import get_api_routes
 
 load_dotenv()
@@ -51,6 +51,7 @@ def chatbot():
         messages.append({"role": "user", "content": user_input})
         messages.append({"role": "assistant", "content": bot_response})
 
+
         return jsonify({"message": bot_response})
 
     else:
@@ -75,6 +76,9 @@ def few_shot():
         "이건 사용자가 현재 존재하는 페이지의 상품 id야: {}"
         "해당 상품에 대해 물어본다면 상품 id에 맞는 도서를 찾아서 너가 아는대로 대답하면 돼."
         "한번 더 얘기하지만, 상품들은 모두 실제로 존재하는 유명한 책들이라서 너가 알고있는 만큼 대답하면 돼."
+        "이건  FAQ 게시판 DB 정보야: {}"
+        "이건  공지사항 게시판 DB 정보야: {}"
+        "이건  QNA 게시판 DB 정보야: {}"
         "지금부터는 예측되는 사용자 질문에 대한 답변 가이드를 너에게 제시할 거야. "
         "잘 참고해서 실제 답변에 활용하길 바랄게. "
         "책 추천의 경우 되도록이면 DB내 존재하는 책들로 추천해줘. "
@@ -108,7 +112,10 @@ def few_shot():
         get_api_routes(),   # API 명세 조회
         cust_id,            # 현재 접속중인 사용자의 id
         get_cart(cust_id),  # 접속중인 사용자의 장바구니 정보
-        prod_id             # 사용자가 보고있는 도서 id
+        prod_id,            # 사용자가 보고있는 도서 id
+        get_FAQ,            # FAQ 테이블 조회
+        get_notice,         # 공지사항 테이블 조회
+        get_QNA             # QNA 테이블 조회
     )
 
     return content

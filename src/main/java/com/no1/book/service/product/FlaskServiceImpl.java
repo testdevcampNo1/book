@@ -44,11 +44,6 @@ public class FlaskServiceImpl implements FlaskService {
         return response.getBody();
     }
 
-//    @Override
-//    public Map<String, Object> preprocessData(Map<String, Object> payload) {
-//        payload.put("processed", true);
-//        return payload;
-//    }
 
     @Override
     public String sendTopSellingBooksToFlask() throws Exception {
@@ -65,6 +60,7 @@ public class FlaskServiceImpl implements FlaskService {
 
         return response.getBody();
     }
+
 
     @Override
     public String sendTopRatedBooksToFlask() throws Exception {
