@@ -19,7 +19,7 @@ def get_product():
     cursor = connection.cursor(pymysql.cursors.DictCursor) # DictCursor -> 결과를 dict로 저장
     
     try:
-        sql = "SELECT prod_name, prod_id, sale_price, total_sales, star_avg, dawn_deli_chk, ord_chk_code FROM product"
+        sql = "SELECT prod_name, prod_id, sale_price, total_sales, star_avg FROM product"
         cursor.execute(sql)
         products = cursor.fetchall()  # DB에서 가져온 결과
         
@@ -35,6 +35,7 @@ def get_cart(cust_id):
     cursor = connection.cursor(pymysql.cursors.DictCursor)
     
     try:
+        # sql = "SELECT * FROM cart WHERE cust_id = %s"
         sql = "SELECT * FROM cart WHERE cust_id = %s"
         cursor.execute(sql, (cust_id,))
         products = cursor.fetchall() 
@@ -51,9 +52,9 @@ def get_FAQ():
     cursor = connection.cursor(pymysql.cursors.DictCursor) 
     
     try:
-        sql = "SEECT * FROM boardFAQ"
+        sql = "SELECT * FROM boardFAQ"
         cursor.execute(sql)
-        products = cursor.fetchall()  # DB에서 가져온 결과
+        products = cursor.fetchall()  
         
         return products
     finally:
@@ -66,9 +67,9 @@ def get_notice():
     cursor = connection.cursor(pymysql.cursors.DictCursor) 
     
     try:
-        sql = "SEECT * FROM boardNotice"
+        sql = "SELECT * FROM boardNotice"
         cursor.execute(sql)
-        products = cursor.fetchall()  # DB에서 가져온 결과
+        products = cursor.fetchall()  
         
         return products
     finally:
@@ -81,11 +82,54 @@ def get_QNA():
     cursor = connection.cursor(pymysql.cursors.DictCursor)
     
     try:
-        sql = "SEECT * FROM boardQNA"
+        sql = "SELECT * FROM boardQNA"
         cursor.execute(sql)
-        products = cursor.fetchall()  # DB에서 가져온 결과
+        products = cursor.fetchall()  
         
         return products
+    finally:
+        cursor.close()
+        connection.close()
+        
+# 리뷰 테이블 조회
+def get_review():
+    connection = get_db_connection()
+    cursor = connection.cursor(pymysql.cursors.DictCursor)
+    
+    try:
+        sql = "SELECT * FROM review"
+        cursor.execute(sql)
+        products = cursor.fetchall()  
+        
+        return products
+    finally:
+        cursor.close()
+        connection.close()
+
+# 감정분석 대기중 리뷰 조회
+def get_pending_review():
+    connection = get_db_connection()
+    cursor = connection.cursor(pymysql.cursors.DictCursor)
+    
+    try:
+        sql = "SELECT review_id, content, sentiment FROM review WHERE sentiment = %s"
+        cursor.execute(sql, ('pending',))
+        pending_reviews = cursor.fetchall()  
+        
+        return pending_reviews
+    finally:
+        cursor.close()
+        connection.close()
+
+# 감정 분석된 리뷰를 DB에 업데이트
+def update_pending_review(review_id, sentiment):
+    connection = get_db_connection()
+    cursor = connection.cursor(pymysql.cursors.DictCursor)
+    
+    try:
+        sql = "UPDATE review SET sentiment = %s WHERE review_id = %s"
+        cursor.execute(sql, (sentiment, review_id))
+        connection.commit() 
     finally:
         cursor.close()
         connection.close()

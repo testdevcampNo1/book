@@ -2,16 +2,21 @@ package com.no1.book.controller.product;
 
 import com.no1.book.domain.product.CustomerProductDto;
 import com.no1.book.domain.product.ReviewDto;
+import com.no1.book.service.product.FlaskService;
 import com.no1.book.service.product.ProductService;
 import com.no1.book.service.product.ReviewService;
 import jakarta.servlet.http.HttpSession;
+import org.apache.ibatis.logging.Log;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -21,6 +26,11 @@ public class ReviewController {
     private ReviewService reviewService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private FlaskService flaskService;
+
+    private static final Logger logger = LoggerFactory.getLogger(ReviewController.class);  // Logger 설정
+
 
     @PostMapping("/add/{prodId}")
     public ResponseEntity<String> addReview(@PathVariable String prodId, @RequestBody ReviewDto reviewDto, HttpSession session) throws Exception {
@@ -108,8 +118,11 @@ public class ReviewController {
 
         try {
             reviewService.calculateAvgStar(productService.select(prodId));
-        } catch (Exception e) { // 여기도
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+//            throw new RuntimeException(e);
+            // 예외를 로그로 출력하여 원인을 파악하기 쉽게 함
+            logger.error("Error occurred while calculating average star for product ID: {}", prodId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
         return ResponseEntity.ok(reviews);
     }
@@ -123,6 +136,7 @@ public class ReviewController {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception e) {
+        logger.error("Unhandled exception occurred", e);  // 로그 추가
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("리뷰 처리 중 오류가 발생했습니다.");
     }
 

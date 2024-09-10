@@ -1,6 +1,6 @@
 /* Global Styles */
 body {
-    background-color: #f8f9fa; /* 기본 배경 색상 유지 */
+    background-color: #f8f9fa; /* 배경 색상 유지 */
     color: #343a40;
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -8,8 +8,8 @@ body {
 }
 
 .container {
-    max-width: 1400px; /* 더 넓은 최대 너비 설정 */
-    width: 75%; /* 화면 너비의 75%를 사용 */
+    max-width: 1400px; /* 넓은 최대 너비 설정 */
+    width: 75%; /* 화면 너비 75% 사용 */
     margin: 0 auto;
     padding: 20px;
     background-color: #fff;
@@ -21,7 +21,7 @@ body {
 h1, h2, h3, h4 {
     color: #343a40;
     margin-bottom: 15px;
-    font-family: 'Pretendard-Regular', Arial, sans-serif; /* 스타일 통일 */
+    font-family: 'Pretendard-Regular', Arial, sans-serif;
 }
 
 h1 {
@@ -56,10 +56,10 @@ p {
 /* 상품 이미지 */
 .product-image {
     width: 100%;
-    max-width: 400px; /* 이미지 크기 확장 */
+    max-width: 400px;
     height: auto;
     display: block;
-    margin: 0 auto 20px auto;
+    margin: 0 auto 20px;
 }
 
 /* 상품 정보 섹션 */
@@ -121,13 +121,13 @@ p {
     background-color: #f8f9fa;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: left; /* 텍스트를 좌측 정렬로 설정 */
-    width: 100%; /* 컨테이너의 너비에 맞추어 조정 */
+    text-align: left;
+    width: 100%;
 }
 
 /* 리뷰 스타일 */
 .review-item {
-    background-color: #e9ecef; /* 배경과 구분되는 색상으로 설정 */
+    background-color: #e9ecef;
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 15px;
@@ -148,7 +148,7 @@ p {
 }
 
 .review-buttons button {
-    padding: 8px 12px; /* 버튼의 높이를 맞추기 위해 패딩 조정 */
+    padding: 8px 12px;
     margin: 0 2px;
     font-size: 0.9em;
 }
@@ -158,11 +158,11 @@ p {
     margin-top: 10px;
     font-size: 1em;
     color: #495057;
-    text-align: left; /* 텍스트를 좌측 정렬로 설정 */
-    background-color: #ffffff; /* 리뷰 내용과 구분되도록 배경색 추가 */
+    text-align: left;
+    background-color: #ffffff;
     padding: 15px;
     border-radius: 5px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* 내부 음영 추가 */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* 미디어 쿼리 - 모바일 최적화 */
@@ -177,10 +177,11 @@ p {
     }
 
     .container {
-        width: 95%; /* 모바일에서 좀 더 넓게 차지 */
+        width: 95%;
     }
 }
 
+/* 버튼 및 상태 스타일 */
 body::after {
     content: "";
     position: absolute;
@@ -206,7 +207,7 @@ body::after {
 }
 
 button:disabled {
-    background-color: #669966; /* 흐려진 배경색 */
-    color: #666666; /* 흐려진 텍스트 색 */
-    cursor: not-allowed; /* 비활성화된 상태일 때 커서를 'not-allowed'로 설정 */
+    background-color: #669966;
+    color: #666666;
+    cursor: not-allowed;
 }

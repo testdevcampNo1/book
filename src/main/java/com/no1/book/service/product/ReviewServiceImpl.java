@@ -25,7 +25,7 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     public int getReviewCount() {
-        return reviewDao.count();
+        return reviewDao.totalReviewCount();
     }
 
     @Override
@@ -64,6 +64,46 @@ public class ReviewServiceImpl implements ReviewService{
         prod.setStarAvg(avgStar);
         productDao.update(prod);
         // 근데 이 메서드 언제 호출해야 하지? .....
+    }
+
+    @Override
+    public int totalReviewCount() {
+        return reviewDao.totalReviewCount();
+    }
+
+    @Override
+    public int totalPositiveReviewCount() {
+        return reviewDao.totalPositiveReviewCount();
+    }
+
+    @Override
+    public int totalNegativeReviewCount() {
+        return reviewDao.totalNegativeReviewCount();
+    }
+
+    @Override
+    public int totalPendingReviewCount() {
+        return reviewDao.totalPendingReviewCount();
+    }
+
+    @Override
+    public int reviewCountPerProduct(String prodId) {
+        return reviewDao.reviewCountPerProduct(prodId);
+    }
+
+    @Override
+    public int positiveReviewCountPerProduct(String prodId) {
+        return reviewDao.positiveReviewCountPerProduct(prodId);
+    }
+
+    @Override
+    public int negativeReviewCountPerProduct(String prodId) {
+        return reviewDao.negativeReviewCountPerProduct(prodId);
+    }
+
+    @Override
+    public int pendingReviewCountPerProduct(String prodId) {
+        return reviewDao.pendingReviewCountPerProduct(prodId);
     }
 
 

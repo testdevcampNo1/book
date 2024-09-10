@@ -41,6 +41,29 @@
         .btn-group {
             text-align: right;
         }
+
+        /* 버튼 스타일링 */
+        .button-container {
+            text-align: center;
+            margin-top: 20px; /* 버튼들이 페이지와 떨어져 보이게 간격 추가 */
+            margin-bottom: 40px; /* 아래쪽에 추가 여유 공간 */
+        }
+
+        .button-container .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff; /* 파란색 배경 */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 0 10px; /* 버튼 간격 */
+            font-size: 16px;
+            transition: background-color 0.3s ease; /* 호버 효과 추가 */
+        }
+
+        .button-container .btn:hover {
+            background-color: #0056b3; /* 호버 시 더 짙은 파란색 */
+        }
     </style>
 </head>
 <body>
@@ -264,9 +287,13 @@
         </form>
     </div>
 </div>
-<div style="text-align: center;">
-    <a th:href="@{/product/list}">목록</a>
+
+<!-- 목록 버튼, 리뷰 관리 버튼 -->
+<div class="button-container">
+    <a th:href="@{/product/list}" class="btn">목록</a>
+    <a th:href="@{/product/manage/review}" class="btn">리뷰 관리</a>
 </div>
+
 <!-- productList.html -->
 <div th:replace="~{fragments/chatbot :: chatbotButton}"></div>
 

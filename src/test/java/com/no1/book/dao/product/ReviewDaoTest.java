@@ -19,15 +19,6 @@ class ReviewDaoTest {
     private ProductDao productDao;
 
     @Test
-    void countAndDeleteAllTest() {
-        reviewDao.count();
-
-        int cnt = reviewDao.count();
-
-//        assertEquals(0, cnt);
-    }
-
-    @Test
     void selectAndAddTest() {
         reviewDao.deleteAll();
 

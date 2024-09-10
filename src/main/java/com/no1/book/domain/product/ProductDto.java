@@ -48,4 +48,16 @@ public class ProductDto {
     @Builder.Default
     private String codeType = "0";
 
+    private Integer revCnt;        // 리뷰 개수
+    private Integer posiRevCnt;    // 긍정 리뷰 개수
+//    private Integer negaRevCnt;     // 부정 리뷰 개수
+
+//    // 긍정 리뷰 비율 필드 (계산 필드)
+//    public Float getPositiveRate() {
+//        // 리뷰 개수가 0이 아닌 경우에만 긍정 비율을 계산, 0이면 null 반환
+//        if (revCnt != null && revCnt > 0 && posiRevCnt != null) {
+//            return (float) posiRevCnt / revCnt * 100;
+//        }
+//        return null;
+//    }
 }

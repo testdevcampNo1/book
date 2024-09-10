@@ -30,6 +30,10 @@ public class ToFlaskController {
         return flaskService.sendDataToFlask(payload, endPoint);
     }
 
+
+
+
+
     @PostMapping("/send-top-selling-books")
     public String sendTopSellingBooks() throws Exception {
         // DB에서 판매량이 가장 높은 책 5개를 가져와서 Flask 서버로 전송

@@ -10,6 +10,7 @@ import com.no1.book.service.product.AuthorService;
 import com.no1.book.service.product.CategoryService;
 import com.no1.book.service.product.FlaskService;
 import com.no1.book.service.product.ProductService;
+import com.no1.book.service.product.ReviewService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,9 @@ public class ProductController {
 
     @Autowired
     FlaskService flaskService;
+
+    @Autowired
+    ReviewService reviewService;
 
     @GetMapping("/list")
     public String list(HttpSession session, Integer page, String keyword, Integer pageSize, String sortKey, String sortOrder, String cateKey, Model m) throws Exception {
@@ -137,6 +141,15 @@ public class ProductController {
             m.addAttribute("custId", custId);
         }
 
+        int reviewCount = reviewService.reviewCountPerProduct(prodId);
+        int positiveReviewCount = reviewService.positiveReviewCountPerProduct(prodId);
+        int negativeReviewCount = reviewService.negativeReviewCountPerProduct(prodId);
+        int pendingReviewCount = reviewService.pendingReviewCountPerProduct(prodId);
+
+        m.addAttribute("totalReviewCount", reviewCount);
+        m.addAttribute("totalPositiveReviewCount", positiveReviewCount);
+        m.addAttribute("totalNegativeReviewCount", negativeReviewCount);
+        m.addAttribute("totalPendingReviewCount", pendingReviewCount);
 
 
         // prodId를 flask 서버로 전송
@@ -168,6 +181,7 @@ public class ProductController {
         for (int i = 0; i < itemQty; i++) {
             productService.plusSales(prodId);
         }
+
     }
 
 
@@ -257,10 +271,36 @@ public class ProductController {
         return "redirect:/product/manage";
     }
 
-    @GetMapping("/flaskTest")
-    public String flaskTest(Model m) throws Exception {
+    @GetMapping("/manage/review")
+    public String flaskTest(Model model) throws Exception {
 
-        return "product/flaskTest";
+        int totalReviewCount = reviewService.totalReviewCount();
+        int totalPositiveReviewCount = reviewService.totalPositiveReviewCount();
+        int totalNegativeReviewCount = reviewService.totalNegativeReviewCount();
+        int totalPendingReviewCount = reviewService.totalPendingReviewCount();
+
+        model.addAttribute("totalReviewCount", totalReviewCount);
+        model.addAttribute("totalPositiveReviewCount", totalPositiveReviewCount);
+        model.addAttribute("totalNegativeReviewCount", totalNegativeReviewCount);
+        model.addAttribute("totalPendingReviewCount", totalPendingReviewCount);
+
+
+        return "product/manageReview";
+    }
+    // 감정 분석 요청을 처리하는 엔드포인트
+    @ResponseBody
+    @PostMapping("/manage/review")
+    public String analyzeReviews() {
+        try {
+            // Flask로 감정 분석 요청 보내기
+            String sentimentResponse = flaskService.sendDataToFlask(new HashMap<>(), "review-sentiment");
+
+            // Flask로부터 받은 응답을 그대로 반환 (JSON 형식)
+            return sentimentResponse;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "{\"status\": \"error\", \"message\": \"" + e.getMessage() + "\"}";
+        }
     }
 
 

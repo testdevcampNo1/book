@@ -6,8 +6,9 @@
     <title>상품 상세 페이지</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link rel="stylesheet" th:href="@{/css/product/productDetail.css}">
     <link rel="stylesheet" th:href="@{/css/product/chatbot.css}">
+    <link rel="stylesheet" th:href="@{/css/product/productDetail.css}">
+    <link rel="stylesheet" th:href="@{/css/product/ratio-bar.css}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
         let countValue = 1;
@@ -50,7 +51,7 @@
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(params),
-                success: function(response) {
+                success: function (response) {
                     if (response.status === "success") {
                         var userChoice = confirm("상품이 장바구니에 추가되었습니다. 장바구니로 이동하시겠습니까?");
                         if (userChoice) {
@@ -62,7 +63,7 @@
                         alert("장바구니 추가에 실패했습니다: " + response.message);
                     }
                 },
-                error: function() {
+                error: function () {
                     alert('장바구니 담기에 실패했습니다.');
                 }
             });
@@ -95,10 +96,10 @@
                 url: '/product/detail',
                 method: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({prodId : prodId, itemQty : itemQty, custId : custId}),
-                success: function() {
+                data: JSON.stringify({prodId: prodId, itemQty: itemQty, custId: custId}),
+                success: function () {
                 },
-                error: function() {
+                error: function () {
                 }
             });
 
@@ -108,17 +109,17 @@
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(params),
-                success: function() {
+                success: function () {
                     alert('주문 창으로 이동합니다.');
                     window.location.href = '/order/form';
                 },
-                error: function() {
+                error: function () {
                     alert('주문에 실패했습니다.');
                 }
             });
         }
 
-        window.onload = function() { // window.onload -> 화면이 로드되면 자동으로 실행
+        window.onload = function () { // window.onload -> 화면이 로드되면 자동으로 실행
             var ordChkCode = document.getElementById("ordChkCode").value;
             var addToCartBtn = document.getElementById("addToCartBtn");
             var goToOrderBtn = document.getElementById("goToOrderBtn");
@@ -133,7 +134,7 @@
                 goToOrderBtn.textContent = "바로 구매 (판매 중지)";
                 goToOrderBtn.disabled = true;
             }
-
+            updateReviewBars();
             loadReviews(); // 리뷰 로드 기능 호출
         };
 
@@ -144,11 +145,12 @@
             $.ajax({
                 url: '/review/list/' + prodId,
                 method: 'GET',
-                success: function(reviews) {
+                success: function (reviews) {
+                    console.log(reviews);
                     var reviewList = $('#reviewList');
                     reviewList.empty();  // 기존 리뷰 목록 초기화
 
-                    reviews.forEach(function(review) {
+                    reviews.forEach(function (review) {
                         var reviewHtml = `
                 <div class="review-item">
                     <p><strong>${review.custId}</strong></p>
@@ -168,8 +170,10 @@
                         console.log(currentUserId);
                     });
                 },
-                error: function() {
-                    alert('리뷰 목록을 가져오는 데 실패했습니다.');
+                error: function (xhr, status, error) {
+                    console.log("Status: " + status);
+                    console.log("Error: " + error);
+                    alert('리뷰 목록을 가져오는 데 실패했습니다. 상태: ' + status + ', 오류: ' + error);
                 }
             });
         }
@@ -189,12 +193,12 @@
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(reviewData),
-                success: function(message) {
+                success: function (message) {
                     alert(message); // 성공 메시지 알림
                     loadReviews();  // 리뷰 작성 후 리뷰 목록 새로고침
                     document.getElementById("reviewForm").reset();
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     if (xhr.status === 401) {  // 서버에서 401 상태 코드를 반환한 경우
                         alert(xhr.responseText); // 서버에서 반환된 "로그인이 필요합니다." 메시지 알림
                     } else {
@@ -210,14 +214,14 @@
             }
 
             $.ajax({
-                url: '/review/delete/'+ reviewId,
+                url: '/review/delete/' + reviewId,
                 method: 'DELETE',
-                data: { reviewId: reviewId },
-                success: function(message) {
+                data: {reviewId: reviewId},
+                success: function (message) {
                     alert(message);
                     loadReviews();  // 리뷰 목록 새로고침
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     if (xhr.status === 401) {  // 서버에서 401 상태 코드를 반환한 경우
                         alert(xhr.responseText); // 서버에서 반환된 "로그인이 필요합니다." 메시지 알림
                     } else {
@@ -231,7 +235,7 @@
             $.ajax({
                 url: `/review/detail/` + reviewId,  // reviewId에 해당하는 리뷰만 불러옴
                 method: 'GET',
-                success: function(review) {
+                success: function (review) {
                     // 불러온 리뷰 데이터를 폼에 채움
                     document.getElementById("reviewContent").value = review.content;
                     document.getElementById("reviewRating").value = review.starPt;
@@ -240,7 +244,7 @@
                     document.getElementById("submitReviewBtn").style.display = "none";
                     document.getElementById("updateReviewBtn").style.display = "inline-block";
                 },
-                error: function() {
+                error: function () {
                     alert('리뷰 정보를 불러오는데 실패했습니다.');
                 }
             });
@@ -263,7 +267,7 @@
                 method: 'PUT',
                 contentType: 'application/json',
                 data: JSON.stringify(reviewData),  // 리뷰 데이터는 Request Body로 전달
-                success: function(message) {
+                success: function (message) {
                     alert(message);
                     loadReviews();  // 리뷰 목록 새로고침
 
@@ -271,7 +275,7 @@
                     document.getElementById("updateReviewBtn").style.display = "none";
                     document.getElementById("reviewForm").reset();
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     if (xhr.status === 401) {  // 서버에서 401 상태 코드를 반환한 경우
                         alert(xhr.responseText); // 서버에서 반환된 "로그인이 필요합니다." 메시지 알림
                     } else {
@@ -281,27 +285,61 @@
             });
         }
 
+    </script>
+    <script th:inline="javascript">
+        // 서버로부터 전달받은 리뷰 데이터를 JavaScript 변수로 저장
+        var totalReviewCount = [[${totalReviewCount}]];
+        var totalPositiveReviewCount = [[${totalPositiveReviewCount}]];
+        var totalNegativeReviewCount = [[${totalNegativeReviewCount}]];
 
-        // $(document).ready(function() {
-        //     var prodId = document.getElementById("prodId").value;  // HTML에서 prodId 값을 가져오기
-        //
-        //     if (prodId) {
-        //         $.ajax({
-        //             url: "http://localhost:5000/chatbot",
-        //             type: "POST",
-        //             contentType: "application/json",
-        //             data: JSON.stringify({ prodId: prodId }),  // prodId를 Flask로 전송
-        //             success: function(response) {
-        //                 console.log("Success: ", response);
-        //             },
-        //             error: function(error) {
-        //                 console.error("Error:", error);
-        //             }
-        //         });
-        //     }
-        // });
+        function updateReviewBars() {
+            console.log("긍정 리뷰 개수: ", totalPositiveReviewCount);
+            console.log("부정 리뷰 개수: ", totalNegativeReviewCount);
+            console.log("전체 리뷰 개수: ", totalReviewCount);
 
+            if (totalReviewCount > 0) {
+                var positivePercentage = (totalPositiveReviewCount / (totalPositiveReviewCount + totalNegativeReviewCount)) * 100;
+                var negativePercentage = (totalNegativeReviewCount / (totalPositiveReviewCount + totalNegativeReviewCount)) * 100;
 
+                if (totalPositiveReviewCount === 0) {
+                    // 긍정 리뷰가 없을 때는 부정 리뷰가 100%로 설정
+                    document.getElementById("negativeBar").style.width = "100%";
+                    document.getElementById("negativeBar").textContent = "부정 (100%)";
+
+                    // 긍정 리뷰 바는 숨김
+                    document.getElementById("positiveBar").style.width = "0%";
+                    document.getElementById("positiveBar").textContent = "";
+                } else if (totalNegativeReviewCount === 0) {
+                    // 부정 리뷰가 없을 때는 긍정 리뷰가 100%로 설정
+                    document.getElementById("positiveBar").style.width = "100%";
+                    document.getElementById("positiveBar").textContent = "긍정 (100%)";
+
+                    // 부정 리뷰 바는 숨김
+                    document.getElementById("negativeBar").style.width = "0%";
+                    document.getElementById("negativeBar").textContent = "";
+                } else {
+                    // 긍정 리뷰 비율 설정
+                    document.getElementById("positiveBar").style.width = positivePercentage + "%";
+                    document.getElementById("positiveBar").textContent = "긍정 " + positivePercentage.toFixed(1) + "%";
+
+                    // 부정 리뷰 비율 설정
+                    document.getElementById("negativeBar").style.width = negativePercentage + "%";
+                    document.getElementById("negativeBar").textContent = "부정 " + negativePercentage.toFixed(1) + "%";
+                }
+            } else {
+                // 리뷰가 없는 경우
+                document.getElementById("positiveBar").style.width = "0%";
+                document.getElementById("positiveBar").textContent = "좋아요 0개 (0%)";
+
+                document.getElementById("negativeBar").style.width = "0%";
+                document.getElementById("negativeBar").textContent = "별로에요 0개 (0%)";
+            }
+        }
+
+        // // 페이지 로드 시 막대바 업데이트
+        // window.onload = function () {
+        //     updateReviewBars();
+        // };
     </script>
 </head>
 <body>
@@ -345,6 +383,15 @@
             <button type="button" id="goToOrderBtn" onclick="goToOrder()">바로구매</button>
         </div>
 
+        <!-- 긍정/부정 리뷰 비율 막대바 -->
+        <div class="review-response">
+            <h5 class="response-title">구매자 리뷰 분석</h5>
+            <div class="ratio-bar">
+                <div id="positiveBar" class="positive"></div>
+                <div id="negativeBar" class="negative"></div>
+            </div>
+        </div>
+
         <div class="rating">
             <p th:text="${pdto.starAvg} ? '구매자 별점 : ' + ${pdto.starAvg} + ' / 5' : '별점 없음'">별점</p>
         </div>
@@ -354,8 +401,8 @@
         <div class="delivery-check" th:if="${pdto.dawnDeliChk} == null or ${pdto.dawnDeliChk} == 'N'">
             <p th:text="'새벽 배송 불가 상품'">새벽 배송 가능 여부</p>
         </div>
-        <div class="delivery-check" th:if="${pdto.dawnDeliChk} != null">
-            <p th:text="'새벽 배송 가능 상품'">새벽 배송 가능 여부</p>
+        <div class="delivery-check" th:if="${pdto.dawnDeliChk} == 'Y'">
+            <p th:text="'★ 새벽 배송 가능 상품 ★'">새벽 배송 가능 여부</p>
         </div>
     </div>
 
@@ -430,7 +477,9 @@
             <!-- 리뷰 작성 버튼 -->
             <button type="button" id="submitReviewBtn" class="btn btn-primary" onclick="submitReview()">리뷰 등록</button>
             <!-- 리뷰 수정 완료 버튼 -->
-            <button type="button" id="updateReviewBtn" class="btn btn-success" style="display: none;" onclick="updateReview()">리뷰 수정 완료</button>
+            <button type="button" id="updateReviewBtn" class="btn btn-success" style="display: none;"
+                    onclick="updateReview()">리뷰 수정 완료
+            </button>
         </form>
     </div>
 
