@@ -29,6 +29,7 @@ import java.util.UUID;
 @RequestMapping("/customer")
 public class CustomerController {
 
+    // ------------------- 수정 된 부분 ----------------------
     @Autowired
     FlaskService flaskService;
 
@@ -75,6 +76,7 @@ public class CustomerController {
 
 
 
+            // ------------------- 수정 된 부분 ----------------------
             // custId를 Flask 서버로 전송
             HashMap toFlask = new HashMap();
             toFlask.put("custId", customerDto.getCustId());

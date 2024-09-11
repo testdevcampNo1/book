@@ -13,6 +13,8 @@ def get_db_connection():
         charset='utf8'
     )
 
+# ------ 챗봇 시스템 프롬프팅 용도 ------
+
 # 모든 상품 정보 조회
 def get_product():
     connection = get_db_connection()
@@ -52,7 +54,7 @@ def get_FAQ():
     cursor = connection.cursor(pymysql.cursors.DictCursor) 
     
     try:
-        sql = "SELECT * FROM boardFAQ"
+        sql = "SELECT faq_num, faq_title, faq_content FROM boardFAQ"
         cursor.execute(sql)
         products = cursor.fetchall()  
         
@@ -67,7 +69,7 @@ def get_notice():
     cursor = connection.cursor(pymysql.cursors.DictCursor) 
     
     try:
-        sql = "SELECT * FROM boardNotice"
+        sql = "SELECT notc_num, notc_title, notc_content FROM boardNotice"
         cursor.execute(sql)
         products = cursor.fetchall()  
         
@@ -105,6 +107,11 @@ def get_review():
     finally:
         cursor.close()
         connection.close()
+
+
+
+# ----- 리뷰 감정 분석 관련 ------
+
 
 # 감정분석 대기중 리뷰 조회
 def get_pending_review():

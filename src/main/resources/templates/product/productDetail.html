@@ -336,10 +336,27 @@
             }
         }
 
-        // // 페이지 로드 시 막대바 업데이트
-        // window.onload = function () {
-        //     updateReviewBars();
-        // };
+        function translateSummary() {
+            // 상품 요약 텍스트 가져오기
+            var summaryText = document.getElementById("productSummary").textContent;
+
+            // 번역 요청 보내기
+            $.ajax({
+                url: '/detail/translate', // 번역 요청을 처리할 엔드포인트
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(summaryText), // 요약 텍스트를 서버로 전송
+                success: function (response) {
+                    // 번역된 결과를 받아서 요약 부분에 표시
+                    document.getElementById("productSummary").textContent = response;
+                },
+                error: function (xhr, status, error) {
+                    console.log("번역 요청 중 오류 발생:", error);
+                    alert('번역 중 오류가 발생했습니다.');
+                }
+            });
+        }
+
     </script>
 </head>
 <body>
@@ -411,7 +428,9 @@
         <p th:utext="${#strings.replace(pdto.tableOfContent, '\n', '<br/>')}">목차 내용</p>
 
         <h3>요약</h3>
-        <p th:text="${pdto.smry}">요약 내용</p>
+        <p id="productSummary" th:text="${pdto.smry}">요약 내용</p>
+        <!-- 번역하기 버튼 -->
+        <button id="translateBtn" class="btn btn-secondary" onclick="translateSummary()">translate</button>
     </div>
 
     <div class="author-section" th:if="${adto != null}">

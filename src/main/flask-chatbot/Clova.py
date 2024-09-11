@@ -17,7 +17,7 @@ headers = {
     "X-NCP-APIGW-API-KEY": client_secret,
     "Content-Type": "application/json"
 }
-content = "제일 마음에 드는 옷을 입고 노란꽃 한 송이를 손에 들고"
+content = "제일 마음에 드는 옷을 입고 노란 꽃 한 송이를 손에 들고"
 data = {
     "content": content
 }

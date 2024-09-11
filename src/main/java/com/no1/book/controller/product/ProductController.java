@@ -6,6 +6,7 @@ import com.no1.book.domain.product.CustomerProductDto;
 import com.no1.book.domain.product.PageHandler;
 import com.no1.book.domain.product.ProductDto;
 import com.no1.book.domain.product.SearchCondition;
+import com.no1.book.service.product.APIService;
 import com.no1.book.service.product.AuthorService;
 import com.no1.book.service.product.CategoryService;
 import com.no1.book.service.product.FlaskService;
@@ -58,6 +59,9 @@ public class ProductController {
 
     @Autowired
     ReviewService reviewService;
+
+    @Autowired
+    APIService apiService;
 
     @GetMapping("/list")
     public String list(HttpSession session, Integer page, String keyword, Integer pageSize, String sortKey, String sortOrder, String cateKey, Model m) throws Exception {
@@ -183,6 +187,13 @@ public class ProductController {
         }
 
     }
+
+//    @PostMapping("/detail/translate")
+//    @ResponseBody
+//    public ResponseEntity<String> translate(@RequestBody String text) throws Exception {
+//        String translatedText = apiService.translateText(text);  // 번역 서비스 호출
+//        return ResponseEntity.ok(translatedText);  // 번역 결과 반환
+//    }
 
 
     @GetMapping("/manage")
