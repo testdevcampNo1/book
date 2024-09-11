@@ -379,7 +379,7 @@ select[name="price-range"] option[disabled] {
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    width: 700px; /* Set a width for the container to control its size */
+    width: 500px; /* Set a width for the container to control its size */
 }
 
 /*body {

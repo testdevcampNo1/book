@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,9 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/customer")
 public class CustomerController {
+    // ------------------- 수정 된 부분 ----------------------
+    //@Autowired
+    //FlaskService flaskService;
 
     private final CustomerService customerService;
     private String number;
@@ -55,41 +59,29 @@ public class CustomerController {
     public String login(@RequestParam("custId") String custId, String pwd, Model model, HttpServletRequest request) {
         CustomerDto customerDto = customerService.login(custId, pwd);
 
-        log.info("---------------세션아이디"+request.getSession().getId());
-        log.info("==========loginMember={}", customerDto);
         if (customerDto != null) {
-            HttpSession session1 = request.getSession(false);
+            HttpSession session1 = request.getSession();
            // session1.setAttribute(SessionConst.LOGIN_MEMBER, customerDto);
             session1.setAttribute("custId", customerDto.getCustId());
 
-
-            /*session.setAttribute("nickname", customerDto.getNickName());
-            session.setAttribute("email", customerDto.getEmail());
-            session.setAttribute("birthDate", customerDto.getBirthDate());
-            session.setAttribute("address", customerDto.getMainAddr());
-            session.setAttribute("mobileNum", customerDto.getMobileNum());*/
-
-
+            HashMap toFlask = new HashMap();
+            toFlask.put("custId", customerDto.getCustId());
+            // ------------------- 수정 된 부분 ----------------------
+            //flaskService.sendDataToFlask(toFlask, "receive-cust-id");
 
             return "redirect:/";
         }
 
-        //Custid,isuser 만들어서 세션에 저장
-        //
-        else if(customerDto == null){
-            CustomerDto customerDto1 = customerService.getCustomerById(custId);
-            if(customerService.handleFailedAttempt(customerDto1).equals("Incorrect password. ")){
-                model.addAttribute("errorMessage","Incorrect password. ");
-            }
-            else if (customerService.handleFailedAttempt(customerDto1).equals("Account locked due to too many failed login attempts.")){
-                model.addAttribute("errorMessage","Account locked due to too many failed login attempts.");
-            }
-            return "customer/login";
+        CustomerDto customerDto1 = customerService.getCustomerById(custId);
+        String failureMessage = customerService.handleFailedAttempt(customerDto1);
+
+        if (failureMessage.equals("Incorrect password.")) {
+            model.addAttribute("errorMessage", "Incorrect password.");
+        } else if (failureMessage.equals("Account locked due to too many failed login attempts.")) {
+            model.addAttribute("errorMessage", "Account locked due to too many failed login attempts.");
         }
 
-
         return "customer/login";
-         // Return to login page if credentials are incorrect
     }
 
     @GetMapping("/loginHome")
@@ -99,7 +91,7 @@ public class CustomerController {
     }
 
 
-    @PostMapping("/logout")
+    @RequestMapping("/logout")
     public String logout(HttpServletRequest request,HttpServletResponse response) {
 
         HttpSession session = request.getSession(false);
@@ -176,26 +168,16 @@ public class CustomerController {
         return "customer/edit";
     }
 
-    // Handle the form submission to update customer information
-    @PostMapping("/edit")public String updateCustomerInfo(@RequestParam("custId") String custId,
-                                                          @RequestParam("name") String name,
-                                                          @RequestParam("pwd") String pwd,
-                                                          @RequestParam("mobileNum") String mobileNum,
-                                                          @RequestParam("nickName") String nickName,
-                                                          @RequestParam("mainAddr") String mainAddr,
-                                                          Model model) {
-        CustomerDto customerDto = customerService.getCustomerById(custId);
-        customerDto.setName(name);
-        customerDto.setPwd(pwd);
-        customerDto.setMobileNum(mobileNum);
-        customerDto.setNickName(nickName);
-        customerDto.setMainAddr(mainAddr);
-
+    // 회원 정보 수정
+    @PostMapping("/edit")
+    public String updateCustomerInfo(@ModelAttribute CustomerDto customerDto, Model model) {
         customerService.editInfo(customerDto);
-
         model.addAttribute("message", "Customer information updated successfully");
         return "redirect:/customer/mypage";
     }
+
+
+
 
     @GetMapping("/pagetemplate")
     public String showTemplate() {

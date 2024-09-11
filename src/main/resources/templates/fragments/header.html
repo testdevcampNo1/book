@@ -2,13 +2,20 @@
     <div class="con flex h-full">
         <a href="/" class="logo flex items-center">
             <img th:src="@{/images/logo_transparent.png}" class="logo-small">
-
         </a>
         <div class="flex-grow"></div>
 
-        <ul class="menu-1 flex" >
+        <ul class="menu-1 flex">
             <li><a href="/" class="flex h-full items-center px-4">메인</a></li>
-            <li><a href="/customer/login" id="login-link" class="flex h-full items-center px-4">로그인</a></li>
+
+            <!-- 로그인 여부에 따라 버튼 동적으로 변경 -->
+            <li th:if="${session.custId != null}">
+                <a href="/customer/logout" class="flex h-full items-center px-4">로그아웃</a>
+            </li>
+            <li th:if="${session.custId == null}">
+                <a href="/customer/login" class="flex h-full items-center px-4">로그인</a>
+            </li>
+
             <li><a href="/customer/mypage" class="flex h-full items-center px-4">마이페이지</a></li>
             <li><a href="/cart/list" class="flex h-full items-center px-4">장바구니</a></li>
             <li><a href="/cscenter/notice/list" class="flex h-full items-center px-4">고객센터</a></li>

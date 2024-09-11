@@ -5,57 +5,99 @@
     <link rel="stylesheet" th:href="@{/css/customer/style.css}">
     <title>정석문고 jungsukbook</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
         .container {
             display: flex;
+            flex-direction: row; /* 수평 배치 */
             justify-content: space-between;
+            align-items: flex-start; /* 각 섹션의 상단 정렬 */
             padding: 20px;
+            max-width: 1200px;
+            margin: 50px auto; /* 상단 거리감 주기 */
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 100px; /* 헤더와 거리감 주기 */
         }
         .profile-section {
             flex: 1;
             max-width: 300px;
             margin-right: 20px;
+            text-align: center;
+            padding: 20px;
+            border-right: 1px solid #ddd;
         }
-        .profile-section .profile-img {
-            width: 100px;
-            height: 100px;
+        .profile-img {
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
-            background-color: #ddd;
-            margin-bottom: 10px;
-        }
-        .profile-section .profile-info {
-            margin-bottom: 20px;
-        }
-        .profile-section .profile-info strong {
+            background-color: #ccc;
+            margin: 0 auto;
             display: block;
-            font-size: 16px;
+        }
+        .profile-info {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .profile-info strong {
+            display: block;
+            font-size: 18px;
+            color: #333;
             margin-bottom: 5px;
+        }
+        .profile-info span {
+            font-size: 14px;
+            color: #777;
+        }
+        .edit-button {
+            margin-top: 15px;
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
         }
         .menu-section {
             flex: 3;
+            padding: 20px;
         }
         .menu-section h2 {
             font-size: 24px;
             margin-bottom: 20px;
+            color: #333;
         }
-        .menu-section .menu-list {
+        .menu-list {
             display: flex;
             justify-content: space-between;
+            margin-bottom: 20px;
         }
-        .menu-section .menu-item {
+        .menu-item {
             background-color: #f5f5f5;
-            padding: 15px;
+            padding: 20px;
             text-align: center;
             border-radius: 10px;
             width: 30%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
         }
-        .menu-section .menu-item a {
+        .menu-item:hover {
+            transform: translateY(-5px);
+        }
+        .menu-item a {
             text-decoration: none;
-            color: #333;
+            color: #007bff;
             font-size: 18px;
+            font-weight: bold;
             display: block;
             margin-bottom: 10px;
         }
-        .menu-section .menu-item span {
+        .menu-item span {
             font-size: 14px;
             color: #777;
         }
@@ -71,71 +113,50 @@
 <div th:if="${customer == null}">
     <p th:text="${error}"></p>
 </div>
-
 <div class="container">
-    <h1>회원 정보</h1>
-    <div class="info-box" style="text-align: left">
-        <div class="info-item">
-            <strong>아이디:</strong>
-            <span th:text="${customer.custId}">아이디</span>
-        </div>
-        <div class="info-item">
-            <strong>이&nbsp;&nbsp;&nbsp;름:</strong>
-            <span th:text="${customer.name}">고객 이름</span>
-        </div>
-        <div class="info-item">
-            <strong>이메일:</strong>
+    <div class="profile-section">
+        <div class="profile-img"> </div> <!-- Placeholder for profile image -->
+        <div class="profile-info">
+            <strong th:text="${customer.name}">강영웅님</strong>
             <span th:text="${customer.email}">customer@example.com</span>
-        </div>
-        <div class="info-item">
-            <strong>연락처:</strong>
-            <span th:text="${customer.mobileNum}">010-1234-5678</span>
-        </div>
-        <div class="info-item">
-            <strong>주&nbsp;&nbsp;&nbsp;소:</strong>
-            <span th:text="${customer.mainAddr}">서울특별시 강남구</span>
-        </div>
-
-        <br> <a th:href="@{/customer/edit(custId=${customer.custId})}">정보 수정</a>
-
-
-
-    </div>
-</div>
-
-<div class="menu-section">
-    <h2>&nbsp;&nbsp;&nbsp;쇼핑 내역</h2>
-    <div class="menu-list">
-        <div class="menu-item">
-            <a href="/cart/list" th:text="'장바구니 조회'">장바구니 조회</a>
-            <span th:text="'장바구니에 담긴 상품을 확인할 수 있습니다.'">주문 내역 확인 및 배송 상태를 확인할 수 있습니다.</span>
-        </div>
-        <div class="menu-item">
-            <a href="/order/main" th:text="'주문/배송목록'">주문/배송목록</a>
-            <span th:text="'주문 내역 확인 및 배송 상태를 확인할 수 있습니다.'">주문 내역 확인 및 배송 상태를 확인할 수 있습니다.</span>
-        </div>
-        <div class="menu-item">
-            <a href="/purchase/store" th:text="'매장 구매 내역'">매장 구매 내역</a>
-            <span th:text="'오프라인 매장 구매 내역을 조회하세요.'">오프라인 매장 구매 내역을 조회하세요.</span>
+            <br />
+            <a th:href="@{/customer/edit(custId=${customer.custId})}" class="edit-button">정보 수정</a>
         </div>
     </div>
-    <div class="menu-list">
-        <div class="menu-item">
-            <a href="/receipt/lookup" th:text="'영수증 조회 / 후 적립'">영수증 조회 / 후 적립</a>
-            <span th:text="'영수증을 조회하고 포인트를 적립하세요.'">영수증을 조회하고 포인트를 적립하세요.</span>
+
+    <!-- Shopping and Order History Section -->
+    <div class="menu-section">
+        <h2>마이페이지</h2>
+        <div class="menu-list">
+            <div class="menu-item">
+                <a href="/cart/list">장바구니 조회</a>
+                <span>장바구니에 담긴 상품을 확인할 수 있습니다.</span>
+            </div>
+            <div class="menu-item">
+                <a href="/order/history">주문/배송 목록</a>
+                <span>주문 내역 및 배송 상태를 확인할 수 있습니다.</span>
+            </div>
+            <div class="menu-item">
+                <a href="/cscenter/faq/list">F&Q 게시판</a>
+                <span>가장 많이 물어본 질문을 확인하세요.</span>
+            </div>
         </div>
-        <div class="menu-item">
-            <a href="/coupons" th:text="'쿠폰'">쿠폰</a>
-            <span th:text="'사용 가능한 쿠폰을 확인하세요.'">사용 가능한 쿠폰을 확인하세요.</span>
-        </div>
-        <div class="menu-item">
-            <a href="/points" th:text="'통합포인트'">통합포인트</a>
-            <span th:text="'포인트 현황을 확인하세요.'">포인트 현황을 확인하세요.</span>
+        <div class="menu-list">
+            <div class="menu-item">
+                <a href="/cscenter/notice/list">공지사항</a>
+                <span>공지사항을 확인하세요.</span>
+            </div>
+            <div class="menu-item">
+                <a href="/customer/mypage">쿠폰</a>
+                <span>사용 가능한 쿠폰을 확인하세요.</span>
+            </div>
+            <div class="menu-item">
+                <a href="/customer/mypage">통합포인트</a>
+                <span>포인트 현황을 확인하세요.</span>
+            </div>
         </div>
     </div>
 </div>
-
-
 
 </body></html>
 

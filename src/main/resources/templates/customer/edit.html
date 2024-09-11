@@ -6,64 +6,86 @@
     <title>정석문고 jungsukbook</title>
     <style>
         body {
-            height: 100vh;
             margin: 0;
-            background: linear-gradient(to right, #ecf2f8, #eaf3f9, #ffffff);
-            position: relative; /* body를 상대 위치로 설정 */
+            padding: 0;
+            background: #f9f9f9;
+            font-family: 'Pretendard-Regular', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        body {
-            display: flex;
-            justify-content: center; /* Center horizontally */
-            align-items: center; /* Center vertically */
-            min-height: 100vh; /* Ensures the body is at least the full height of the viewport */
-            margin: 0;
-            background: linear-gradient(to right, #ecf2f8, #eaf3f9, #ffffff);
-            font-family: 'Pretendard-Regular';
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            padding: 20px;
+            margin: 20px;
         }
-        .profile-section .profile-img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background-color: #ddd;
-            margin-bottom: 10px;
-        }
-        .profile-section .profile-info {
-            margin-bottom: 20px;
-        }
-        .profile-section .profile-info strong {
-            display: block;
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-        .menu-section {
-            flex: 3;
-        }
-        .menu-section h2 {
+
+        h2 {
             font-size: 24px;
             margin-bottom: 20px;
+            color: #333;
         }
-        .menu-section .menu-list {
+
+        .form-group {
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
         }
-        .menu-section .menu-item {
-            background-color: #f5f5f5;
-            padding: 15px;
-            text-align: center;
-            border-radius: 10px;
-            width: 30%;
+
+        .form-group label {
+            flex: 1;
+            font-weight: bold;
+            text-align: left;
         }
-        .menu-section .menu-item a {
-            text-decoration: none;
-            color: #333;
-            font-size: 18px;
-            display: block;
-            margin-bottom: 10px;
+
+        .form-group input {
+            flex: 2;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            text-align: left;
+            width: 100%;
         }
-        .menu-section .menu-item span {
-            font-size: 14px;
-            color: #777;
+
+        .password-container {
+            position: relative;
+            flex: 2;
+        }
+
+        .password-container input {
+            padding-right: 10px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            background-color: #007bff;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -73,24 +95,53 @@
 
 <body class="center-area custom-body">
 
-<div class="container1">
-    <h2> 정보 수정 </h2>
+
+<div class="container">
+    <h2>회원정보 수정</h2>
     <form th:action="@{/customer/edit}" method="post">
-        <input type="hidden" name="custId" th:value="${customer.custId}"><br>
-        <label for="name">강영웅:</label>
-        <input type="text" id="name" name="name" th:value="${customer.name}" required><br>
+        <input type="hidden" name="custId" th:value="${customer.custId}">
 
-        <label for="pwd">비밀번호:</label>
-        <input type="password" id="pwd" name="pwd" th:value="${customer.pwd}" required><br>
+        <div class="form-group">
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" th:value="${customer.name}" required>
+        </div>
 
-        <label for="mobileNum">휴대전화:</label>
-        <input type="text" id="mobileNum" name="mobileNum" th:value="${customer.mobileNum}" required><br>
-        <label for="mainAddr">주소:</label>
-        <input type="text" id="mainAddr" name="mainAddr" th:value="${customer.mainAddr}" required><br>
+        <div class="form-group">
+            <label for="pwd">비밀번호 변경</label>
+            <div class="password-container">
+                <input type="password" id="pwd" name="pwd" th:value="${customer.pwd}" required>
+                <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
+            </div>
+        </div>
 
-        <label for="nickName">닉네임:</label>
-        <input type="text" id="nickName" name="nickName" th:value="${customer.nickName}" required><br>
+        <div class="form-group">
+            <label for="mobileNum">휴대전화</label>
+            <input type="text" id="mobileNum" name="mobileNum" th:value="${customer.mobileNum}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="mainAddr">주소</label>
+            <input type="text" id="mainAddr" name="mainAddr" th:value="${customer.mainAddr}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="nickName">닉네임</label>
+            <input type="text" id="nickName" name="nickName" th:value="${customer.nickName}" required>
+        </div>
+
         <button type="submit">정보 수정</button>
-    </form></div>
+    </form>
+</div>
+<script>
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById("pwd");
+        const togglePasswordIcon = document.querySelector(".toggle-password");
+        const isPasswordVisible = passwordInput.type === "text";
+
+        passwordInput.type = isPasswordVisible ? "password" : "text";
+        togglePasswordIcon.textContent = isPasswordVisible ? "👁️" : "🙈";
+    }
+</script>
+
 
 </body></html>
