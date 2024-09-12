@@ -6,6 +6,7 @@ import com.no1.book.service.order.OrderService;
 import com.no1.book.service.product.ProductService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +29,8 @@ public class OrderController {
 
         Map<String, Object> response = new HashMap<>();
         response.put("status", "success");
-        return ResponseEntity.ok(response);
+
+        return new ResponseEntity<>(response, HttpStatus.valueOf(200));
     }
 
     // 상품상세 또는 장바구니 화면에서 진입하는 주문 화면
@@ -49,3 +51,4 @@ public class OrderController {
         return "order/orderForm";
     }
 }
+

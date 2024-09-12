@@ -67,6 +67,11 @@ body {
     color: #767676;
 }
 
+#non_customer_desc {
+    margin-left: 32px;
+    margin-bottom: 16px;
+}
+
 .bottom_buttons {
     display: flex;
 }

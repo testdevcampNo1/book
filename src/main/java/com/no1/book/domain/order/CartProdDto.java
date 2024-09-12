@@ -3,7 +3,7 @@ package com.no1.book.domain.order;
 import java.util.*;
 
 public class CartProdDto {
-    Integer custId;
+    String custId;
     String prodId;
     Integer itemQty;
     String imageId;
@@ -15,14 +15,14 @@ public class CartProdDto {
     String ordAbStusCode;
     String registerDate;
     String expiredDate;
-    String isEBook;
-    String dawnDeliCk;
+    String isEbook;
+    String dawnDeliChk;
 
 
     public CartProdDto() {
     }
 
-    public CartProdDto(Integer custId, String prodId, Integer salePrice, String registerDate) {
+    public CartProdDto(String custId, String prodId, Integer salePrice, String registerDate) {
         this.custId = custId;
         this.prodId = prodId;
         this.salePrice = salePrice;
@@ -30,11 +30,11 @@ public class CartProdDto {
     }
 
 
-    public Integer getCustId() {
+    public String getCustId() {
         return custId;
     }
 
-    public void setCustId(Integer custId) {
+    public void setCustId(String custId) {
         this.custId = custId;
     }
 
@@ -126,20 +126,20 @@ public class CartProdDto {
         this.expiredDate = expiredDate;
     }
 
-    public String getIsEBook() {
-        return isEBook;
+    public String getIsEbook() {
+        return isEbook;
     }
 
-    public void setIsEBook(String isEBook) {
-        this.isEBook = isEBook;
+    public void setIsEbook(String isEbook) {
+        this.isEbook = isEbook;
     }
 
-    public String getDawnDeliCk() {
-        return dawnDeliCk;
+    public String getDawnDeliChk() {
+        return dawnDeliChk;
     }
 
-    public void setDawnDeliCk(String dawnDeliCk) {
-        this.dawnDeliCk = dawnDeliCk;
+    public void setDawnDeliChk(String dawnDeliChk) {
+        this.dawnDeliChk = dawnDeliChk;
     }
 
     @Override
@@ -157,8 +157,8 @@ public class CartProdDto {
                 ", ordAbStusCode='" + ordAbStusCode + '\'' +
                 ", registerDate='" + registerDate + '\'' +
                 ", expiredDate='" + expiredDate + '\'' +
-                ", isEBook='" + isEBook + '\'' +
-                ", dawnDeliCk='" + dawnDeliCk + '\'' +
+                ", isEbook='" + isEbook + '\'' +
+                ", dawnDeliChk='" + dawnDeliChk + '\'' +
                 '}';
     }
 
@@ -167,11 +167,11 @@ public class CartProdDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CartProdDto that = (CartProdDto) o;
-        return Objects.equals(custId, that.custId) && Objects.equals(prodId, that.prodId) && Objects.equals(itemQty, that.itemQty) && Objects.equals(imageId, that.imageId) && Objects.equals(prodName, that.prodName) && Objects.equals(prodBasePrice, that.prodBasePrice) && Objects.equals(discRate, that.discRate) && Objects.equals(discPrice, that.discPrice) && Objects.equals(salePrice, that.salePrice) && Objects.equals(ordAbStusCode, that.ordAbStusCode) && Objects.equals(registerDate, that.registerDate) && Objects.equals(expiredDate, that.expiredDate) && Objects.equals(isEBook, that.isEBook) && Objects.equals(dawnDeliCk, that.dawnDeliCk);
+        return Objects.equals(custId, that.custId) && Objects.equals(prodId, that.prodId) && Objects.equals(itemQty, that.itemQty) && Objects.equals(imageId, that.imageId) && Objects.equals(prodName, that.prodName) && Objects.equals(prodBasePrice, that.prodBasePrice) && Objects.equals(discRate, that.discRate) && Objects.equals(discPrice, that.discPrice) && Objects.equals(salePrice, that.salePrice) && Objects.equals(ordAbStusCode, that.ordAbStusCode) && Objects.equals(registerDate, that.registerDate) && Objects.equals(expiredDate, that.expiredDate) && Objects.equals(isEbook, that.isEbook) && Objects.equals(dawnDeliChk, that.dawnDeliChk);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(custId, prodId, itemQty, imageId, prodName, prodBasePrice, discRate, discPrice, salePrice, ordAbStusCode, registerDate, expiredDate, isEBook, dawnDeliCk);
+        return Objects.hash(custId, prodId, itemQty, imageId, prodName, prodBasePrice, discRate, discPrice, salePrice, ordAbStusCode, registerDate, expiredDate, isEbook, dawnDeliChk);
     }
 }

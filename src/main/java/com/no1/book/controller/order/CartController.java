@@ -28,13 +28,11 @@ public class CartController {
     public String read(Model m, HttpServletRequest request, HttpServletResponse response) throws Exception{
 
         HttpSession session = request.getSession();
-        session.setAttribute("isUser","Y");
-        // session.setAttribute("isUser","N");
 
         // 세션에서 회원 여부 조회
-        if(session.getAttribute("isUser") == "Y"){ // 회원일 경우 - DB조회
+        if(loginCheck(request) == true){ // 회원일 경우 - DB조회
 
-            Integer custId = 1;
+            String custId = (String)session.getAttribute("custId");
 
             try{
                 List<CartProdDto> cartProducts  = cartService.read(custId);
@@ -49,20 +47,12 @@ public class CartController {
         }else{ // 비회원일 경우 - 세션 조회
 
             try{
-
-                System.out.println("비회원 session = " + session.getId());
-                System.out.println("session.getAttributeNames = " + session.getAttributeNames());
-                System.out.println("session.getAttribute(\"cartLists\") = " + session.getAttribute("cartLists"));
-
-                m.addAttribute("sessionId",session.getId());
+                m.addAttribute("custId",session.getId());
                 m.addAttribute("cartProdDto", session.getAttribute("cartLists"));
-
             } catch(Exception e){
                 e.printStackTrace();
             }
         }
-
-
         return "cart";
     }
 
@@ -71,14 +61,12 @@ public class CartController {
     public String remove(String prodId,  Model m, RedirectAttributes rattr, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         HttpSession session = request.getSession();
-        session.setAttribute("isUser","Y");
-        // session.setAttribute("isUser","N");
 
-        Integer custId = (Integer)session.getAttribute("custId");
-                custId = 1; // 임의로 아이디값 설정
+        if(loginCheck(request) == true) { // 회원일 경우 - DB조회
 
-        if(session.getAttribute("isUser") == "Y") { // 회원일 경우 - DB조회
             try{
+                String custId = (String)session.getAttribute("custId");
+
                 Map map = new HashMap();
                 map.put("custId", custId);
                 map.put("prodId", prodId);
@@ -93,10 +81,14 @@ public class CartController {
                 e.printStackTrace();
                 rattr.addAttribute("msg","DEL_ERR");
             }
+
         }else{
+
             try{
                 List<CartProdDto> cartProducts = (List<CartProdDto>) session.getAttribute("cartLists");
-                cartProducts.removeIf(obj -> obj.getProdId() == prodId);
+
+                cartProducts.removeIf(obj -> obj.getProdId().equals(prodId));
+                
                 session.setAttribute("cartLists", cartProducts);
 
                 rattr.addAttribute("custId", session.getId());
@@ -107,26 +99,22 @@ public class CartController {
                 rattr.addAttribute("msg","DEL_ERR");
             }
         }
-
-
         return "redirect:/cart/list";
     }
 
+
     @PostMapping("/add")
     @ResponseBody
-    public  Map<String, Object> addItem(@RequestBody CartDto reqDto, HttpServletRequest request, HttpServletResponse response) throws Exception{
+    public  Map<String, Object> addItem(@RequestBody CartProdDto reqDto, HttpServletRequest request, HttpServletResponse response) throws Exception{
 
         Map map = new HashMap();
         HttpSession session = request.getSession();
-        session.setAttribute("isUser","Y");
-        // session.setAttribute("isUser","N");
 
-        if(session.getAttribute("isUser") == "Y"){
+        if(loginCheck(request) == true){
 
-            // Integer custId  = (Integer)session.getAttribute("custId");
-            Integer custId  = 1; // 임의로 아이디값 설정
+            String custId  = (String)session.getAttribute("custId");
 
-            CartDto dto = reqDto;
+            CartDto dto = new CartDto(reqDto.getCustId(), reqDto.getProdId(), reqDto.getItemQty());
             dto.setCustId(custId);
 
             List<CartProdDto> cartProducts  = cartService.read(custId);
@@ -142,9 +130,9 @@ public class CartController {
                 }
             }
 
-            // 장바구니에 상품이 존재하면 수량만 업데이트, 존재하지 않으면 상품 추가
             int ret;
 
+            // 장바구니에 상품이 존재하면 수량만 업데이트, 존재하지 않으면 상품 추가
             if(hasItem == true) { ret = cartService.updateItemQty(dto); }
             else                { ret = cartService.insertItem(dto); }
 
@@ -155,28 +143,29 @@ public class CartController {
 
             List<CartProdDto> cartProducts = (List<CartProdDto>) session.getAttribute("cartLists");
 
-            // 장바구니에 추가할 상품 객체 생성
-            CartProdDto newProduct = new CartProdDto();
-            newProduct.setProdId(reqDto.getProdId());
-            newProduct.setItemQty(reqDto.getItemQty());
+            if(cartProducts != null){
 
-
-            // 장바구니에 상품 추가
-            boolean productExists = false;
-            for (CartProdDto product : cartProducts) {
-                if (product.getProdId().equals(newProduct.getProdId())) {
-                    product.setItemQty(product.getItemQty() + newProduct.getItemQty());
-                    productExists = true;
-                    break;
+                // 장바구니에 상품 추가
+                boolean productExists = false;
+                for (CartProdDto product : cartProducts) {
+                    if (product.getProdId().equals(reqDto.getProdId())) {
+                        product.setItemQty(product.getItemQty() + reqDto.getItemQty());
+                        productExists = true;
+                        break;
+                    }
                 }
+
+                if (!productExists) { cartProducts.add(reqDto); }
+                session.setAttribute("cartLists", cartProducts);
+
+            }else{
+                List<CartProdDto> cartProducts2 = new ArrayList<CartProdDto>();
+                cartProducts2.add(reqDto);
+
+                session.setAttribute("cartLists", cartProducts2);
             }
-
-            if (!productExists) { cartProducts.add(newProduct); }
-
-            session.setAttribute("cartLists", cartProducts);
             map.put("status","success");
         }
-
         return map;  // status : successs, fail
     }
 
@@ -187,19 +176,19 @@ public class CartController {
 
         Map map = new HashMap();
         HttpSession session = request.getSession();
-        session.setAttribute("isUser","Y");
-        // session.setAttribute("isUser","N");
 
         Map<String, Object> updateResult = new HashMap<>();
 
-        if(session.getAttribute("isUser") == "Y") {
-            Integer custId = 1; // 임의로 지정
+        if(loginCheck(request) == true) {
+            CartDto newDto = dto;
+            String custId = (String)session.getAttribute("custId");
+            newDto.setCustId(custId);
 
-            int updateOk = cartService.updateItemQty(dto);
+            int updateOk = cartService.updateItemQty(newDto);
             if( updateOk != 1 ) { throw new Exception("cart item quantity update error"); }
 
             // 결과 반환
-            updateResult.put("itemQty", dto.getItemQty());
+            updateResult.put("itemQty", newDto.getItemQty());
 
         }else{ // 비회원일때 수량 처리
 
@@ -210,30 +199,22 @@ public class CartController {
             newProduct.setProdId(dto.getProdId());
             newProduct.setItemQty(dto.getItemQty());
 
-
             // 장바구니에 상품 추가
             boolean productExists = false;
             for (CartProdDto product : cartProducts) {
                 if (product.getProdId().equals(newProduct.getProdId())) {
-                    product.setItemQty(product.getItemQty() + newProduct.getItemQty());
+                    product.setItemQty(newProduct.getItemQty());
                     break;
                 }
             }
-
             session.setAttribute("cartLists", cartProducts);
             updateResult.put("itemQty", newProduct.getItemQty());
         }
-
         return updateResult;
     }
 
-
     private boolean loginCheck(HttpServletRequest request) {
-        // 1. 세션을 얻어서
         HttpSession session = request.getSession();
-        // 2. 세션에 id가 있는지 확인, 있으면 true를 반환
         return session.getAttribute("custId")!=null;
     }
-
 }
-
