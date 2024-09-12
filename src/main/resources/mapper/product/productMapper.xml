@@ -268,4 +268,12 @@
         select * from product
         order by star_avg desc;
     </select>
+
+    <select id="selectIdByName">
+        select prod_id from product
+        where prod_name = ${prodName}
+        limit 1;
+    </select>
+
+
 </mapper>

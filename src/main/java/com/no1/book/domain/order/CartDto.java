@@ -17,7 +17,7 @@ public class CartDto {
         this.prodId  = prodId;
         this.itemQty = itemQty;
 
-    }
+}
 
     public String getCustId() {
         return custId;

@@ -20,18 +20,37 @@
     <script>
         // Flask에서 전달된 cust_id를 사용
         var custId = "{{ cust_id }}";  // Flask에서 cust_id 값 전달
-        
+
         $(document).ready(function() {
             // Flask에서 받은 메시지 렌더링 후 스크롤 처리
             function renderMessage(role, message) {
                 if (role === 'bot') {
                     // 링크 텍스트와 URL을 각각의 버튼으로 변환
-                    const formattedMessage = message.replace(/사이트 내 검색: (http[s]?:\/\/[^\s]+)/g, function(_, url) {
-                        return `<br><button class='link-button' onclick="window.open('${url}', '_blank')">사이트 내 검색</button><br>`;
-                    }).replace(/구글 검색: (http[s]?:\/\/[^\s]+)/g, function(_, url) {
-                        return `<button class='link-button' onclick="window.open('${url}', '_blank')">구글 검색</button><br>`;
-                    });
-
+                    const formattedMessage = message
+                        // 사이트 내 검색 버튼으로 변환
+                        .replace(/사이트 내 검색: \[([^\]]+)\]\((http[s]?:\/\/[^\s]+)\)/g, function(_, label, url) {
+                            return `<br><button class='link-button' onclick="window.open('${url}', '_blank')">${label} - 사이트 내 검색</button><br>`;
+                        })
+                        // 구글 검색 버튼으로 변환
+                        .replace(/구글 검색: \[([^\]]+)\]\((http[s]?:\/\/[^\s]+)\)/g, function(_, label, url) {
+                            return `<button class='link-button' onclick="window.open('${url}', '_blank')">${label} - 구글 검색</button><br>`;
+                        })
+                        // 장바구니로 이동 버튼으로 변환
+                        .replace(/장바구니: \[([^\]]+)\]\((http[s]?:\/\/[^\s]+)\)/g, function(_, label, url) {
+                            return `<button class='link-button' onclick="window.open('${url}', '_blank')">${label} - 장바구니로 이동</button><br>`;
+                        })
+                        // FAQ 보기 버튼으로 변환
+                        .replace(/FAQ: \[([^\]]+)\]\((http[s]?:\/\/[^\s]+)\)/g, function(_, label, url) {
+                            return `<button class='link-button' onclick="window.open('${url}', '_blank')">${label} - FAQ 보기</button><br>`;
+                        })
+                        // 공지사항 보기 버튼으로 변환
+                        .replace(/공지사항: \[([^\]]+)\]\((http[s]?:\/\/[^\s]+)\)/g, function(_, label, url) {
+                            return `<button class='link-button' onclick="window.open('${url}', '_blank')">${label} - 공지사항 보기</button><br>`;
+                        })
+                        // 주문내역 보기 버튼으로 변환
+                        .replace(/주문내역: \[([^\]]+)\]\((http[s]?:\/\/[^\s]+)\)/g, function(_, label, url) {
+                            return `<button class='link-button' onclick="window.open('${url}', '_blank')">${label} - 주문내역 보기</button><br>`;
+                        });
 
                     // 각 도서명과 링크를 분리하고 포맷
                     const separatedMessage = formattedMessage.replace(/- /g, "<br><strong>- </strong>");
@@ -77,7 +96,6 @@
                         contentType: "application/json",
                         data: JSON.stringify({ message: userInput }),
                         success: function(response) {
-
                             // 로딩 아이콘 숨김
                             $("#loading-icon").hide();
 
@@ -102,7 +120,7 @@
 
             // Enter 키로 메시지 전송
             $("#user-input").keypress(function(e) {
-                if(e.which == 13) {
+                if (e.which == 13) {
                     $("#send-btn").click();
                 }
             });

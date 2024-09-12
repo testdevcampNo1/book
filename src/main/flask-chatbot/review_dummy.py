@@ -1,13 +1,15 @@
 import pymysql
 from faker import Faker
 import random
+import dotenv
+import os
 
 # MySQL 데이터베이스 연결 설정 (pymysql 사용)
 db = pymysql.connect(
     host="localhost",    # MySQL 서버 주소
     port=3306,           # MySQL 기본 포트 번호
     user="root",         # MySQL 사용자 이름
-    password="Ws66196619@", # MySQL 비밀번호
+    password=os.getenv('DB_PASSWORD'), # MySQL 비밀번호
     database="no1",      # 사용할 데이터베이스 이름
     charset='utf8mb4'    # UTF-8 인코딩 설정
 )

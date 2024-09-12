@@ -79,6 +79,7 @@
             var prodName = document.getElementById("prodName").value;
             var prodBasePrice = document.getElementById("prodBasePrice").value;
             var salePrice = document.getElementById("salePrice").value;
+            var img = document.getElementById("prod_img").value;
 
             var params = [{
                 prodId: prodId,
@@ -88,7 +89,8 @@
                 prodName: prodName,
                 ordQty: itemQty,
                 prodBasePrice: prodBasePrice,
-                salePrice: salePrice
+                salePrice: salePrice,
+                img: img
             }];
 
             // CustomerProduct 업데이트 위함

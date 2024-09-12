@@ -43,4 +43,6 @@ public interface ProductDao {
     List<ProductDto> orderBySales() throws Exception;
 
     List<ProductDto> orderByStar() throws Exception;
+
+    String selectIdByName(String prodId) throws Exception;
 }

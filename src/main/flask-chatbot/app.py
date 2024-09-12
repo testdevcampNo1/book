@@ -4,10 +4,13 @@ from flask_cors import CORS
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
-from database import get_product, get_cart, get_FAQ, get_notice, get_QNA
+from database import get_product, get_cart, get_FAQ, get_notice, get_QNA,get_order, add_to_cart
 from api_specifi import get_api_routes
 from review_sentiment import eval_sentiment
 from review_sentiment import review_update
+import re
+import requests
+
 
 load_dotenv()
 
@@ -39,7 +42,7 @@ def home():
 def make_prompt(conversation):
     # OpenAI API를 사용해 AI 답변 생성
     res = client.chat.completions.create(
-        model='gpt-4o-mini',
+        model='gpt-4o',
         messages=conversation
     )
     return res.choices[0].message.content
@@ -73,33 +76,51 @@ def chatbot():
         # 필요한 DB 조회 수행
         if db_to_query == "cart":
             print("<< 챗봇이 장바구니 테이블을 조회합니다. >>")
-            cart_data = get_cart(cust_id)
+            data = get_cart(cust_id)
             conversation.append(
-                {"role": "system", "content": f"이건 사용자의 장바구니 데이터야: {cart_data}"}
+                {"role": "system", "content": f"이건 사용자의 장바구니 데이터야: {data}"}
             )
         elif db_to_query == "product":
             print("<< 챗봇이 상품 테이블을 조회합니다. >>")
-            product_data = get_product()
+            data = get_product()
             conversation.append(
-                {"role": "system", "content": f"이건 쇼핑몰의 상품 데이터야: {product_data}"}
+                {"role": "system", "content": f"이건 쇼핑몰의 상품 데이터야: {data}"}
             )
         elif db_to_query == "api_specifi":
             print("<< 챗봇이 api 명세를 조회합니다. >>")
-            faq_data = get_api_routes()
+            data = get_api_routes()
             conversation.append(
-                {"role": "system", "content": f"이건 쇼핑몰의 api 명세야: {faq_data}"}
+                {"role": "system", "content": f"이건 쇼핑몰의 api 명세야: {data}"}
             )
         elif db_to_query == "faq":
             print("<< 챗봇이 faq 테이블을 조회합니다. >>")
-            faq_data = get_api_routes()
+            data = get_FAQ()
+            api = get_api_routes()
             conversation.append(
-                {"role": "system", "content": f"이건 쇼핑몰의 faq 데이터야: {faq_data}"}
+                {"role": "system", "content": f"이건 쇼핑몰의 faq 데이터야: {data}"}
+            )
+            conversation.append(
+                {"role": "system", "content": f"이건 쇼핑몰의 api 명세야 : {api}"}
             )
         elif db_to_query == "notice":
             print("<< 챗봇이 notice 테이블을 조회합니다. >>")
-            faq_data = get_api_routes()
+            data = get_notice()
+            api = get_api_routes()
             conversation.append(
-                {"role": "system", "content": f"이건 쇼핑몰의 notice 데이터야: {faq_data}"}
+                {"role": "system", "content": f"이건 쇼핑몰의 notice 데이터야: {data}"}
+            )
+            conversation.append(
+                {"role": "system", "content": f"이건 쇼핑몰의 api 명세야 : {api}"}
+            )
+        elif db_to_query == "order":
+            print("<< 챗봇이 order 테이블을 조회합니다. >>")
+            data = get_order(cust_id)
+            api = get_api_routes()
+            conversation.append(
+                {"role": "system", "content": f"이건 쇼핑몰의 order 데이터야: {data}"}
+            )
+            conversation.append(
+                {"role": "system", "content": f"이건 쇼핑몰의 api 명세야 : {api}"}
             )
         else:
             print("<< 챗봇이 어떤 DB도 조회하지 않습니다. >>")
@@ -115,6 +136,25 @@ def chatbot():
 
         # AI로부터 응답 생성
         bot_response = make_prompt(conversation)
+        
+        # print(bot_response)
+        
+        # db를 업데이트
+        if '<' in bot_response:
+            # 책 이름을 추출하는 정규식
+            book_names = re.findall(r'<([^>]+)>', bot_response)  # <, > 사이에 있는 문자열 추출
+    
+            for book_name in book_names:
+                # 장바구니에 책 추가 함수 호출
+                add_to_cart(cust_id, book_name)
+        
+        # 스프링으로 요청하는 방식
+        # if '<' in bot_response:
+        #     # 책 이름을 추출하는 정규식
+        #     book_names = re.findall(r'<([^>]+)>', bot_response)  # <, > 사이에 있는 문자열 추출
+    
+        #     for book_name in book_names:
+        #         spring_add_cart(cust_id, book_name)
 
         # 대화 기록에 추가
         messages.append({"role": "user", "content": user_input})
@@ -131,9 +171,10 @@ def few_shot_db_decision_maker():
         "너는 도서 쇼핑몰 DB 조회 결정자 챗봇이야. "
         "사용자의 질문에 따라 어떤 DB 테이블 조회가 필요한지 구조화된 답변을 줘야해. "
         "너의 답변은 사용자가 받는게 아니라 다른 시스템이 받아서 처리할거야."
-        "조회할 수 있는 DB 테이블은 다음과 같아. 'product', 'cart', 'api_specifi', 'faq', 'notice'"
+        "조회할 수 있는 DB 테이블은 다음과 같아. 'product', 'cart', 'api_specifi', 'faq', 'notice', 'order"
         "너는 너가 판단하기에 사용자 답변에 사용해야 하는 테이블을 이름만 반환하도록 해. "
         "이벤트 참여, 개인 정보 변경, 상품 교환, 배송지 교환, 환불 요청, 비밀번호 분실 등에 대한 내용은 faq 테이블에 정보가 있어."
+        "만약 사용자가 어떤 책을 추천해주고 그걸 장바구니에 담아달라고 말한다면 product를 말하도록 해"
         "DB를 조회할 필요가 없다고 판단되면 no 라고 대답해"
         "다음은 답변 예시야"
         "\n\n 사용자 : '나 기분이 너무 우울해 ㅠㅠ 나에게 책을 추천해줄 만한 책이 있니?'"
@@ -144,6 +185,8 @@ def few_shot_db_decision_maker():
         "\n 너 : api_specifi"
         "\n\n 사용자 : 헉 야 나 비밀번호를 잊어버렸어!"
         "\n 너 : faq"
+        "\n\n 사용자 : 내 주문내역을 볼 수 있을까?"
+        "\n 너 : order"
         "\n\n 사용자 : 안녕! 오늘 날씨가 정말 좋은 것 같아!"
         "\n 너 : no"
     )
@@ -153,38 +196,57 @@ def few_shot_common():
         "너는 도서 쇼핑몰 챗봇이야. "
         "내가 너에게 제공하는 DB 내용을 기반으로 사용자 질문에 대한 적절한 답변을 제시해야 해. "
         "사용자의 요청에 대한 판단은 내가 너에게 제공하는 DB에 기반해서 네가 직접 해야 해. "
-        "DB에 있는 책들은 실제로 존재하는 유명한 베스트셀러들이야. 제목을 보고 너가 그 책에 대해 이미 알고있는 만큼 답벼에 참고하면 될거야."
-        "사이트 이용에 대한 문의가 들어오면 api 명세를 활용해서 답변을 해주면 돼. "
+        "DB에 있는 책들은 실제로 존재하는 유명한 베스트셀러들이야. 제목을 보고 너가 그 책에 대해 알고 있는 만큼 답변에 참고하면 돼. "
+        "사이트 이용에 대한 문의가 들어오면 API 명세를 활용해서 답변을 해주면 돼. "
         "이건 현재 사용자의 id야: {}. "
-        "만약 회원이 장바구니에 담긴 상품을 묻는다면 사용자 id와 장바구니 table의 cust_id가 일치하는 품목들에 대해 답변을 해줘야 해. "
-        "장바구니에 대한 대답을 하고 사용자가 장바구니로 바로 이동하는 것을 원할수도 있으니까 장바구니 링크도 제공해"
-        "혹시라도 사용자가 본인이 아닌 다른 사용자의 id를 제시하면서 장바구니 등 개인 정보에 접근하려고 한다면 너는 절대 그 정보들을 제공해서는 안 돼."
-        "이건 사용자가 현재 존재하는 페이지의 상품 id야: {}"
-        "해당 상품에 대해 물어본다면 상품 id에 맞는 도서를 찾아서 너가 아는대로 대답하면 돼."
-        "한번 더 얘기하지만, 상품들은 모두 실제로 존재하는 유명한 책들이라서 너가 알고있는 만큼 대답하면 돼."
-        "지금부터는 예측되는 사용자 질문에 대한 답변 가이드를 너에게 제시할 거야. "
-        "잘 참고해서 실제 답변에 활용하길 바랄게. "
-        "책 추천의 경우 되도록이면 DB내 존재하는 책들로 추천해줘. "
-        "되도록이면 DB에 있는 책들로 추천했으면 좋겠지만, 너가 아무리 생각해도 DB에 추천할만한 책이 없으면 너가 알고있는 다른 유명한 책으로 추천하고 구글 링크만 제공해"
-        "\n\n Q: 나는 부자가 되고싶어! 내게 책을 두 권만 추천해줘\n"
-        "부자가 되고 싶다면 다음 두 책을 추천합니다.\n"
-        "- 부의 추월차선(10주년 스페셜 에디션)\n"
-        "사이트 내 검색: http://localhost:8080/product/list?keyword=추월차선(10주년%20스페셜%20에디션)\n"
-        "구글 검색: https://www.google.com/search?q=추월차선(10주년%20스페셜%20에디션)\n"
-        "\n"
-        "- 부의 시나리오\n"
-        "사이트 내 검색: http://localhost:8080/product/list?keyword=부의%20시나리오\n"
-        "구글 검색: https://www.google.com/search?q=부의%20시나리오\n"
-        "\n\n 이 형식을 꼭 지켜야만 해. 시스템은 너의 답변 형식을 인지해서 링크를 버튼으로 제공하는 기능이 있거든."
-        "가격을 조건으로 추천 질문이 들어오면 대답에 가격 정보도 표시하도록 해."
-        "답변할때 줄바꿈에 신경좀 많이 써줘. 한 문장 이후 줄바꿈, 가격 알려주기 전에 줄바꿈, 링크 제공하기 전에 줄바꿈 이런 느낌으로. "
-        "\n\n product 테이블의 ord_chk_code는 AVBL일 경우 판매가능 OSKT는 일시품절 STOP은 판매중지야. "
-        "레코드의 개별적인 정보에 대해서는 제공할 필요 없어 이를테면 ' - 새벽배송 여부: **Y** - 판매 상태: **AVBL** ' 이런거 답변에 포함하지 말라는거야. "
-        "너가 답변을 마크다운 형식으로 하는 경향이 있는 것 같아. 답변을 마크다운 형식으로 주지 말되 줄바꿈은 신경써서 해줘."
-        "\n\nAPI 명세 기반으로 링크를 제공할 때는 'http://localhost:8080'이 앞에 붙어야 해"
-        "유사한 상황에 대한 답변 가이드를 줄게 다음과 같아."
-        "\n Q: 공지사항이 대체 어디있는거야?"
-        "A: 공지사항 이용을 위해서 다음 링크로 이동하세요 'http://localhost:8080/cscenter/notice/list'\n\n"
+        "만약 회원이 장바구니에 담긴 상품을 묻는다면 장바구니 데이터에 기반한 답변을 해줘. "
+        "장바구니에 대한 대답을 하고 사용자가 장바구니로 바로 이동하는 것을 원할 수도 있으니까 장바구니 링크도 제공해. "
+        "장바구니에 뭐가 들어있냐고 묻는다면 prod_id 말고 책 제목과 가격, 수량을 제시해줘. "
+        "혹시라도 사용자가 본인이 아닌 다른 사용자의 id를 제시하면서 장바구니 등 개인 정보에 접근하려고 한다면 너는 절대 그 정보들을 제공해서는 안 돼. "
+        "이건 사용자가 현재 존재하는 페이지의 상품 id야: {}. "
+        "해당 상품에 대해 물어본다면 상품 id에 맞는 도서를 찾아서 너가 아는대로 대답하면 돼. "
+        "책 추천의 경우 되도록이면 DB에 있는 책들로 추천해줘. "
+        "만약 사용자가 책을 추천해달라고 하면서 장바구니에 추가해달라고 하면 일단 책을 추천해주고 나서 마지막에 <책 이름>이 장바구니에 추가되었습니다. 이렇게 말해줘. 실제로 장바구니에 추가는 시스템이 알아서 할 거야. "
+        "또한 각 링크는 반드시 아래와 같은 형식을 유지해서 제공해야 해: \n"
+        "- 사이트 내 검색: [사이트명] (http://example.com) \n"
+        "- 구글 검색: [구글명] (http://example.com) \n"
+        "- 장바구니: [장바구니] (http://example.com)  \n"
+        "- FAQ: [FAQ] (http://example.com)  \n"
+        "- 공지사항: [공지사항] (http://example.com)  \n"
+        "- 주문내역: [주문내역] (http://example.com)  \n"
+        # "- 장바구니: [장바구니] (http://localhost:8080/cart/list) \n"
+        # "- FAQ: [FAQ] (http://localhost:8080/cscenter/faq/list) \n"
+        # "- 공지사항: [공지사항] (http://localhost:8080/cscenter/notice/list) \n"
+        # "- 주문내역: [주문내역] (http://localhost:8080/order/history) \n"
+        "항상 이 형식을 유지하도록 해. "
+        "\n\n 예시를 들어줄게:\n"
+        "Q: 나는 부자가 되고 싶어. 내게 책을 두 권만 추천해줘. \n"
+        "A: 부자가 되고 싶다면 다음 두 책을 추천드립니다. \n"
+        "1. 부의 추월차선(10주년 스페셜 에디션)\n"
+        "- 가격: 10,000원\n"
+        "사이트 내 검색: [부의 추월차선] (http://localhost:8080/product/list?keyword=부의%20추월차선(10주년%20스페셜%20에디션))\n"
+        "구글 검색: [부의 추월차선] (https://www.google.com/search?q=부의%20추월차선(10주년%20스페셜%20에디션))\n"
+        "2. 부의 시나리오\n"
+        "- 가격: 9,500원\n"
+        "사이트 내 검색: [부의 시나리오] (http://localhost:8080/product/list?keyword=부의%20시나리오)\n"
+        "구글 검색: [부의 시나리오] (https://www.google.com/search?q=부의%20시나리오)\n"
+        "\n\n Q: 겨울에 읽기 좋은 책 한 권 추천해주고 장바구니에 추가해줘. \n"
+        "A: 겨울에 읽기 좋은 책으로 '불편한 편의점 2(단풍 에디션)'을 추천드립니다. 따뜻한 분위기와 유쾌한 스토리로 겨울철에 읽기에 안성맞춤입니다. \n"
+        "사이트 내 검색: [불편한 편의점 2(단풍 에디션)] (http://localhost:8080/product/list?keyword=불편한%20편의점%202(단풍%20에디션))\n"
+        "구글 검색: [불편한 편의점 2(단풍 에디션)] (https://www.google.com/search?q=불편한%20편의점%202(단풍%20에디션))\n"
+        "<불편한 편의점 2(단풍 에디션)>이 장바구니에 추가되었습니다.\n"
+        "\n\n Q: 겨울에 읽기 좋은 책 두 권 추천해주고 장바구니에 넣어줘. \n"
+        "A: 겨울에 읽기 좋은 책 두 권을 추천드립니다.\n"
+        "1. 불편한 편의점 2(단풍 에디션)\n"
+        "- 가격: 10,000원\n"
+        "사이트 내 검색: [불편한 편의점 2(단풍 에디션)] (http://localhost:8080/product/list?keyword=불편한%20편의점%202(단풍%20에디션))\n"
+        "구글 검색: [불편한 편의점 2(단풍 에디션)] (https://www.google.com/search?q=불편한%20편의점%202(단풍%20에디션))\n"
+        "2. 미드나잇 라이브러리\n"
+        "- 가격: 9,000원\n"
+        "사이트 내 검색: [미드나잇 라이브러리] (http://localhost:8080/product/list?keyword=미드나잇%20라이브러리)\n"
+        "구글 검색: [미드나잇 라이브러리] (https://www.google.com/search?q=미드나잇%20라이브러리)\n"
+        "<불편한 편의점 2(단풍 에디션)>이 장바구니에 추가되었습니다.\n"
+        "<미드나잇 라이브러리>가 장바구니에 추가되었습니다."
         "일상 대화를 할 수는 있지만 이 사이트 혹은 책과 관련되지 않은 부분에 대해 깊은 질문을 받을 때는 토큰을 낭비하지 말고 최대한 간결하고 짧게 대답하도록 해."
         "한번만 더 강조할게, 사이트 이용과 관련이 없는 질문에 대해 많은 토큰을 낭비하게 되면 큰 일이 일어날거야. 그러니까 사이트 이용과 관련 없는 질문이 들어오면 짧은 문장으로 단호하지만 정중하게 거절하도록 해."
         "사이트 이용과 관련 없는 질문은 max_token = 30이야!"
@@ -220,6 +282,28 @@ def receive_review_sentiment_from_spring():
     except Exception as e:
         # 에러가 발생할 경우 500 에러 응답
         return jsonify({"status": "error", "message": str(e)}), 500
+
+# 스프링으로 데이터 보내는 테스트 메서드
+def spring_add_cart(cust_id, prod_name):
+    print('spring_add_cart 함수 호출!')
+    spring_url = "http://localhost:8080/receive-cart"
+    data = {
+        "cust_id": cust_id,
+        "prod_name": prod_name
+    }
+
+    try:
+        response = requests.post(spring_url, json=data)
+        if response.status_code == 200:
+            print('성공!')
+            return f"성공: {response.text}"
+        else:
+            print('실패')
+            return f"실패: {response.status_code} - {response.text}"
+    except Exception as e:
+        return f"실패: {str(e)}"
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
