@@ -425,28 +425,27 @@
         <input type="text" name="custId" id="registerId" placeholder="ID" onblur="checkIdAvailability()">
         <div id="idCheckResult" style="font-size: 12px; color: red; text-align: center;"></div>
 
-        <input type="password" name="pwd" id="registerPassword" placeholder="Password" onblur="validatePassword()">
+        <input type="password" name="pwd" id="registerPassword" placeholder="비밀번호" onblur="validatePassword()">
         <div id="passwordCheckResult" style="font-size: 12px; color: red; text-align: center;"></div>
 
-        <input type="password" name="confirmPwd" id="registerConfirmPassword" placeholder="Confirm Password" onblur="checkPasswordMatch()">
+        <input type="password" name="confirmPwd" id="registerConfirmPassword" placeholder="비밀번호 확인" onblur="checkPasswordMatch()">
         <div id="passwordMatchCheck" style="font-size: 12px; color: red; text-align: center;"></div>
-        <input type="text" name="name" id="registerName" placeholder="Name"><br>
+        <input type="text" name="name" id="registerName" placeholder="이름"><br>
             <label for="registerBirthDate">생년월일</label><br>
             <input type="date" name="birthDate" id="registerBirthDate" placeholder="Birth Date">
             <input type="hidden" name="date" id="registrationDate">
-        <input type="tel" name="mobileNum" id="registerMobile" placeholder="Mobile Number">
-        <input type="text" name="mainAddr" id="registerMainAddr" placeholder="Main Address">
+        <input type="tel" name="mobileNum" id="registerMobile" placeholder="휴대전화">
+        <input type="text" name="mainAddr" id="registerMainAddr" placeholder="주소">
         <select name="gender" id="registerGender">
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
+            <option value="">성별</option>
+            <option value="Male">남성</option>
+            <option value="Female">여성</option>
         </select>
-        <input type="text" id="sample6_postcode" placeholder="우편번호">
+        <!--<input type="text" id="sample6_postcode" placeholder="우편번호">
         <input type="button" onclick="sample6_execDaumPostcode()" value="주소찾기"><br>
         <input type="text" id="sample6_address" placeholder="주소"><br>
         <input type="text" id="sample6_detailAddress" placeholder="상세주소">
-        <input type="text" id="sample6_extraAddress" placeholder="참고항목">
+        <input type="text" id="sample6_extraAddress" placeholder="참고항목"> -->
         <input type="email" name="email" id="registerEmail" placeholder="Email">
             <button type="button" onclick="sendVerificationEmail()">이메일 인증 보내기</button><br>
             <label for="verificationCode">인증코드 입력:</label><br>

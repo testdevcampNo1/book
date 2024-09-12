@@ -376,6 +376,107 @@
             max-width: 200px; /* Limits the maximum size */
             height: auto;
         }
+        .input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .password-toggle {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .remember-me {
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .remember-me input {
+            margin-right: 5px;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: grey;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .link-container {
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .link-container a {
+            text-decoration: none;
+            color: grey;
+        }
+
+        .sns-login {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .sns-icons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .sns-icon {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+
+        .signup-btn,
+        .order-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: white;
+            color: grey;
+            border: 1px solid grey;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .signup-btn:hover,
+        .order-btn:hover {
+            background-color: lightgrey;
+        }
+
+        /* 아이디 저장 체크박스 */
+        #rememberMe {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        /* 눈 모양으로 비밀번호 토글 */
+        .password-toggle {
+            font-size: 20px;
+            color: #aaa;
+        }
     </style>
 <head>
     <head>
@@ -387,26 +488,35 @@
 </head>
     <div th:replace="~{fragments/header :: header}"></div>
 <body class="center-area custom-body">
+
 <div class="container1">
-    <h2>Login</h2>
+    <h2>login</h2>
     <form id="loginForm" method="POST" action="/customer/login">
         <div id="error" th:if="${errorMessage != null}" th:text="${errorMessage}" style="display: none; color: red;"></div>
 
-        <div>
-            <label for="custId">아이디&nbsp;&nbsp;:</label>
-            <input type="text" id="custId" name="custId" placeholder="ID"/>
+        <div class="input-container">
+            <input type="text" id="custId" name="custId" placeholder="아이디" class="input-field" required/>
         </div>
-        <div>
-            <label for="pwd">비밀번호:</label>
-            <input type="password" id="pwd" name="pwd" placeholder="Password"/>
+        <div class="input-container">
+            <input type="password" id="pwd" name="pwd" placeholder="비밀번호" class="input-field" required/>
+            <span class="password-toggle" onclick="togglePassword()">👁️</span>
         </div>
-        <div>
-            <button type="submit">로그인</button>
+        <div class="remember-me">
+            <input type="checkbox" id="rememberMe" name="rememberMe">
+            <label for="rememberMe">아이디 저장</label>
         </div>
+
+        <button type="submit" class="login-btn">로그인</button>
+
+        <div class="link-container">
+            <a href="#">아이디 찾기</a> | <a href="#">비밀번호 찾기</a>
+        </div>
+
+
+        <button type="button" class="signup-btn" onclick="window.location.href='/customer/signup';">회원가입</button>
+        <button type="button" class="order-btn" onclick="window.location.href='/order/history';">비회원 주문조회</button>
     </form><br>
-    <div class="link">
-        <a href="/customer/signup">회원가입</a>
-    </div></div>
+</div>
 
 <script>
     document.getElementById('loginForm').onsubmit = function () {
@@ -428,6 +538,18 @@
         const errorElement = document.getElementById('error');
         if (errorElement && errorElement.textContent.trim() !== '') {
             alert(errorElement.textContent); // Display popup alert
+        }
+    }
+    function togglePassword() {
+        const passwordInput = document.getElementById("pwd");
+        const passwordToggle = document.querySelector(".password-toggle");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            passwordToggle.textContent = "🙈";
+        } else {
+            passwordInput.type = "password";
+            passwordToggle.textContent = "👁️";
         }
     }
 </script>
