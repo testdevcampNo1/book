@@ -46,6 +46,7 @@ public class FromFlaskController {
 
                 // 장바구니에 추가하는 로직 호출
                 Integer success = cartService.insertItem(cartDto);
+                System.out.println("--------장바구니 업데이트 성공 ------------");
 
                 // 성공 여부 확인
                 if (success != null && success > 0) {

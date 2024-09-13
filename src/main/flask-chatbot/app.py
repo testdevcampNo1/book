@@ -42,7 +42,7 @@ def home():
 def make_prompt(conversation):
     # OpenAI API를 사용해 AI 답변 생성
     res = client.chat.completions.create(
-        model='gpt-4o',
+        model='gpt-4o-mini',
         messages=conversation
     )
     return res.choices[0].message.content
@@ -137,7 +137,7 @@ def chatbot():
         # AI로부터 응답 생성
         bot_response = make_prompt(conversation)
         
-        # print(bot_response)
+        print(bot_response)
         
         # db를 업데이트
         if '<' in bot_response:
@@ -210,14 +210,14 @@ def few_shot_common():
         "또한 각 링크는 반드시 아래와 같은 형식을 유지해서 제공해야 해: \n"
         "- 사이트 내 검색: [사이트명] (http://example.com) \n"
         "- 구글 검색: [구글명] (http://example.com) \n"
-        "- 장바구니: [장바구니] (http://example.com)  \n"
-        "- FAQ: [FAQ] (http://example.com)  \n"
-        "- 공지사항: [공지사항] (http://example.com)  \n"
-        "- 주문내역: [주문내역] (http://example.com)  \n"
-        # "- 장바구니: [장바구니] (http://localhost:8080/cart/list) \n"
-        # "- FAQ: [FAQ] (http://localhost:8080/cscenter/faq/list) \n"
-        # "- 공지사항: [공지사항] (http://localhost:8080/cscenter/notice/list) \n"
-        # "- 주문내역: [주문내역] (http://localhost:8080/order/history) \n"
+        # "- 장바구니: [장바구니] (http://example.com)  \n"
+        # "- FAQ: [FAQ] (http://example.com)  \n"
+        # "- 공지사항: [공지사항] (http://example.com)  \n"
+        # "- 주문내역: [주문내역] (http://example.com)  \n"
+        "- 장바구니: [장바구니](http://localhost:8080/cart/list) \n"
+        "- FAQ: [FAQ](http://localhost:8080/cscenter/faq/list) \n"
+        "- 공지사항: [공지사항](http://localhost:8080/cscenter/notice/list) \n"
+        "- 주문내역: [주문내역](http://localhost:8080/order/history) \n"
         "항상 이 형식을 유지하도록 해. "
         "\n\n 예시를 들어줄게:\n"
         "Q: 나는 부자가 되고 싶어. 내게 책을 두 권만 추천해줘. \n"
