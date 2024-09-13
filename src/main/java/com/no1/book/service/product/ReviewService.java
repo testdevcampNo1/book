@@ -22,4 +22,20 @@ public interface ReviewService {
     List<ReviewDto> reviewsPerProduct(String prodId);
 
     void calculateAvgStar(ProductDto dto) throws Exception;
+
+    int totalReviewCount();
+
+    int totalPositiveReviewCount();
+
+    int totalNegativeReviewCount();
+
+    int totalPendingReviewCount();
+
+    int reviewCountPerProduct(String prodId);
+
+    int positiveReviewCountPerProduct(String prodId);
+
+    int negativeReviewCountPerProduct(String prodId);
+
+    int pendingReviewCountPerProduct(String prodId);
 }

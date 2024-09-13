@@ -67,4 +67,5 @@ public interface ProductService {
 
     int minusReviewCnt(CustomerProductDto dto) throws Exception;
 
+    String selectIdByName(String prodId) throws Exception;
 }

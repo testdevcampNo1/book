@@ -6,9 +6,12 @@ import com.no1.book.domain.product.CustomerProductDto;
 import com.no1.book.domain.product.PageHandler;
 import com.no1.book.domain.product.ProductDto;
 import com.no1.book.domain.product.SearchCondition;
+import com.no1.book.service.product.APIService;
 import com.no1.book.service.product.AuthorService;
 import com.no1.book.service.product.CategoryService;
+import com.no1.book.service.product.FlaskService;
 import com.no1.book.service.product.ProductService;
+import com.no1.book.service.product.ReviewService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +53,15 @@ public class ProductController {
 
     @Autowired
     AuthorService authorService;
+
+    @Autowired
+    FlaskService flaskService;
+
+    @Autowired
+    ReviewService reviewService;
+
+    @Autowired
+    APIService apiService;
 
     @GetMapping("/list")
     public String list(HttpSession session, Integer page, String keyword, Integer pageSize, String sortKey, String sortOrder, String cateKey, Model m) throws Exception {
@@ -133,6 +145,23 @@ public class ProductController {
             m.addAttribute("custId", custId);
         }
 
+        int reviewCount = reviewService.reviewCountPerProduct(prodId);
+        int positiveReviewCount = reviewService.positiveReviewCountPerProduct(prodId);
+        int negativeReviewCount = reviewService.negativeReviewCountPerProduct(prodId);
+        int pendingReviewCount = reviewService.pendingReviewCountPerProduct(prodId);
+
+        m.addAttribute("totalReviewCount", reviewCount);
+        m.addAttribute("totalPositiveReviewCount", positiveReviewCount);
+        m.addAttribute("totalNegativeReviewCount", negativeReviewCount);
+        m.addAttribute("totalPendingReviewCount", pendingReviewCount);
+
+
+        // prodId를 flask 서버로 전송
+        Map toFlask = new HashMap();
+        toFlask.put("prodId", prodId);
+        flaskService.sendDataToFlask(toFlask,"receive-prod-id");
+
+
         return "product/productDetail";
     }
 
@@ -156,7 +185,15 @@ public class ProductController {
         for (int i = 0; i < itemQty; i++) {
             productService.plusSales(prodId);
         }
+
     }
+
+//    @PostMapping("/detail/translate")
+//    @ResponseBody
+//    public ResponseEntity<String> translate(@RequestBody String text) throws Exception {
+//        String translatedText = apiService.translateText(text);  // 번역 서비스 호출
+//        return ResponseEntity.ok(translatedText);  // 번역 결과 반환
+//    }
 
 
     @GetMapping("/manage")
@@ -245,10 +282,36 @@ public class ProductController {
         return "redirect:/product/manage";
     }
 
-    @GetMapping("/flaskTest")
-    public String flaskTest(Model m) throws Exception {
+    @GetMapping("/manage/review")
+    public String flaskTest(Model model) throws Exception {
 
-        return "product/flaskTest";
+        int totalReviewCount = reviewService.totalReviewCount();
+        int totalPositiveReviewCount = reviewService.totalPositiveReviewCount();
+        int totalNegativeReviewCount = reviewService.totalNegativeReviewCount();
+        int totalPendingReviewCount = reviewService.totalPendingReviewCount();
+
+        model.addAttribute("totalReviewCount", totalReviewCount);
+        model.addAttribute("totalPositiveReviewCount", totalPositiveReviewCount);
+        model.addAttribute("totalNegativeReviewCount", totalNegativeReviewCount);
+        model.addAttribute("totalPendingReviewCount", totalPendingReviewCount);
+
+
+        return "product/manageReview";
+    }
+    // 감정 분석 요청을 처리하는 엔드포인트
+    @ResponseBody
+    @PostMapping("/manage/review")
+    public String analyzeReviews() {
+        try {
+            // Flask로 감정 분석 요청 보내기
+            String sentimentResponse = flaskService.sendDataToFlask(new HashMap<>(), "review-sentiment");
+
+            // Flask로부터 받은 응답을 그대로 반환 (JSON 형식)
+            return sentimentResponse;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "{\"status\": \"error\", \"message\": \"" + e.getMessage() + "\"}";
+        }
     }
 
 

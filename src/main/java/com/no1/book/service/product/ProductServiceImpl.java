@@ -134,6 +134,10 @@ public class ProductServiceImpl implements ProductService {
         return customerProductDao.minusReviewCnt(dto);
     }
 
+    @Override
+    public String selectIdByName(String prodId) throws Exception {
+        return productDao.selectIdByName(prodId);
+    }
 
 
 //    @Override

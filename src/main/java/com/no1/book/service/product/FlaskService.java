@@ -4,10 +4,10 @@ import java.util.Map;
 
 public interface FlaskService {
 
-    String sendDataToFlask(Map<String, Object> payload);
+    String sendDataToFlask(Map<String, Object> payload, String endPoint);
 
     // 데이터 전처리 함수
-    Map<String, Object> preprocessData(Map<String, Object> payload);
+//    Map<String, Object> preprocessData(Map<String, Object> payload);
 
     String sendTopSellingBooksToFlask() throws Exception;
 

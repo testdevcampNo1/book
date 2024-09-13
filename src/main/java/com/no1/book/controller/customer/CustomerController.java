@@ -4,6 +4,7 @@ import com.no1.book.dao.customer.CustomerDao;
 import com.no1.book.domain.customer.CustomerDto;
 import com.no1.book.service.customer.CustomerService;
 import com.no1.book.service.customer.EmailService;
+import com.no1.book.service.product.FlaskService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,8 +29,8 @@ import java.util.UUID;
 @RequestMapping("/customer")
 public class CustomerController {
     // ------------------- 수정 된 부분 ----------------------
-    //@Autowired
-    //FlaskService flaskService;
+    @Autowired
+    FlaskService flaskService;
 
     private final CustomerService customerService;
     private String number;
@@ -39,9 +40,9 @@ public class CustomerController {
     }
     @GetMapping("/")
     public String home(@SessionAttribute(name=SessionConst.LOGIN_MEMBER,required = false) CustomerDto loginCustomer, Model model) {
-       if(loginCustomer == null) {
-           return "/";
-       }
+        if(loginCustomer == null) {
+            return "/";
+        }
 
         //세션이 유지되면 로그인으로 이동
         model.addAttribute("loginCustomer", loginCustomer);
@@ -61,13 +62,13 @@ public class CustomerController {
 
         if (customerDto != null) {
             HttpSession session1 = request.getSession();
-           // session1.setAttribute(SessionConst.LOGIN_MEMBER, customerDto);
+            // session1.setAttribute(SessionConst.LOGIN_MEMBER, customerDto);
             session1.setAttribute("custId", customerDto.getCustId());
 
             HashMap toFlask = new HashMap();
             toFlask.put("custId", customerDto.getCustId());
             // ------------------- 수정 된 부분 ----------------------
-            //flaskService.sendDataToFlask(toFlask, "receive-cust-id");
+            flaskService.sendDataToFlask(toFlask, "receive-cust-id");
 
             return "redirect:/";
         }

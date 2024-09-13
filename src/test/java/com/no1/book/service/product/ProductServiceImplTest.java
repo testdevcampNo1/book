@@ -14,6 +14,17 @@ class ProductServiceImplTest {
     private ProductService productService;
     @Autowired
     private ProductDao productDao;
+    @Autowired
+    private ReviewService reviewService;
+
+    @Test
+    void reviewCntTest() {
+        System.out.println("prod164의 리뷰 개수 :" + reviewService.reviewCountPerProduct("prod43"));
+        System.out.println("prod164의 긍정 리뷰 개수 :" + reviewService.positiveReviewCountPerProduct("prod43"));
+        System.out.println("prod164의 부정 리뷰 개수 :" + reviewService.negativeReviewCountPerProduct("prod43"));
+        System.out.println("prod164의 감정 평가 대기중 리뷰 개수 :" + reviewService.pendingReviewCountPerProduct("prod43"));
+    }
+
 
 
 ////     가격 기준 정렬 테스트1 (내림차순)
